@@ -1,67 +1,55 @@
-'use client';
-
 import Link from "next/link"; // TODO link to id
-import { useState, useEffect } from 'react';
+import { OutageData } from "../lib/definitions";
+import { getTimesAndActiveOutage } from "../lib/utils";
+import clsx from "clsx";
 
-export default function Outage() {
+export default function Outage({ data }: { data: OutageData; }) {
     const subHeadingStyles = "flex flex-row justify-between text-lg font-normal";
 
-    const [outages, setOutages] = useState([]);
-    useEffect(() => {
-        fetch("https://app.countiespower.com/api/v300/outages/range/current", {
-            method: "GET",
-            mode: "cors",
-            cache: "no-cache",
-            // credentials: "same-origin",
-            headers: {
-                accept: 'application/vnd.api+json',
-                "Access-Control-Allow-Origin": 'https://app.countiespower.com/',
-                "Access-Control-Allow-Methods": 'OPTIONS,GET,POST',
-                "Access-Control-Allow-Headers": '*',
-                "Access-Control-Allow-Credentials": 'true',
-            },
-            referrerPolicy: "no-referrer",
-        })
-          .then((res) => {
-            return res.json();
-          })
-          .then((data) => {
-            console.log(data);
-            setOutages(data);
-          });
-      }, []);
-    
+    const shutdownTimesAndActiveOutage = getTimesAndActiveOutage(data.shutdownTime1, data.ShutdownDateTime);
+    const shutdownTimes = shutdownTimesAndActiveOutage.times;
+
+    // Alert the user if the power outage is ongoing
+    if (shutdownTimesAndActiveOutage.activeOutage) {
+        data.statusText = 'Active';
+    }
+
     return (
-        <div className="flex flex-col gap-4 shrink-0 p-4 rounded-lg border border-gray-700">
-            <span className="text-2xl font-semibold">Location</span>
-            {/* TODO iterate through these */}
-            <div className={subHeadingStyles}>
+        // TODO Link
+        <div className='flex flex-col gap-4 shrink-0 p-4 rounded-lg border border-gray-700' >
+            <span className="text-2xl font-semibold">{data.address}</span>
+            <div className='flex flex-row justify-between items-center text-lg font-normal'>
                 <span className="font-semibold">Status</span>
-                <span>Scheduled/Cancelled/etc</span>
+                <span 
+                    className={
+                        clsx(
+                            'font-medium px-2 py-1 rounded',
+                            {
+                                'bg-green-400': data.statusText === "Active",
+                                'bg-blue-500 text-white': data.statusText === "Scheduled",
+                                'bg-red-400': data.statusText === "Postponed",
+                                'bg-orange-400': data.statusText === "Cancelled",
+                            },
+                        )
+                    }>
+                    {data.statusText.toUpperCase()}
+                </span>
             </div>
             <div className={subHeadingStyles}>
                 <span className="font-semibold">Date</span>
-                <span>dd/mm/yy</span>
+                <span>{data.shutdownDate}</span>
             </div>
             <div className={subHeadingStyles}>
                 <span className="font-semibold">Start Time</span>
-                <span>9 AM</span>
+                <span>{shutdownTimes[0]}</span>
             </div>
             <div className={subHeadingStyles}>
                 <span className="font-semibold">End Time</span>
-                <span>9 PM</span>
+                <span>{shutdownTimes[1]}</span>
             </div>
-
-            <div>
-                {
-                    outages.map((outage) => {
-                        return `
-                          <div>
-                            ${outage}
-                          </div>
-                        `
-                    })
-                }
+            <div className={subHeadingStyles}>
+                <span className="font-semibold">Customers Affected</span>
+                <span>{data.affectedCustomers}</span>
             </div>
         </div>
     );

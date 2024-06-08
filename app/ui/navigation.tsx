@@ -8,7 +8,7 @@ export default function Navigation() {
     const pathname = usePathname();
 
     return (
-        <div className="flex sticky top-0 shrink-0 h-20 p-4 items-center justify-between border-b border-gray-400">
+        <div className="flex sticky top-0 h-20 p-4 items-center justify-between border-b border-gray-400 bg-white">
             <Link
                 href="/"
                 className={
