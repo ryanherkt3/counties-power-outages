@@ -15,32 +15,33 @@ export const getTimesAndActiveOutage = (
     shutdownDate: string
 ) => {
     let newTimes: string[] = [];
+    let newTimeString = time.split(' - ');
 
-    let newTimeString = time
-        .replaceAll(':00', '')
-        .replaceAll(':15', '')
-        .replaceAll(':30', '')
-        .replaceAll(':45', '')
-        .split(' - ');
-
-    const activeOutage = isOutageActive(shutdownDate, parseInt(newTimeString[0]));
+    // Get start hour and check if outage is accurate
+    const startHour = newTimeString[0].split(':')[0];
+    const activeOutage = isOutageActive(shutdownDate, parseInt(startHour));
     
     newTimeString.map((newTime : string) => {
-        let newTimeAsNum = parseInt(newTime);
+        const timeSegments = newTime.split(':');
+        let hourlySegment = timeSegments[0];
+        const minuteSegment = timeSegments[1];
 
-        if (newTimeAsNum >= 12) {
-            newTimeAsNum = newTimeAsNum === 12 ? 12 : newTimeAsNum - 12;
-            newTimes.push(`${newTimeAsNum} PM`);
+        if (parseInt(hourlySegment) >= 12) {
+            hourlySegment = parseInt(hourlySegment) === 12 ? '12' : `${parseInt(hourlySegment) - 12}`;
+            newTimes.push(`${hourlySegment}:${minuteSegment} PM`);
         }
         else {
-            newTimeAsNum = newTimeAsNum === 0 ? 12 : newTimeAsNum;
-            newTimes.push(`${newTimeAsNum} AM`);
+            hourlySegment = parseInt(hourlySegment) === 12 ? '12' : `${parseInt(hourlySegment)}`;
+            newTimes.push(`${hourlySegment}:${minuteSegment} AM`);
         }
     });
 
     return {
         activeOutage: activeOutage,
-        times: newTimes
+        times: {
+            startTime: newTimes[0],
+            endTime: newTimes[1],
+        }
     };
 }
 

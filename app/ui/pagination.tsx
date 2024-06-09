@@ -14,20 +14,20 @@ export default function Pagination(
     return (
         <div className='pagination flex flex-row gap-4 justify-center'>
             {
-                paginationNumber.map((data) => (
+                paginationNumber.map((pageNumber) => (
                     <button 
-                        key={data}
-                        onClick={() => handlePagination(data)}
+                        key={pageNumber}
+                        onClick={() => handlePagination(pageNumber)}
                         className={
                             clsx(
                                 'text-sm font-medium rounded-full p-3 hover:bg-red-400 hover:text-white',
                                 {
-                                    'bg-red-600 text-white': currentPage === data,
+                                    'bg-red-600 text-white': currentPage === pageNumber,
                                 },
                             )
                         }
                     >
-                        {data}
+                        {pageNumber}
                     </button>
                 ))
             }

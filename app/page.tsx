@@ -31,10 +31,12 @@ export default function Home() {
         fetchOutages();        
     }, []);
 
-    const indexOfLastOutage = currentPage * outagesPerPage;
-    const indexOfFirstOutage = indexOfLastOutage - outagesPerPage;
-    const currentOutages = outages.slice(indexOfFirstOutage, indexOfLastOutage);
+    // Indices of outages array items to show
+    const indexOfLastOutage = currentPage * outagesPerPage; // 1 * 5 = 5
+    const indexOfFirstOutage = indexOfLastOutage - outagesPerPage; // (1 * 5) - 5 = 0
+    const currentOutages = outages.slice(indexOfFirstOutage, indexOfLastOutage); // outages[1] to outages[4]
 
+    // Inline function to set the current page number
     const handlePagination = (pageNumber: number) => {
         setCurrentPage(pageNumber);
     };
@@ -51,10 +53,10 @@ export default function Home() {
                 }
             </Suspense>
             <Pagination 
-                length={outages.length}
+                length={outages.length} // length of array
                 outagesPerPage={outagesPerPage}
-                handlePagination={handlePagination}
-                currentPage={currentPage} 
+                handlePagination={handlePagination} // pass inline function as prop
+                currentPage={currentPage}  // the current page number, e.g. 5
             />
         </main>
     );
