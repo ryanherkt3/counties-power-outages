@@ -4,8 +4,6 @@ import { getTimesAndActiveOutage } from "../lib/utils";
 import clsx from "clsx";
 
 export default function Outage({ data }: { data: OutageData; }) {
-    const subHeadingStyles = "flex flex-row justify-between text-lg font-normal";
-
     const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownTime1, data.ShutdownDateTime);
     const shutdownTimes = timesAndActiveOutage.times;
 
@@ -17,7 +15,7 @@ export default function Outage({ data }: { data: OutageData; }) {
     // Dynamically create outage section segments
     const outageSections = [
         {
-            title: 'Data',
+            title: 'Date',
             value: data.shutdownDate,
         },
         {
@@ -58,7 +56,10 @@ export default function Outage({ data }: { data: OutageData; }) {
             {
                 outageSections.map((section) => {
                     return (
-                        <div key={outageSections.indexOf(section)} className={subHeadingStyles}>
+                        <div 
+                            key={outageSections.indexOf(section)} 
+                            className='flex flex-row justify-between text-lg font-normal'
+                        >
                             <span className="font-semibold">{section.title}</span>
                             <span>{section.value}</span>
                         </div>

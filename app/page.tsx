@@ -1,16 +1,23 @@
 'use client';
 
 import { Suspense, useEffect, useState } from "react";
+// import Search from '@/app/ui/search';
 import Outage from "./ui/outage";
 import { OutageData } from "./lib/definitions";
 import Pagination from "./ui/pagination";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-    // Pagination values
+export default function Home({searchParams}: {
+    searchParams?: {
+        query?: string;
+        page?: string;
+    };
+}) {
     const [outages, setOutages] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [outagesPerPage, setOutagesPerPage] = useState(5);
+    const [fetched, setFetched] = useState(false);
     
+    // TODO add app/ui/search.tsx
+
     useEffect(() => {
         const fetchOutages = async() => {
             try {
@@ -23,6 +30,7 @@ export default function Home() {
                 });
                 const outagesJson = await outagesReq.json();
                 setOutages(outagesJson.planned_outages);
+                setFetched(true);
             }
             catch (ex) {
                 console.log(ex);
@@ -30,6 +38,24 @@ export default function Home() {
         }
         fetchOutages();        
     }, []);
+
+    // Pagination values
+    const [outagesPerPage, setOutagesPerPage] = useState(5);
+    
+    // Redirect user to first page if they enter an invalid (or no) page number
+    if (fetched) {
+        const numOfPages = Math.ceil(outages.length / outagesPerPage); // 50 / 5 = 10;
+        const pageParam = Number(searchParams?.page);
+
+        if (!pageParam || pageParam > numOfPages || pageParam <= 0) {
+            const params = new URLSearchParams(searchParams);
+            params.set('page', '1'); // reset to page 1
+            
+            redirect(`/?${params.toString()}`);
+        }
+    }
+    
+    const [currentPage, setCurrentPage] = useState(Number(searchParams?.page) || 1);
 
     // Indices of outages array items to show
     const indexOfLastOutage = currentPage * outagesPerPage; // 1 * 5 = 5
