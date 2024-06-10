@@ -5,6 +5,12 @@ import clsx from "clsx";
 
 export default function Outage({ data }: { data: OutageData; }) {
     const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownTime1, data.ShutdownDateTime);
+
+    // If not active do not render
+    if (!timesAndActiveOutage) {
+        return false;
+    }
+    
     const shutdownTimes = timesAndActiveOutage.times;
 
     // Alert the user if the power outage is ongoing

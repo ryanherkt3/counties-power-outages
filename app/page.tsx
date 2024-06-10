@@ -24,9 +24,7 @@ export default function Home({searchParams}: {
                 // TODO figure out a way to request data without using corsproxy.io
                 const apiUrl = "https://corsproxy.io/?https://app.countiespower.com/api/v300/outages/range/current";
                 const outagesReq = await fetch(apiUrl, {  
-                    next: {
-                        revalidate: false
-                    }
+                     cache: 'no-store'
                 });
                 const outagesJson = await outagesReq.json();
                 setOutages(outagesJson.planned_outages);
@@ -41,21 +39,20 @@ export default function Home({searchParams}: {
 
     // Pagination values
     const [outagesPerPage, setOutagesPerPage] = useState(5);
+    const [currentPage, setCurrentPage] = useState(Number(searchParams?.page) || 1);
     
     // Redirect user to first page if they enter an invalid (or no) page number
     if (fetched) {
         const numOfPages = Math.ceil(outages.length / outagesPerPage); // 50 / 5 = 10;
-        const pageParam = Number(searchParams?.page);
+        const pageParam = currentPage;
 
-        if (!pageParam || pageParam > numOfPages || pageParam <= 0) {
+        if (pageParam > numOfPages || pageParam <= 0) {
             const params = new URLSearchParams(searchParams);
             params.set('page', '1'); // reset to page 1
             
             redirect(`/?${params.toString()}`);
         }
     }
-    
-    const [currentPage, setCurrentPage] = useState(Number(searchParams?.page) || 1);
 
     // Indices of outages array items to show
     const indexOfLastOutage = currentPage * outagesPerPage; // 1 * 5 = 5
