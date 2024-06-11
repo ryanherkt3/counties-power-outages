@@ -7,7 +7,7 @@ export default function Outage({ data }: { data: OutageData; }) {
     const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownTime1, data.ShutdownDateTime);
 
     // If not active do not render
-    if (!timesAndActiveOutage) {
+    if (timesAndActiveOutage.expiredOutage) {
         return false;
     }
     

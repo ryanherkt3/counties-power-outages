@@ -42,7 +42,13 @@ export const getTimesAndActiveOutage = (
 
     // If the outage has passed, do not show it
     if (isOutageExpired(shutdownDate, parseInt(startHour), parseInt(endHour))) {
-        return false;
+        return {
+            expiredOutage: true, // -1 to indicate the outage has passed
+            times: {
+                startTime: null,
+                endTime: null,
+            }
+        }
     }
 
     const activeOutage = isOutageActive(shutdownDate, parseInt(startHour));

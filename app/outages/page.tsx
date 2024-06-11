@@ -2,12 +2,12 @@
 
 import { Suspense, useEffect, useState } from "react";
 // import Search from '@/app/ui/search';
-import Outage from "./ui/outage";
-import { OutageData } from "./lib/definitions";
-import Pagination from "./ui/pagination";
+import Outage from "../ui/outage";
+import { OutageData } from "../lib/definitions";
+import Pagination from "../ui/pagination";
 import { redirect } from "next/navigation";
 
-export default function Home({searchParams}: {
+export default function Page({searchParams}: {
     searchParams?: {
         query?: string;
         page?: string;
@@ -21,13 +21,15 @@ export default function Home({searchParams}: {
     useEffect(() => {
         const fetchOutages = async() => {
             try {
-                // TODO figure out a way to request data without using corsproxy.io
-                const apiUrl = "https://corsproxy.io/?https://app.countiespower.com/api/v300/outages/range/current";
+                const apiUrl = "http://127.0.0.1:8080/api/getoutages";
                 const outagesReq = await fetch(apiUrl, {  
                      cache: 'no-store'
                 });
                 const outagesJson = await outagesReq.json();
                 setOutages(outagesJson.planned_outages);
+
+                // TODO figure out how to remove expired outages
+
                 setFetched(true);
             }
             catch (ex) {
@@ -50,9 +52,10 @@ export default function Home({searchParams}: {
             const params = new URLSearchParams(searchParams);
             params.set('page', '1'); // reset to page 1
             
-            redirect(`/?${params.toString()}`);
+            redirect(`/outages/?${params.toString()}`);
         }
     }
+
 
     // Indices of outages array items to show
     const indexOfLastOutage = currentPage * outagesPerPage; // 1 * 5 = 5
