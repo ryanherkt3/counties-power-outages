@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { Suspense } from "react";
 // import Search from '@/app/ui/search';
 import Pagination from "../ui/pagination";
@@ -13,14 +15,7 @@ export default async function OutagesPage({searchParams}: {
 }) {
     // TODO add app/ui/search.tsx
 
-    let outages = [];
-    try {
-        outages = await getFilteredOutages();
-    }
-    catch (error) {
-        console.error(error);
-    }
-    
+    const outages = await getFilteredOutages();    
     const currentPage = Number(searchParams?.page) || 1;
 
     // Early return if there are no outages to report

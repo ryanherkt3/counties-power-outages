@@ -88,12 +88,7 @@ export const getTimesAndActiveOutage = (
 
 export const getFilteredOutages = async () => {
     const apiUrl = "http://127.0.0.1:8080/api/getoutages";
-    // Re-request data after 1 hour
-    const outagesReq = await fetch(apiUrl, {  
-        next: { 
-            revalidate: 3600 
-        }
-    });
+    const outagesReq = await fetch(apiUrl);
     const outagesJson = await outagesReq.json();
     let outages = outagesJson.planned_outages
     
