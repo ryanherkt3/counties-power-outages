@@ -6,6 +6,7 @@ import Outage from "../ui/outage";
 import { OutageData } from "../lib/definitions";
 import Pagination from "../ui/pagination";
 import { redirect } from "next/navigation";
+import { getFilteredOutages } from "../lib/utils";
 
 export default function Page({searchParams}: {
     searchParams?: {
@@ -13,28 +14,13 @@ export default function Page({searchParams}: {
         page?: string;
     };
 }) {
-    const [outages, setOutages] = useState([]);
-    const [fetched, setFetched] = useState(false);
-    
     // TODO add app/ui/search.tsx
-
+    const [outages, setOutages] = useState([]);
+    
+    // TODO call only once
     useEffect(() => {
         const fetchOutages = async() => {
-            try {
-                const apiUrl = "http://127.0.0.1:8080/api/getoutages";
-                const outagesReq = await fetch(apiUrl, {  
-                     cache: 'no-store'
-                });
-                const outagesJson = await outagesReq.json();
-                setOutages(outagesJson.planned_outages);
-
-                // TODO figure out how to remove expired outages
-
-                setFetched(true);
-            }
-            catch (ex) {
-                console.log(ex);
-            }
+            setOutages(await getFilteredOutages());
         }
         fetchOutages();        
     }, []);
@@ -44,7 +30,7 @@ export default function Page({searchParams}: {
     const [currentPage, setCurrentPage] = useState(Number(searchParams?.page) || 1);
     
     // Redirect user to first page if they enter an invalid (or no) page number
-    if (fetched) {
+    if (outages.length) {
         const numOfPages = Math.ceil(outages.length / outagesPerPage); // 50 / 5 = 10;
         const pageParam = currentPage;
 
@@ -55,7 +41,6 @@ export default function Page({searchParams}: {
             redirect(`/outages/?${params.toString()}`);
         }
     }
-
 
     // Indices of outages array items to show
     const indexOfLastOutage = currentPage * outagesPerPage; // 1 * 5 = 5
@@ -71,6 +56,7 @@ export default function Page({searchParams}: {
         <main className="flex min-h-screen flex-col gap-6 px-4 py-6">
             <Suspense fallback={<p>Loading...</p>}>
                 {
+                    // TODO create new ui component CurrentOutages
                     currentOutages.map((outage : OutageData) => {
                         return (
                             <Outage key={outage.id} data={outage} />

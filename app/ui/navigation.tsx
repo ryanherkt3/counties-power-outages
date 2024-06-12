@@ -22,7 +22,7 @@ export default function Navigation() {
         <div className="flex sticky top-0 h-20 p-4 items-center justify-between border-b border-gray-400 bg-white">
             <div>
                 <Link
-                    href="/" // TODO move to own page
+                    href="/"
                     className={
                         clsx(
                             'text-xl font-semibold text-black hover:text-red-400',

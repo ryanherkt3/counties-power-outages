@@ -1,16 +1,11 @@
 import Link from "next/link"; // TODO link to id
 import { OutageData } from "../lib/definitions";
-import { getTimesAndActiveOutage } from "../lib/utils";
+import { getTimeStrings, getTimesAndActiveOutage } from "../lib/utils";
 import clsx from "clsx";
 
 export default function Outage({ data }: { data: OutageData; }) {
     const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownTime1, data.ShutdownDateTime);
 
-    // If not active do not render
-    if (timesAndActiveOutage.expiredOutage) {
-        return false;
-    }
-    
     const shutdownTimes = timesAndActiveOutage.times;
 
     // Alert the user if the power outage is ongoing
@@ -18,25 +13,51 @@ export default function Outage({ data }: { data: OutageData; }) {
         data.statusText = 'Active';
     }
 
+    const outageIsPostponed = data.statusText === 'Postponed';
+
     // Dynamically create outage section segments
+    // TODO if postponed add new start/end date and time
     const outageSections = [
         {
-            title: 'Date',
-            value: data.shutdownDate,
+            title: `${outageIsPostponed ? 'Original' : ''} Date`,
+            value: outageIsPostponed ? data.originalShutdownDate : data.shutdownDate,
         },
         {
-            title: 'Start Time',
-            value: shutdownTimes.startTime,
+            title: `${outageIsPostponed ? 'Original' : ''} Start Time`,
+            value: shutdownTimes.startTime, // TODO fix for postponed
         },
         {
-            title: 'End Time',
-            value: shutdownTimes.endTime,
+            title: `${outageIsPostponed ? 'Original' : ''} End Time`,
+            value: shutdownTimes.endTime, // TODO fix for postponed
         },
-        {
-            title: 'Customers Affected',
-            value: data.affectedCustomers,
-        }
     ];
+
+    // TODO fix
+    let postponedSections: any[] = [];
+    if (outageIsPostponed) {
+        let originalPostponedTimes: String[] = [];
+        const originalPostponedTime = data.originalShutdownTime1.split(' - ');
+
+        originalPostponedTime.map((newTime : string) => {
+            const timeSegments = newTime.split(':');
+            originalPostponedTimes.push(getTimeStrings(timeSegments));
+        });
+
+        postponedSections = [
+            {
+                title: 'New Date',
+                value: data.shutdownDate,
+            },
+            {
+                title: 'New Start Time',
+                value: originalPostponedTimes[0],
+            },
+            {
+                title: 'New End Time',
+                value: originalPostponedTimes[1],
+            },
+        ];
+    }
 
     return (
         // TODO Link
@@ -51,7 +72,7 @@ export default function Outage({ data }: { data: OutageData; }) {
                             {
                                 'bg-green-400': data.statusText === "Active",
                                 'bg-blue-500 text-white': data.statusText === "Scheduled",
-                                'bg-red-400': data.statusText === "Postponed",
+                                'bg-red-400 text-white': data.statusText === "Postponed",
                                 'bg-orange-400': data.statusText === "Cancelled",
                             },
                         )
@@ -67,11 +88,30 @@ export default function Outage({ data }: { data: OutageData; }) {
                             className='flex flex-row justify-between text-lg font-normal'
                         >
                             <span className="font-semibold">{section.title}</span>
+                            <span className={ clsx({ 'line-through': outageIsPostponed }) }>
+                                {section.value}
+                            </span>
+                        </div>
+                    );
+                })
+            }
+            {
+                postponedSections.map((section) => {
+                    return (
+                        <div 
+                            key={outageSections.indexOf(section)} 
+                            className='flex flex-row justify-between text-lg font-normal'
+                        >
+                            <span className="font-semibold">{section.title}</span>
                             <span>{section.value}</span>
                         </div>
                     );
                 })
             }
+            <div className='flex flex-row justify-between text-lg font-normal'>
+                <span className="font-semibold">Customers Affected</span>
+                <span>{data.affectedCustomers}</span>
+            </div>
         </div>
     );
 }
