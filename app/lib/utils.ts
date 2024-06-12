@@ -87,7 +87,9 @@ export const getTimesAndActiveOutage = (
 }
 
 export const getFilteredOutages = async () => {
-    const apiUrl ="http://127.0.0.1:8080/api/getoutages";
+    // TODO deprecate corsproxy until workaround is found
+    // const apiUrl = "http://127.0.0.1:8080/api/getoutages";
+    const apiUrl = "https://corsproxy.io/?https://app.countiespower.com/api/v300/outages/range/current";
     const outagesReq = await fetch(apiUrl);
     const outagesJson = await outagesReq.json();
     let outages = outagesJson.planned_outages
