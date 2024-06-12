@@ -1,5 +1,3 @@
-export const runtime = 'edge';
-
 import { Suspense } from "react";
 // import Search from '@/app/ui/search';
 import Pagination from "../ui/pagination";
