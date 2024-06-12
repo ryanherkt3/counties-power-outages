@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { getFilteredOutages } from "../lib/utils";
 import CurrentOutages from "../ui/currentoutages";
 
-export default async function Page({searchParams}: {
+export default async function OutagesPage({searchParams}: {
     searchParams?: {
         query?: string;
         page?: string;
@@ -13,7 +13,14 @@ export default async function Page({searchParams}: {
 }) {
     // TODO add app/ui/search.tsx
 
-    const outages = await getFilteredOutages();
+    let outages = [];
+    try {
+        outages = await getFilteredOutages();
+    }
+    catch (error) {
+        console.error(error);
+    }
+    
     const currentPage = Number(searchParams?.page) || 1;
 
     // Early return if there are no outages to report

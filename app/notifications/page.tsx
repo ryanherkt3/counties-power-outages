@@ -1,4 +1,4 @@
-export default function Notifications() {
+export default function NotificationsPage() {
     return (
         <p>Notifications page</p>
     );
