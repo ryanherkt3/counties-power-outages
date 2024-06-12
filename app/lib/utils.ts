@@ -87,7 +87,7 @@ export const getTimesAndActiveOutage = (
 }
 
 export const getFilteredOutages = async () => {
-    const apiUrl = process.env.URL + "/api/getoutages";
+    const apiUrl ="http:127.0.0.1:8080/api/getoutages";
     const outagesReq = await fetch(apiUrl);
     const outagesJson = await outagesReq.json();
     let outages = outagesJson.planned_outages
