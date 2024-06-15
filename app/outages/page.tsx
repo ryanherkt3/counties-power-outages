@@ -11,8 +11,6 @@ export default async function OutagesPage({searchParams}: {
         page?: string;
     };
 }) {
-    // TODO add app/ui/search.tsx
-
     const outages = await getActiveOutages();    
     const query = searchParams?.query || '';
     const currentPage = Number(searchParams?.page) || 1;

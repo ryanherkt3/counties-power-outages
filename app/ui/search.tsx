@@ -35,7 +35,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
         <div className="flex relative">
             <label htmlFor="search" className="sr-only">Search</label>
             <input
-                className="peer block w-full rounded-lg p-3 pr-9 text-md placeholder:text-gray-500 border border-red-600 outline-none"
+                className="peer block w-full rounded-lg p-3 pr-9 text-lg placeholder:text-gray-500 border border-red-600 outline-none"
                 placeholder={placeholder}
                 onChange={
                     (e) => {

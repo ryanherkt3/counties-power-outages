@@ -107,6 +107,7 @@ export const getActiveOutages = async () => {
     return outages;
 }
 
+// TODO improve filtering (second argument)
 export const getFilteredOutages = (
     outages: any,
     query: string
@@ -122,4 +123,20 @@ export const getFilteredOutages = (
     });
 
     return filteredOutages;
+}
+
+export const getOutageByID = (
+    outages: any,
+    id: string
+) => {
+    // Return original list if no query
+    if (!id) {
+        return false;
+    }
+    
+    const outage = outages.filter((outage: OutageData) => {
+        return outage.id === id;
+    });
+
+    return outage;
 }

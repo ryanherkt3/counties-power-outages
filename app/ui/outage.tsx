@@ -9,14 +9,14 @@ export default function Outage({ data }: { data: OutageData; }) {
     const shutdownTimes = timesAndActiveOutage.times;
 
     // Alert the user if the power outage is ongoing
-    if (timesAndActiveOutage.activeOutage) {
+    if (timesAndActiveOutage.activeOutage && data.statusText !== 'Cancelled') {
         data.statusText = 'Active';
     }
 
     const outageIsPostponed = data.statusText === 'Postponed';
 
     // Dynamically create outage section segments
-    // TODO if postponed add new start/end date and time
+    // TODO if postponed do not show OG start/end time (add keys here and check those)
     const outageSections = [
         {
             title: `${outageIsPostponed ? 'Original' : ''} Date`,
@@ -24,11 +24,11 @@ export default function Outage({ data }: { data: OutageData; }) {
         },
         {
             title: `${outageIsPostponed ? 'Original' : ''} Start Time`,
-            value: shutdownTimes.startTime, // TODO fix for postponed
+            value: shutdownTimes.startTime,
         },
         {
             title: `${outageIsPostponed ? 'Original' : ''} End Time`,
-            value: shutdownTimes.endTime, // TODO fix for postponed
+            value: shutdownTimes.endTime,
         },
     ];
 
@@ -59,10 +59,17 @@ export default function Outage({ data }: { data: OutageData; }) {
         ];
     }
 
+    const outageHref = `outage/${data.id}`;
+
     return (
-        // TODO Link
         <div className='flex flex-col gap-4 shrink-0 p-4 rounded-lg border border-gray-700' >
-            <span className="text-2xl font-semibold">{data.address}</span>
+            <Link 
+                key={data.id}
+                href={outageHref}
+                className="text-2xl font-semibold hover:text-red-400"
+            >
+                {data.address}
+            </Link>
             <div className='flex flex-row justify-between items-center text-lg font-normal'>
                 <span className="font-semibold">Status</span>
                 <span 
@@ -99,7 +106,7 @@ export default function Outage({ data }: { data: OutageData; }) {
                 postponedSections.map((section) => {
                     return (
                         <div 
-                            key={outageSections.indexOf(section)} 
+                            key={postponedSections.indexOf(section)} 
                             className='flex flex-row justify-between text-lg font-normal'
                         >
                             <span className="font-semibold">{section.title}</span>
