@@ -1,3 +1,5 @@
+import { OutageData } from "./definitions";
+
 export const isOutageActive = (
     dateStr: string,
     startHour: number,
@@ -86,7 +88,7 @@ export const getTimesAndActiveOutage = (
     };
 }
 
-export const getFilteredOutages = async () => {
+export const getActiveOutages = async () => {
     // TODO deprecate corsproxy until workaround is found
     // const apiUrl = "http://127.0.0.1:8080/api/getoutages";
     const apiUrl = "https://corsproxy.io/?https://app.countiespower.com/api/v300/outages/range/current";
@@ -103,4 +105,21 @@ export const getFilteredOutages = async () => {
     });
 
     return outages;
+}
+
+export const getFilteredOutages = (
+    outages: any,
+    query: string
+) => {
+    // Return original list if no query
+    if (!query) {
+        return outages;
+    }
+    
+    // TODO: add support for searching by status, date etc
+    const filteredOutages = outages.filter((outage: OutageData) => {
+        return outage.address.toLowerCase().includes(query);
+    });
+
+    return filteredOutages;
 }
