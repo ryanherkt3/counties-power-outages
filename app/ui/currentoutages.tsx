@@ -1,5 +1,5 @@
 import { OutageData } from "../lib/definitions";
-import Outage from "./outage";
+import OutageCard from "./outagecard";
 
 export default function CurrentOutages({
     currentPage,
@@ -21,7 +21,7 @@ export default function CurrentOutages({
     return (
         filteredOutages.map((outage : OutageData) => {
             return (
-                <Outage key={outage.id} data={outage} />
+                <OutageCard key={outage.id} data={outage} />
             )
         })
     )

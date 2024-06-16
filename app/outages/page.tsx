@@ -40,7 +40,7 @@ export default async function OutagesPage({searchParams}: {
     }
     
     return (
-        <main className="flex min-h-screen flex-col gap-6 px-4 py-6">
+        <main className="flex flex-col gap-6 px-4 py-6">
             <Search placeholder="Search outages..." />
             <Suspense fallback={<p>Loading...</p>}>
                 <CurrentOutages 
