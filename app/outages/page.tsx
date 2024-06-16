@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getActiveOutages, getFilteredOutages } from "../lib/utils";
 import CurrentOutages from "../ui/currentoutages";
 import { Metadata } from "next";
+import { BoltIcon } from '@heroicons/react/24/outline';
 
 export const metadata: Metadata = {
     title: 'Outages List',
@@ -15,7 +16,7 @@ export default async function OutagesPage({searchParams}: {
         page?: string;
     };
 }) {
-    const outages = await getActiveOutages();    
+    const outages = await getActiveOutages();
     const query = searchParams?.query || '';
     const currentPage = Number(searchParams?.page) || 1;
 
@@ -28,9 +29,12 @@ export default async function OutagesPage({searchParams}: {
     // Early return if there are no outages to report
     if (!filteredOutages.length) {
         return (
-            <main className="flex min-h-screen flex-col gap-6 px-4 py-6">
+            <main className="flex flex-col px-4 py-6 page-min-height">
                 <Search placeholder="Search outages..." />
-                <p className="text-center">No current outages, try searching for something else...</p>
+                <div className="flex flex-col gap-12 py-12 my-auto items-center justify-center">
+                    <BoltIcon className="w-20 text-red-600" />
+                    <div className="text-xl">Could not find the requested outage, try searching for something else</div>
+                </div>
             </main>
         )
     }
@@ -42,7 +46,7 @@ export default async function OutagesPage({searchParams}: {
         
         redirect(`/outages/?${params.toString()}`);
     }
-    
+
     return (
         <main className="flex flex-col gap-6 px-4 py-6 page-min-height">
             <Search placeholder="Search outages..." />

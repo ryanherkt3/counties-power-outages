@@ -31,30 +31,32 @@ export const getOutageSections = (
         ]:
         [];
 
-    outageSections.push({
-        key: 'outage-date',
-        icon: 'CalendarIcon',
-        title: uppercaseTitles ? dateString.toUpperCase() : dateString,
-        value: data.shutdownDate,
-    });
-    outageSections.push({
-        key: 'outage-start',
-        icon: 'ClockIcon',
-        title: startTimeString,
-        value: shutdownTimes.startTime,
-    });
-    outageSections.push({
-        key: 'outage-end',
-        icon: 'ClockIcon',
-        title: endTimeString,
-        value: shutdownTimes.endTime,
-    });
-    outageSections.push({
-        key: 'customers-affected',
-        icon: 'UserIcon',
-        title: uppercaseTitles ? customersAffectedString.toUpperCase() : customersAffectedString,
-        value: data.affectedCustomers.toString(),
-    });
+    outageSections.push(
+        {
+            key: 'outage-date',
+            icon: 'CalendarIcon',
+            title: uppercaseTitles ? dateString.toUpperCase() : dateString,
+            value: data.shutdownDate,
+        },
+        {
+            key: 'outage-start',
+            icon: 'ClockIcon',
+            title: startTimeString,
+            value: shutdownTimes.startTime,
+        },
+        {
+            key: 'outage-end',
+            icon: 'ClockIcon',
+            title: endTimeString,
+            value: shutdownTimes.endTime,
+        },
+        {
+            key: 'customers-affected',
+            icon: 'UserIcon',
+            title: uppercaseTitles ? customersAffectedString.toUpperCase() : customersAffectedString,
+            value: data.affectedCustomers.toString(),
+        }
+    );
 
     return outageSections;
 }
