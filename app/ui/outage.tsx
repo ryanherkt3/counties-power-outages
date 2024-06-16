@@ -1,63 +1,43 @@
-import Link from "next/link"; // TODO link to id
+import Link from "next/link";
 import { OutageData } from "../lib/definitions";
 import { getTimeStrings, getTimesAndActiveOutage } from "../lib/utils";
 import clsx from "clsx";
+import getLatestInfo from "./latestinfo";
 
 export default function Outage({ data }: { data: OutageData; }) {
     const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownTime1, data.ShutdownDateTime);
 
     const shutdownTimes = timesAndActiveOutage.times;
 
-    // Alert the user if the power outage is ongoing
-    if (timesAndActiveOutage.activeOutage && data.statusText !== 'Cancelled') {
-        data.statusText = 'Active';
-    }
-
     const outageIsPostponed = data.statusText === 'Postponed';
 
     // Dynamically create outage section segments
-    // TODO if postponed do not show OG start/end time (add keys here and check those)
-    const outageSections = [
-        {
-            title: `${outageIsPostponed ? 'Original' : ''} Date`,
-            value: outageIsPostponed ? data.originalShutdownDate : data.shutdownDate,
-        },
-        {
-            title: `${outageIsPostponed ? 'Original' : ''} Start Time`,
-            value: shutdownTimes.startTime,
-        },
-        {
-            title: `${outageIsPostponed ? 'Original' : ''} End Time`,
-            value: shutdownTimes.endTime,
-        },
-    ];
-
-    // TODO fix
-    let postponedSections: any[] = [];
-    if (outageIsPostponed) {
-        let originalPostponedTimes: String[] = [];
-        const originalPostponedTime = data.originalShutdownTime1.split(' - ');
-
-        originalPostponedTime.map((newTime : string) => {
-            const timeSegments = newTime.split(':');
-            originalPostponedTimes.push(getTimeStrings(timeSegments));
-        });
-
-        postponedSections = [
+    const outageSections = outageIsPostponed ? 
+        [
             {
-                title: 'New Date',
-                value: data.shutdownDate,
-            },
-            {
-                title: 'New Start Time',
-                value: originalPostponedTimes[0],
-            },
-            {
-                title: 'New End Time',
-                value: originalPostponedTimes[1],
-            },
-        ];
-    }
+                key: 'postponed-date',
+                title: 'Original Date',
+                value: data.originalShutdownDate,
+            }
+        ]:
+        [];
+
+    outageSections.push({
+        key: 'outage-date',
+        title: `${outageIsPostponed ? 'New ' : ''}Date`,
+        value: data.shutdownDate,
+    });
+    outageSections.push({
+        key: 'outage-start',
+        title: `${outageIsPostponed ? 'New ' : ''}Start Time`,
+        value: shutdownTimes.startTime,
+    });
+    outageSections.push({
+        key: 'outage-end',
+        title: `${outageIsPostponed ? 'New ' : ''}End Time`,
+        value: shutdownTimes.endTime,
+    });
+
 
     const outageHref = `outage/${data.id}`;
 
@@ -91,26 +71,13 @@ export default function Outage({ data }: { data: OutageData; }) {
                 outageSections.map((section) => {
                     return (
                         <div 
-                            key={outageSections.indexOf(section)} 
+                            key={section.key} 
                             className='flex flex-row justify-between text-lg font-normal'
                         >
                             <span className="font-semibold">{section.title}</span>
-                            <span className={ clsx({ 'line-through': outageIsPostponed }) }>
+                            <span className={ clsx({ 'line-through': section.key === 'postponed-date' }) }>
                                 {section.value}
                             </span>
-                        </div>
-                    );
-                })
-            }
-            {
-                postponedSections.map((section) => {
-                    return (
-                        <div 
-                            key={postponedSections.indexOf(section)} 
-                            className='flex flex-row justify-between text-lg font-normal'
-                        >
-                            <span className="font-semibold">{section.title}</span>
-                            <span>{section.value}</span>
                         </div>
                     );
                 })
@@ -119,6 +86,9 @@ export default function Outage({ data }: { data: OutageData; }) {
                 <span className="font-semibold">Customers Affected</span>
                 <span>{data.affectedCustomers}</span>
             </div>
+            {
+                getLatestInfo(data.latestInformation)
+            }
         </div>
     );
 }

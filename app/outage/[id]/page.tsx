@@ -1,6 +1,7 @@
 import { getActiveOutages, getOutageByID, getTimesAndActiveOutage } from "@/app/lib/utils";
 import notFound from "./not-found";
 import clsx from "clsx";
+import getLatestInfo from "@/app/ui/latestinfo";
 
 export default async function OutagePage({ params }: { params: { id: string } }) {
     const id = params.id;
@@ -8,35 +9,39 @@ export default async function OutagePage({ params }: { params: { id: string } })
     const outages = await getActiveOutages();
     const thisOutage = getOutageByID(outages, id)[0];
 
-    console.log(!thisOutage);
-
-    // Redirect user to outages page if this specific outage doesn't exist
+    // Show "not found" page if this specific outage doesn't exist
     if (!thisOutage) {
         return notFound();
     }
 
-    // TODO fix active outage util function
+    // TODO put code here and in outage.tsx into active outage util function
     const timesAndActiveOutage = getTimesAndActiveOutage(thisOutage.shutdownTime1, thisOutage.ShutdownDateTime);
-
-    const status = timesAndActiveOutage.activeOutage && thisOutage.statusText !== 'Cancelled' ?
-        'Active' : 
-        thisOutage.statusText;
+    
+    const status = thisOutage.statusText;
     const shutdownTimes = timesAndActiveOutage.times;
 
-    const outageSections = [
-        {
-            title: 'DATE',
-            value: thisOutage.shutdownDate,
-        },
-        {
-            title: 'START TIME',
-            value: shutdownTimes.startTime,
-        },
-        {
-            title: 'END TIME',
-            value: shutdownTimes.endTime,
-        },
-    ];
+    const outageIsPostponed = status === 'Postponed';
+    const outageSections = outageIsPostponed ? 
+        [
+            {
+                title: 'ORIGINAL DATE',
+                value: thisOutage.originalShutdownDate,
+            }
+        ]:
+        [];
+
+    outageSections.push({
+        title: `${outageIsPostponed ? 'NEW ' : ''}DATE`,
+        value: thisOutage.shutdownDate,
+    });
+    outageSections.push({
+        title: 'START TIME',
+        value: shutdownTimes.startTime,
+    });
+    outageSections.push({
+        title: 'END TIME',
+        value: shutdownTimes.endTime,
+    });
 
     const outageLat = thisOutage.lat;
     const outageLng = thisOutage.lng;
@@ -58,6 +63,9 @@ export default async function OutagePage({ params }: { params: { id: string } })
                 }>
                 {thisOutage.statusText.toUpperCase()}
             </div>
+            {
+                getLatestInfo(thisOutage.latestInformation)
+            }
             <div className="flex flex-row justify-between">
                 {
                     outageSections.map((section) => {

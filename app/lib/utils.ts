@@ -96,8 +96,14 @@ export const getActiveOutages = async () => {
     const outagesJson = await outagesReq.json();
     let outages = outagesJson.planned_outages
     
-    outages.map((outage: { expiredOutage: boolean; shutdownTime1: string; ShutdownDateTime: string; }) => {
-        outage.expiredOutage = getTimesAndActiveOutage(outage.shutdownTime1, outage.ShutdownDateTime).expiredOutage;
+    outages.map((outage: { expiredOutage: boolean; statusText: string; shutdownTime1: string; ShutdownDateTime: string; }) => {
+        const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownTime1, outage.ShutdownDateTime);
+        outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
+
+        // TODO test this change works
+        if (timesAndIsActiveOutage.activeOutage && outage.statusText !== 'Cancelled') {
+            outage.statusText = 'Active';
+        }
     });
 
     outages = outages.filter((outage: { expiredOutage: boolean; }) => {
