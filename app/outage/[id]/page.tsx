@@ -2,6 +2,19 @@ import { getActiveOutages, getOutageByID, getTimesAndActiveOutage } from "@/app/
 import notFound from "./not-found";
 import clsx from "clsx";
 import getLatestInfo from "@/app/ui/latestinfo";
+import { Metadata } from "next";
+
+type Props = {
+    params: { id: string }
+}
+
+export async function generateMetadata(
+    { params }: Props,
+): Promise<Metadata> {
+    return {
+        title: `Outage ${params.id}`,
+    }
+}
 
 export default async function OutagePage({ params }: { params: { id: string } }) {
     const id = params.id;
@@ -14,7 +27,7 @@ export default async function OutagePage({ params }: { params: { id: string } })
         return notFound();
     }
 
-    // TODO put code here and in outage.tsx into active outage util function
+    // TODO put code here and in outagecard.tsx into active outage util function
     const timesAndActiveOutage = getTimesAndActiveOutage(thisOutage.shutdownTime1, thisOutage.ShutdownDateTime);
     
     const status = thisOutage.statusText;

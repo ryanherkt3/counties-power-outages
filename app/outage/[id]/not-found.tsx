@@ -3,7 +3,7 @@ import { BoltIcon } from '@heroicons/react/24/outline';
  
 export default function NotFound() {
     return (
-        <main className="flex flex-col gap-4 items-center justify-center">
+        <main className="flex flex-col gap-4 py-10 items-center justify-center page-min-height">
             <BoltIcon className="w-20 text-red-600" />
             <div className="text-2xl font-semibold">404 Not Found</div>
             <div className="text-lg">Could not find the requested outage</div>

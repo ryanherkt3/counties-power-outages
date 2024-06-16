@@ -4,6 +4,11 @@ import Pagination from "../ui/pagination";
 import { redirect } from "next/navigation";
 import { getActiveOutages, getFilteredOutages } from "../lib/utils";
 import CurrentOutages from "../ui/currentoutages";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: 'Outages List',
+};
 
 export default async function OutagesPage({searchParams}: {
     searchParams?: {

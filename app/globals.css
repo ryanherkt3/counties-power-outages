@@ -5,3 +5,7 @@
 .hidden {
     display: none;
 }
+
+.page-min-height {
+    min-height: calc(100vh - 160px);
+}

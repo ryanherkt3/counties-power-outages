@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navigation from "./ui/navigation";
 
-const inter = Inter({ subsets: ["latin"] }); // TODO move to global styles?
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
     title: {
@@ -21,7 +21,6 @@ export default function RootLayout({ children, }: {children: React.ReactNode;}) 
             <body className={`${inter.className} antialiased`}>
                 <Navigation />
                 {children}
-                {/* TODO stick footer to bottom of page (only see it when scrolled to bottom) */}
                 <footer 
                     className={
                         `${inter.className} antialiased text-lg flex flex-row sticky bottom-0 left-0 right-0 h-20 p-4 justify-between items-center bg-white border-t border-gray-400`

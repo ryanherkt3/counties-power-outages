@@ -1,5 +1,11 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: 'Notifications',
+};
+
 export default function NotificationsPage() {
     return (
-        <p>Notifications page</p>
+        <p className="page-min-height">Notifications page</p>
     );
 }
