@@ -1,8 +1,9 @@
-import { getActiveOutages, getOutageByID, getTimesAndActiveOutage } from "@/app/lib/utils";
+import { getActiveOutages, getOutageByID } from "@/app/lib/utils";
 import notFound from "./not-found";
 import clsx from "clsx";
 import getLatestInfo from "@/app/ui/latestinfo";
 import { Metadata } from "next";
+import { getOutageSections } from "@/app/lib/outagesections";
 
 type Props = {
     params: { id: string }
@@ -27,35 +28,8 @@ export default async function OutagePage({ params }: { params: { id: string } })
         return notFound();
     }
 
-    // TODO put code here and in outagecard.tsx into active outage util function
-    const timesAndActiveOutage = getTimesAndActiveOutage(thisOutage.shutdownTime1, thisOutage.ShutdownDateTime);
-    
     const status = thisOutage.statusText;
-    const shutdownTimes = timesAndActiveOutage.times;
-
-    const outageIsPostponed = status === 'Postponed';
-    const outageSections = outageIsPostponed ? 
-        [
-            {
-                title: 'ORIGINAL DATE',
-                value: thisOutage.originalShutdownDate,
-            }
-        ]:
-        [];
-
-    outageSections.push({
-        title: `${outageIsPostponed ? 'NEW ' : ''}DATE`,
-        value: thisOutage.shutdownDate,
-    });
-    outageSections.push({
-        title: 'START TIME',
-        value: shutdownTimes.startTime,
-    });
-    outageSections.push({
-        title: 'END TIME',
-        value: shutdownTimes.endTime,
-    });
-
+    const outageSections = getOutageSections(true, false, thisOutage);
     const outageLat = thisOutage.lat;
     const outageLng = thisOutage.lng;
 
@@ -84,7 +58,7 @@ export default async function OutagePage({ params }: { params: { id: string } })
                     outageSections.map((section) => {
                         return (
                             <div 
-                                key={outageSections.indexOf(section)} 
+                                key={section.key} 
                                 className='flex flex-col gap-3 text-lg font-normal'
                             >
                                 <span className="font-semibold">{section.title}</span>

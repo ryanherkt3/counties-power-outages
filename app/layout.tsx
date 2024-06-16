@@ -23,7 +23,7 @@ export default function RootLayout({ children, }: {children: React.ReactNode;}) 
                 {children}
                 <footer 
                     className={
-                        `${inter.className} antialiased text-lg flex flex-row sticky bottom-0 left-0 right-0 h-20 p-4 justify-between items-center bg-white border-t border-gray-400`
+                        `${inter.className} antialiased text-lg flex flex-row h-20 p-4 justify-between items-center bg-white border-t border-gray-400`
                     }
                 >
                     <div>&copy; Ryan Herkt {currentYear}</div>

@@ -23,7 +23,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
     };
 
     return (
-        <div className='pagination flex flex-row gap-4 justify-center'>
+        <div className='pagination flex flex-row gap-4 justify-center mt-auto'>
             {
                 paginationNumber.map((pageNumber) => {
                     return (

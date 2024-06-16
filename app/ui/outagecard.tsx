@@ -2,51 +2,15 @@
 
 import Link from "next/link";
 import { OutageData } from "../lib/definitions";
-import { getTimesAndActiveOutage } from "../lib/utils";
 import { CalendarIcon, ClockIcon, InformationCircleIcon, MinusIcon, PlusIcon, UserIcon } from '@heroicons/react/24/outline';
 import clsx from "clsx";
 import getLatestInfo from "./latestinfo";
 import { useState } from "react";
+import { getOutageSections } from "../lib/outagesections";
 
 export default function OutageCard({ data }: { data: OutageData; }) {
-    const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownTime1, data.ShutdownDateTime);
-
-    const shutdownTimes = timesAndActiveOutage.times;
-    const outageIsPostponed = data.statusText === 'Postponed';
     const [showContents, setShowContents] = useState(true);
-
-    // Dynamically create outage section segments
-    const outageSections = outageIsPostponed ? 
-        [
-            {
-                key: 'postponed-date',
-                icon: 'CalendarIcon',
-                title: 'Original Date',
-                value: data.originalShutdownDate,
-            }
-        ]:
-        [];
-
-    outageSections.push({
-        key: 'outage-date',
-        icon: 'CalendarIcon',
-        title: `${outageIsPostponed ? 'New ' : ''}Date`,
-        value: data.shutdownDate,
-    });
-    outageSections.push({
-        key: 'outage-start',
-        icon: 'ClockIcon',
-        title: `${outageIsPostponed ? 'New ' : ''}Start Time`,
-        value: shutdownTimes.startTime,
-    });
-    outageSections.push({
-        key: 'outage-end',
-        icon: 'ClockIcon',
-        title: `${outageIsPostponed ? 'New ' : ''}End Time`,
-        value: shutdownTimes.endTime,
-    });
-
-
+    const outageSections = getOutageSections(false, true, data);
     const outageHref = `outage/${data.id}`;
 
     return (
@@ -114,13 +78,6 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         );
                     })
                 }
-                <div className='flex flex-row justify-between text-lg font-normal'>
-                    <div className="flex flex-row gap-2">
-                        <UserIcon className="w-7" />
-                        <span className="font-semibold">Customers Affected</span>
-                    </div>
-                    <span>{data.affectedCustomers}</span>
-                </div>
                 {
                     getLatestInfo(data.latestInformation)
                 }
@@ -143,6 +100,9 @@ function getCardIcon(icon: string) {
     }
     if (icon === 'ClockIcon') {
         return <ClockIcon className="w-7" />
+    }
+    if (icon === 'UserIcon') {
+        return <UserIcon className="w-7" />
     }
 
     return null;

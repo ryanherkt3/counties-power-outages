@@ -11,7 +11,7 @@ export default function NotFound() {
                 href="/outages"
                 className="mt-4 rounded-md bg-red-600 px-6 py-4 text-lg text-white transition-colors hover:bg-red-400"
             >
-            Go to Outages Page
+                Go to Outages Page
             </Link>
         </main>
     );

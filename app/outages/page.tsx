@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import Search from '../ui/search';
 import Pagination from "../ui/pagination";
 import { redirect } from "next/navigation";
@@ -45,16 +44,14 @@ export default async function OutagesPage({searchParams}: {
     }
     
     return (
-        <main className="flex flex-col gap-6 px-4 py-6">
+        <main className="flex flex-col gap-6 px-4 py-6 page-min-height">
             <Search placeholder="Search outages..." />
-            <Suspense fallback={<p>Loading...</p>}>
-                <CurrentOutages 
-                    currentPage={currentPage}
-                    outages={filteredOutages}
-                    outagesPerPage={outagesPerPage}
-                    currentPageIsLast={currentPage === totalPages}
-                />
-            </Suspense>
+            <CurrentOutages 
+                currentPage={currentPage}
+                outages={filteredOutages}
+                outagesPerPage={outagesPerPage}
+                currentPageIsLast={currentPage === totalPages}
+            />
             <Pagination totalPages={totalPages} />
         </main>
     );
