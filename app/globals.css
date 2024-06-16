@@ -9,3 +9,46 @@
 .page-min-height {
     min-height: calc(100vh - 160px);
 }
+
+.nav-min-height {
+    min-height: calc(100vh - 80px);
+}
+
+/* TODO use these styles when doing responsive nav */
+.absolute-nav {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    width: 100%;
+    height: calc(100vh - 80px);
+    background-color: white;
+    z-index: 10;
+}
+
+.regular-nav {
+    display: none;
+}
+
+iframe.map-size {
+    height: 400px;
+}
+
+@media screen and (min-width: 768px) {
+    iframe.map-size {
+        height: 600px;
+    }
+
+    .absolute-nav {
+        display: none;
+    }
+
+    .regular-nav {
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+    }
+}

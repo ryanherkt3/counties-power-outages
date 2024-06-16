@@ -38,7 +38,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                     { 'hidden': !showContents }
                 ) 
             }>
-                <div className='flex flex-row justify-between items-center text-lg font-normal'>
+                <div className='flex md:flex-row md:justify-between gap-2 md:items-center flex-col text-lg font-normal'>
                     <div className="flex flex-row gap-2">
                         <InformationCircleIcon className="w-7" />
                         <span className="font-semibold">Status</span>
@@ -46,7 +46,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                     <span 
                         className={
                             clsx(
-                                'font-medium px-2 py-1 rounded',
+                                'font-medium px-2 py-1 rounded text-center',
                                 {
                                     'bg-green-400': data.statusText === "Active",
                                     'bg-blue-500 text-white': data.statusText === "Scheduled",
@@ -63,7 +63,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         return (
                             <div 
                                 key={section.key} 
-                                className='flex flex-row justify-between text-lg font-normal'
+                                className='flex md:flex-row md:justify-between gap-2 flex-col text-lg font-normal'
                             >
                                 <div className="flex flex-row gap-2">
                                     {
@@ -88,21 +88,21 @@ export default function OutageCard({ data }: { data: OutageData; }) {
 
 function getPMIcon(showContents: boolean) {
     if (showContents) {
-        return <MinusIcon className="w-8" />
+        return <MinusIcon className="w-8" />;
     }
 
-    return <PlusIcon className="w-8" />
+    return <PlusIcon className="w-8" />;
 }
 
 function getCardIcon(icon: string) {
     if (icon === 'CalendarIcon') {
-        return <CalendarIcon className="w-7" />
+        return <CalendarIcon className="w-7" />;
     }
     if (icon === 'ClockIcon') {
-        return <ClockIcon className="w-7" />
+        return <ClockIcon className="w-7" />;
     }
     if (icon === 'UserIcon') {
-        return <UserIcon className="w-7" />
+        return <UserIcon className="w-7" />;
     }
 
     return null;

@@ -53,15 +53,15 @@ export default async function OutagePage({ params }: { params: { id: string } })
             {
                 getLatestInfo(thisOutage.latestInformation)
             }
-            <div className="flex flex-row justify-between">
+            <div className="flex md:flex-row md:justify-between flex-col gap-4">
                 {
                     outageSections.map((section) => {
                         return (
                             <div 
                                 key={section.key} 
-                                className='flex flex-col gap-3 text-lg font-normal'
+                                className='flex md:flex-col gap-4 flex-row justify-between text-lg font-normal'
                             >
-                                <span className="font-semibold">{section.title}</span>
+                                <span className="font-semibold text-left">{section.title}</span>
                                 <span>{section.value}</span>
                             </div>
                         );
@@ -80,7 +80,7 @@ function getOutageIFrame(lat: number, lng: number) {
         const embedLink = `https://maps.google.com/maps?q=${lat.toString()},${lng.toString()}&hl=en&z=16&output=embed`
         
         return (
-            <iframe className="self-center" src={embedLink} width="800" height="600" loading="lazy"></iframe>
+            <iframe className="self-center map-size" src={embedLink} width="80%" loading="lazy"></iframe>
         )
     }
 
