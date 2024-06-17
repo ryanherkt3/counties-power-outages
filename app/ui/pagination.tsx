@@ -4,13 +4,10 @@ import clsx from 'clsx';
 import { usePathname, useSearchParams } from 'next/navigation';
 import React from 'react';
 import Link from 'next/link';
+import { generatePagination } from '../lib/utils';
+import PageArrow from './pagearrow';
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
-    let paginationNumber = [];
-    for (let i = 1; i <= totalPages; i++) {
-        paginationNumber.push(i);
-    }
-
     // Search parameters
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -22,28 +19,52 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
         return `${pathname}?${params.toString()}`;
     };
 
+    const paginationNumber = generatePagination(currentPage, totalPages);
+
     return (
-        <div className='pagination flex flex-row gap-4 justify-center mt-auto'>
+        <div className='pagination flex flex-row gap-4 justify-center items-center mt-auto'>
+            <PageArrow
+                href={createPageURL(currentPage - 1)}
+                direction="left"
+                isDisabled={currentPage <= 1}
+            />
             {
                 paginationNumber.map((pageNumber) => {
-                    return (
-                        <Link 
-                            href={createPageURL(pageNumber)}
-                            key={pageNumber}
-                            className={
-                                clsx(
-                                    'text-sm font-medium rounded-full p-3 hover:bg-red-400 hover:text-white',
-                                    {
-                                        'bg-red-600 text-white': currentPage === pageNumber,
-                                    },
-                                )
-                            }
-                            >
-                            {pageNumber}
-                        </Link>
-                    );
+                    return getPaginationItem(pageNumber, currentPage, createPageURL)
                 })
             }
+            <PageArrow
+                href={createPageURL(currentPage + 1)}
+                direction="right"
+                isDisabled={currentPage >= totalPages}
+            />
         </div>
     )
 };
+
+function getPaginationItem(pageNumber: number | string, currentPage: number, createPageURL: Function) {
+    if (pageNumber === '...') {
+        return (
+            <div className='text-sm font-medium rounded-full p-3'>
+                {pageNumber}
+            </div>
+        )
+    }
+
+    return (
+        <Link 
+            href={createPageURL(pageNumber)}
+            key={pageNumber}
+            className={
+                clsx(
+                    'text-xs p-2 md:text-sm md:p-3 font-medium rounded-full self-center hover:bg-red-400 hover:text-white',
+                    {
+                        'bg-red-600 text-white': currentPage === pageNumber,
+                    },
+                )
+            }
+            >
+            {pageNumber}
+        </Link>
+    );
+}

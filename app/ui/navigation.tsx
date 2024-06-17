@@ -39,20 +39,20 @@ export default function Navigation() {
                 {
                     rightLinks.map((rightLink) => {
                         return (
-                                <Link
-                                    key={rightLink.href}
-                                    href={rightLink.href}
-                                    className={
-                                        clsx(
-                                            'text-xl font-semibold text-black hover:text-red-400',
-                                            {
-                                                'text-red-600 hover:text-red-400': pathname === rightLink.href,
-                                            },
-                                        )
-                                    }
-                                >
-                                    <span>{rightLink.linkName}</span>
-                                </Link>
+                            <Link
+                                key={rightLink.href}
+                                href={rightLink.href}
+                                className={
+                                    clsx(
+                                        'text-xl font-semibold text-black hover:text-red-400',
+                                        {
+                                            'text-red-600 hover:text-red-400': pathname === rightLink.href,
+                                        },
+                                    )
+                                }
+                            >
+                                <span>{rightLink.linkName}</span>
+                            </Link>
                         )
                     })
                 }
