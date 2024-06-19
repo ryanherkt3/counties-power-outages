@@ -3,9 +3,49 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from 'clsx';
+import { useEffect, useState } from "react";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function Navigation() {
     const pathname = usePathname();
+
+    // States for the mobile nav menu
+    const [mobileNavOpen, setMobileNavOpen] = useState(false);
+    const [isMobileScreen, setIsMobileScreen] = useState(false);
+    const [isMobileScreenSet, setIsMobileScreenSet] = useState(false);
+    
+    const toggleMobileNavOpen = () => {
+        setMobileNavOpen(!mobileNavOpen);
+    };
+
+    // Reset the state of mobileNavOpen when going to another page
+    const resetMobileNavOpen = () => {
+        if (mobileNavOpen) {
+            setTimeout(() => setMobileNavOpen(false), 300);
+        }
+    };
+
+    // Check if the mobile nav can be opened
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobileScreen(window.innerWidth <= 768);
+            if (window.innerWidth > 768 && mobileNavOpen) {
+                setMobileNavOpen(false);
+            }
+        };
+
+        if (!isMobileScreenSet) {
+            setIsMobileScreen(window.innerWidth <= 768);
+        }
+        setIsMobileScreenSet(true);    
+
+        window.addEventListener('resize', handleResize);
+
+        // Clean up the event listener when the component unmounts
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    });
 
     const rightLinks = [
         {
@@ -35,13 +75,22 @@ export default function Navigation() {
                     <span>Counties Power Outages App</span>
                 </Link>
             </div>
-            <div className="flex flex-row gap-3">
+            <div className={
+                clsx (
+                    'md:flex md:flex-row md:gap-3',
+                    {
+                        'hidden': !mobileNavOpen,
+                        'absolute-nav': mobileNavOpen,
+                    }
+                )
+            }>
                 {
                     rightLinks.map((rightLink) => {
                         return (
                             <Link
                                 key={rightLink.href}
                                 href={rightLink.href}
+                                onClick={resetMobileNavOpen}
                                 className={
                                     clsx(
                                         'text-xl font-semibold text-black hover:text-red-400',
@@ -57,6 +106,20 @@ export default function Navigation() {
                     })
                 }
             </div>
+            {
+                getNavIcon(isMobileScreen, mobileNavOpen, toggleMobileNavOpen)
+            }
         </div>
     );
+}
+
+function getNavIcon(isMobileScreen: boolean, mobileNavOpen: boolean, toggleMobileNavOpen: any) {
+    if (isMobileScreen) {
+        if (mobileNavOpen) {
+            return <XMarkIcon className="cursor-pointer w-8" onClick={toggleMobileNavOpen} />
+        }
+        return <Bars3Icon className="cursor-pointer w-8" onClick={toggleMobileNavOpen} />
+    }
+
+    return false;
 }
