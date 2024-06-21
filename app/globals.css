@@ -6,6 +6,10 @@
     display: none;
 }
 
+.no-scroll {
+    overflow: hidden;
+}
+
 .page-min-height {
     min-height: calc(100vh - 160px);
 }

@@ -7,6 +7,7 @@ import clsx from "clsx";
 import getLatestInfo from "./latestinfo";
 import { useState } from "react";
 import { getOutageSections } from "../lib/outagesections";
+import OutageStatus from "./outagestatus";
 
 export default function OutageCard({ data }: { data: OutageData; }) {
     const [showContents, setShowContents] = useState(true);
@@ -43,20 +44,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         <InformationCircleIcon className="w-7" />
                         <span className="font-semibold">Status</span>
                     </div>
-                    <span 
-                        className={
-                            clsx(
-                                'font-medium px-2 py-1 rounded text-center',
-                                {
-                                    'bg-green-400': data.statusText === "Active",
-                                    'bg-blue-500 text-white': data.statusText === "Scheduled",
-                                    'bg-red-400 text-white': data.statusText === "Postponed",
-                                    'bg-orange-400': data.statusText === "Cancelled",
-                                },
-                            )
-                        }>
-                        {data.statusText.toUpperCase()}
-                    </span>
+                    <OutageStatus className="font-medium px-2 py-1 rounded text-center" statusText={data.statusText} />
                 </div>
                 {
                     outageSections.map((section) => {

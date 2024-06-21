@@ -1,9 +1,9 @@
 import { getActiveOutages, getOutageByID } from "@/app/lib/utils";
 import notFound from "./not-found";
-import clsx from "clsx";
 import getLatestInfo from "@/app/ui/latestinfo";
 import { Metadata } from "next";
 import { getOutageSections } from "@/app/lib/outagesections";
+import OutageStatus from "@/app/ui/outagestatus";
 
 type Props = {
     params: { id: string }
@@ -35,21 +35,8 @@ export default async function OutagePage({ params }: { params: { id: string } })
 
     return (
         <main className="flex flex-col gap-8 px-4 py-6 text-center">
-            <div className= "text-2xl font-semibold text-black">{thisOutage.address}</div>
-            <div 
-                className={
-                    clsx(
-                        'text-xl p-3 font-semibold rounded-xl',
-                        {
-                            'bg-green-400': status === "Active",
-                            'bg-blue-500 text-white': status === "Scheduled",
-                            'bg-red-400 text-white': status === "Postponed",
-                            'bg-orange-400': status === "Cancelled",
-                        },
-                    )
-                }>
-                {thisOutage.statusText.toUpperCase()}
-            </div>
+            <div className="text-2xl font-semibold text-black">{thisOutage.address}</div>
+            <OutageStatus className="text-xl p-3 font-semibold rounded-xl" statusText={status} />
             {
                 getLatestInfo(thisOutage.latestInformation)
             }

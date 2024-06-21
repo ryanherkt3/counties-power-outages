@@ -6,7 +6,7 @@ export const isOutageActive = (
 ) => {
     const outageStartDate = new Date(dateStr);
     outageStartDate.setHours(startHour);
-    
+
     const currentDate = new Date();
 
     return currentDate.getTime() >= outageStartDate.getTime();
@@ -21,13 +21,13 @@ export const isOutageExpired = (
     const outageEndDate = new Date(dateStr);
     outageEndDate.setHours(endHour);
     outageEndDate.setMinutes(endMinute);
-    
+
     // Set end date to next day if start hour is greater than the end hour,
     // and the end hour is the next morning
     if (startHour >= 12 && endHour < 12) {
         outageEndDate.setDate(outageEndDate.getDate() + 1);
     }
-    
+
     const currentDate = new Date();
 
     return currentDate.getTime() >= outageEndDate.getTime();
@@ -92,9 +92,9 @@ export const getActiveOutages = async () => {
     // TODO deprecate corsproxy until workaround is found
     // const apiUrl = "http://127.0.0.1:8080/api/getoutages";
     const apiUrl = "https://corsproxy.io/?https://app.countiespower.com/api/v300/outages/range/current";
-    const outagesReq = await fetch(apiUrl);
+    const outagesReq = await fetch(apiUrl, {cache: "no-store"});
     const outagesJson = await outagesReq.json();
-    let outages = outagesJson.planned_outages
+    let outages = outagesJson.planned_outages;
     
     outages.map((outage: { expiredOutage: boolean; statusText: string; shutdownTime1: string; ShutdownDateTime: string; }) => {
         const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownTime1, outage.ShutdownDateTime);
@@ -122,7 +122,7 @@ export const getFilteredOutages = (
     if (!query) {
         return outages;
     }
-    
+
     // TODO: add support for searching by status, date etc
     const filteredOutages = outages.filter((outage: OutageData) => {
         return outage.address.toLowerCase().includes(query);
@@ -152,7 +152,7 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     if (totalPages <= 7) {
         return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
-  
+
     // If the current page is among the first 2 pages, show the first 3, an ellipsis, and the last page
     if (currentPage <= 2) {
         return [1, 2, 3, '...', totalPages];
@@ -174,4 +174,4 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   
     // If the current page is among the last 3 pages, show the first 2, an ellipsis, and the last 3 pages
     return [1, 2, '...', totalPages - 2, totalPages - 1, totalPages];
-  };
+};

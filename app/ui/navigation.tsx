@@ -16,6 +16,7 @@ export default function Navigation() {
     
     const toggleMobileNavOpen = () => {
         setMobileNavOpen(!mobileNavOpen);
+        document.querySelector('body')?.classList.toggle('no-scroll', !mobileNavOpen);
     };
 
     // Reset the state of mobileNavOpen when going to another page
@@ -31,6 +32,7 @@ export default function Navigation() {
             setIsMobileScreen(window.innerWidth <= 768);
             if (window.innerWidth > 768 && mobileNavOpen) {
                 setMobileNavOpen(false);
+                document.querySelector('body')?.classList.remove('no-scroll');
             }
         };
 
