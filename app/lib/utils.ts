@@ -113,19 +113,43 @@ export const getActiveOutages = async () => {
     return outages;
 }
 
-// TODO improve filtering (second argument)
+export const getFilteredDate = (date: string) => {
+    const dateYear = date.slice(4); // "/2024"
+    const dateArr = date.replace(dateYear, '').split('/'); // [Day, Month]
+    return `${dateArr[1]}/${dateArr[0]}/${dateYear}`;
+}
+
 export const getFilteredOutages = (
     outages: any,
-    query: string
+    searchParams: any
 ) => {
-    // Return original list if no query
-    if (!query) {
+    const address = searchParams?.query;
+    const status = searchParams?.status;
+    const startDate = searchParams?.startdate;
+    const endDate = searchParams?.enddate;
+
+    // Return original list if no search parameters
+    if (!address && !status && !startDate && !endDate) {
         return outages;
     }
 
-    // TODO: add support for searching by status, date etc
+    const getDateMatch = (outage: OutageData, date: string, isStartDate: boolean) => {
+        date = getFilteredDate(date);
+        
+        if (isStartDate) {
+            return new Date(outage.ShutdownDateTime).getTime() >= new Date(date).getTime();
+        }
+        return new Date(outage.ShutdownDateTime).getTime() <= new Date(date).getTime();
+    }
+
+    // Otherwise return filtered outages
     const filteredOutages = outages.filter((outage: OutageData) => {
-        return outage.address.toLowerCase().includes(query);
+        const matchesAddress = address ? outage.address.toLowerCase().includes(address) : true;
+        const matchesStatus = status ? outage.statusText.toLowerCase().includes(status) : true;
+        const onOrAfterStartDate = startDate ? getDateMatch(outage, startDate, true) : true;        
+        const onOrBeforeEndDate = endDate ? getDateMatch(outage, endDate, false) : true;
+
+        return matchesAddress && matchesStatus && onOrAfterStartDate && onOrBeforeEndDate;
     });
 
     return filteredOutages;

@@ -44,7 +44,11 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         <InformationCircleIcon className="w-7" />
                         <span className="font-semibold">Status</span>
                     </div>
-                    <OutageStatus className="font-medium px-2 py-1 rounded text-center" statusText={data.statusText} />
+                    <OutageStatus 
+                        className="font-medium px-2 py-1 rounded text-center"
+                        statusText={data.statusText}
+                        overrideBg={false}
+                    />
                 </div>
                 {
                     outageSections.map((section) => {

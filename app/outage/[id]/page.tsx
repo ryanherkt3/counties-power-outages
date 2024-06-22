@@ -36,7 +36,11 @@ export default async function OutagePage({ params }: { params: { id: string } })
     return (
         <main className="flex flex-col gap-8 px-4 py-6 text-center">
             <div className="text-2xl font-semibold text-black">{thisOutage.address}</div>
-            <OutageStatus className="text-xl p-3 font-semibold rounded-xl" statusText={status} />
+            <OutageStatus 
+                className="text-xl p-3 font-semibold rounded-xl"
+                statusText={status}
+                overrideBg={false}
+            />
             {
                 getLatestInfo(thisOutage.latestInformation)
             }
