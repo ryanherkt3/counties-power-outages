@@ -88,6 +88,7 @@ export default function FilterType(
                             
                             return (
                                 <span 
+                                    key={propText}
                                     onClick={
                                         () => {
                                             handleFilterChoice(propText)
@@ -159,6 +160,7 @@ function getFilterOptions(type: string, filterOutcome: string, optionalDates: an
         
         options = [
             <FilterDate 
+                key={firstDateString} 
                 dateText={firstDateString} 
                 overrideBg={isSelected}
             />
@@ -174,6 +176,7 @@ function getFilterOptions(type: string, filterOutcome: string, optionalDates: an
             if (nextDay.getTime() < lastDay.getTime()) {    
                 options.push(
                     <FilterDate 
+                        key={dateString} 
                         dateText={dateString} 
                         overrideBg={isSelected}
                     />
@@ -188,6 +191,7 @@ function getFilterOptions(type: string, filterOutcome: string, optionalDates: an
         isSelected = filterOutcome === lastDateString;
         options.push(
             <FilterDate 
+                key={lastDateString} 
                 dateText={lastDateString} 
                 overrideBg={isSelected}
             />

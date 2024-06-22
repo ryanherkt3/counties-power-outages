@@ -47,7 +47,7 @@ export default function Navigation() {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    });
+    }, [isMobileScreenSet, mobileNavOpen]);
 
     const rightLinks = [
         {
