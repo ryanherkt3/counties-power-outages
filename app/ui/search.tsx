@@ -6,7 +6,7 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
-export default function Search({ placeholder, flexGrow }: { placeholder: string, flexGrow: boolean }) {
+export default function Search({ placeholder }: { placeholder: string }) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
@@ -32,16 +32,7 @@ export default function Search({ placeholder, flexGrow }: { placeholder: string,
     }, 300);
 
     return (
-        <div 
-            className={
-                clsx(
-                    'flex relative',
-                    {
-                        'flex-grow': flexGrow
-                    }
-                )
-            }
-        >
+        <div className="relative">
             <label htmlFor="search" className="sr-only">Search</label>
             <input
                 className="peer block w-full rounded-lg p-3 pr-9 text-lg placeholder:text-gray-500 border border-red-600 outline-none"

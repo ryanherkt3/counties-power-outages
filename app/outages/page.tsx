@@ -45,7 +45,9 @@ export default async function OutagesPage({searchParams}: {
                 {searchSection}
                 <div className="flex flex-col gap-12 py-12 my-auto items-center justify-center">
                     <BoltIcon className="w-20 text-red-600" />
-                    <div className="text-xl">Could not find the requested outage, try searching for something else</div>
+                    <div className="text-xl text-center">
+                        Could not find the requested outage, try searching for something else
+                    </div>
                 </div>
             </main>
         )
@@ -75,11 +77,13 @@ export default async function OutagesPage({searchParams}: {
 
 function getSearchSection(startDateSF: string, endDateSF: string, startDateEF: string, endDateEF: string) {
     return (
-        <div className="flex flex-row gap-6">
+        <div className="flex flex-wrap flex-row gap-6">
             <FilterType type="Status" optionalDates="" />
             <FilterType type="Start Date" optionalDates={[startDateSF, endDateSF]} />
             <FilterType type="End Date" optionalDates={[startDateEF, endDateEF]} />
-            <Search flexGrow={true} placeholder="Search outages..." />
+            <div className="flex-grow min-w-full md:min-w-[unset]">
+                <Search placeholder="Search outages..." />
+            </div>
         </div>
     )
 }
