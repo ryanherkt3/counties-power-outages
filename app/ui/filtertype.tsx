@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { JSX, useState } from "react";
 import OutageStatus from "./outagestatus";
 import clsx from "clsx";
 import FilterDate from "./filterdate";
@@ -109,7 +109,7 @@ export default function FilterType(
 function getFilterOptions(type: string, filterOutcome: string, optionalDates: any) {
     const commonOptionClass = "text-xl text-center p-3 font-semibold rounded-xl cursor-pointer";
     
-    let options = [];
+    let options: JSX.Element[] = [];
     
     if (type === 'Status') {
         const unselectedHoverClass = "text-black bg-gray-300 hover:text-white";
