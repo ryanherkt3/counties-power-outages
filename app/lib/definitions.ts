@@ -28,3 +28,12 @@ export type OutageTimes = {
     startTime: string;
     endTime: string;
 };
+
+export type NotificationSub = {
+    outagename: string;
+    lat: number;
+    lng: number;
+    email: string;
+    datesubscribed: string;
+    outageinfo: string | null;
+};
