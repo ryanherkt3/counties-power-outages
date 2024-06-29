@@ -28,31 +28,61 @@ export default async function NotificationsPage({searchParams}: {
 
     const notifsInfo = [
         {
+            key: 'how-notifs-work',
             title: 'How this notification system works',
             listItems: [
-                'Every day, at 12PM NZ time, the system checks if an outage is planned in the area you subscribed to',
-                'If one is, you will receive an email with details about the outage - when it is, the start and end times, and how many customers are affected',
-                'Emails will then be sent three and one days prior to the outage',
+                {
+                    key: 'hnw-step-1',
+                    text: 'Every day, at 12PM NZ time, the system checks if an outage is planned in the area you subscribed to'
+                },
+                {
+                    key: 'hnw-step-2',
+                    text: 'If one is, you will receive an email with details about the outage - when it is, the start and end times, and how many customers are affected'
+                },
+                {
+                    key: 'hnw-step-3',
+                    text: 'Emails will then be sent three and one days prior to the outage'
+                },
             ],
             note: null,
         },
         {
+            key: 'subscribe',
             title: 'How to subscribe to outages in your area',
             listItems: [
-                'Search for your address on ${mapsLink}',
-                'Right click your address and click the first option to copy the coordinates',
-                'In the "Subscribe to Outages" form below, paste the coordinates in the form below with your email address',
-                'You should then get a confirmation email with details of your notification',
+                {
+                    key: 'sub-step-1',
+                    text: 'Search for your address on ${mapsLink}'
+                },
+                {
+                    key: 'sub-step-2',
+                    text: 'Right click your address and click the first option to copy the coordinates'
+                },
+                {
+                    key: 'sub-step-3',
+                    text: 'In the "Subscribe to Outages" form below, paste the coordinates in the form below with your email address'
+                },
+                {
+                    key: 'sub-step-4',
+                    text: 'You should then get a confirmation email with details of your notification'
+                }
             ],
-            note: 'For the latitude, remove the minus sign from the input',
+            note: 'For the latitude, remove the minus sign from the input'
         },
         {
             // TODO add support for un-subbing via email
             // By link: /notifications?email={email-address} or create a dedicated page
+            key: 'unsubscribe',
             title: 'How to unsubscribe',
             listItems: [
-                'In the "Active Notifications" section below, search for any notification subscriptions associated to your email address',
-                'Click the "rubbish bin" icon next to the subscription you want to unsubscribe from',
+                {
+                    key: 'unsub-step-1',
+                    text: 'In the "Active Notifications" section below, search for any notification subscriptions associated to your email address'
+                },
+                {
+                    key: 'unsub-step-2',
+                    text: 'Click the "rubbish bin" icon next to the subscription you want to unsubscribe from'
+                }
             ],
             note: null,
         },
@@ -64,19 +94,26 @@ export default async function NotificationsPage({searchParams}: {
                 {
                     notifsInfo.map((item) => {
                         return (
-                            <div className="flex flex-col gap-2">
+                            <div 
+                                key={item.key}
+                                className="flex flex-col gap-2"
+                            >
                                 <div className="text-lg font-semibold">{item.title}</div>
                                 <ol type="1" className="list-decimal list-inside">
                                     {
                                         item.listItems.map((listItem) => {
-                                            if (listItem.includes('${mapsLink}')) {
+                                            if (listItem.text.includes('${mapsLink}')) {
                                                 return (
-                                                    <li>{listItem.replace('${mapsLink}', '')} {mapsLink}</li>
+                                                    <li key={listItem.key}>
+                                                        {listItem.text.replace('${mapsLink}', '')} {mapsLink}
+                                                    </li>
                                                 )
                                             }
 
                                             return (
-                                                <li>{listItem}</li>
+                                                <li key={listItem.key}>
+                                                    {listItem.text}
+                                                </li>
                                             )
                                         })
                                     }
@@ -107,7 +144,7 @@ export default async function NotificationsPage({searchParams}: {
             >
                 {
                     subscriptions.map((subscription: NotificationSub) => {
-                        return <NotificationCard data={subscription} />
+                        return <NotificationCard key={subscriptions.indexOf(subscription)} data={subscription} />
                     })
                 }
             </div>
