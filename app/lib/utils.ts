@@ -89,7 +89,7 @@ export const getTimesAndActiveOutage = (
 }
 
 export const getActiveOutages = async () => {
-    const apiUrl = "http://outages.ryanherkt.com/api/getoutages";
+    const apiUrl = "https://outages.ryanherkt.com/api/getoutages";
     const outagesReq = await fetch(apiUrl, {cache: "no-store"});
     const outagesJson = await outagesReq.json();
     let outages = outagesJson.planned_outages;
