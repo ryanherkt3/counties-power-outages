@@ -2,9 +2,10 @@ import Search from "../ui/search";
 import NotifSubForm from "../ui/notif-sub-form";
 import { Metadata } from "next";
 import { getSubscriptions } from "../lib/actions";
-import { NotificationSub } from "../lib/definitions";
+import { NotificationSub, OutageData } from "../lib/definitions";
 import NotificationCard from "../ui/notif-sub-card";
 import clsx from "clsx";
+import { coordIsInOutageZone, getActiveOutages } from "../lib/utils";
 
 export const metadata: Metadata = {
     title: 'Notifications',
@@ -17,6 +18,7 @@ export default async function NotificationsPage({searchParams}: {
 }) {
     const query = searchParams?.email || '';
     const subscriptions = await getSubscriptions(query);
+    const outages = await getActiveOutages();
     
     const mapsLink = <a 
         className="visited:text-purple-500 hover:text-blue-500 text-blue-500"
@@ -144,7 +146,30 @@ export default async function NotificationsPage({searchParams}: {
             >
                 {
                     subscriptions.map((subscription: NotificationSub) => {
-                        return <NotificationCard key={subscriptions.indexOf(subscription)} data={subscription} />
+                        const point = {
+                            lat: subscription.lat,
+                            lng: subscription.lng
+                        };
+
+                        let outageIds = '';
+                        outages.map((outage: OutageData) => {
+                            const outageCoords = {
+                                lat: outage.lat,
+                                lng: outage.lng
+                            };
+                            
+                            if (coordIsInOutageZone(point, outage.hull, outageCoords)) {
+                                outageIds = `${outageIds.length ? `${outageIds},` : ''}${outage.id}`;
+                            }
+                        })
+                        
+                        return (
+                            <NotificationCard 
+                                key={subscriptions.indexOf(subscription)} 
+                                data={subscription} 
+                                plannedOutages={outageIds} 
+                            />
+                        );
                     })
                 }
             </div>

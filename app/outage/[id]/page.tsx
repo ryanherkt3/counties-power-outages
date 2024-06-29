@@ -52,7 +52,7 @@ export default async function OutagePage({ params }: { params: { id: string } })
                                 key={section.key} 
                                 className='flex md:flex-col gap-4 flex-row justify-between text-lg font-normal'
                             >
-                                <span className="font-semibold text-left">{section.title}</span>
+                                <span className="font-semibold text-left md:text-center">{section.title}</span>
                                 <span>{section.value}</span>
                             </div>
                         );

@@ -1,12 +1,12 @@
 'use client';
 
-import { AtSymbolIcon, CalendarIcon, MapPinIcon, MinusIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { AtSymbolIcon, BoltIcon, CalendarIcon, MapPinIcon, MinusIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { NotificationSub } from "../lib/definitions";
 import { useState } from "react";
 import clsx from "clsx";
-import { sendEmailNotification } from '../lib/actions';
+import Link from "next/link";
 
-export default function NotificationCard({ data }: { data: NotificationSub; }) {
+export default function NotificationCard({ data, plannedOutages }: { data: NotificationSub; plannedOutages: String}) {
     const [showContents, setShowContents] = useState(true);
 
     const { lat, lng, datesubscribed, email } = data;
@@ -28,8 +28,16 @@ export default function NotificationCard({ data }: { data: NotificationSub; }) {
             icon: 'CalendarIcon',
             title: 'Date Subscribed',
             value: datesubscribed
+        },
+        {
+            key: 'location-planned-outage',
+            icon: 'BoltIcon',
+            title: 'Planned Outages in Area',
+            value: ''
         }
     ];
+
+    const outagesArray = plannedOutages.split(',');
 
     return (
         <div className='flex flex-col gap-4 shrink-0 p-4 rounded-lg border border-gray-700' >
@@ -63,7 +71,29 @@ export default function NotificationCard({ data }: { data: NotificationSub; }) {
                                     }
                                     <span className="font-semibold">{section.title}</span>
                                 </div>
-                                <span>{section.value}</span>
+                                {
+                                    section.key === 'location-planned-outage' ?
+                                        outagesArray.map((outage) => {
+                                            const isLastOutage = outagesArray.indexOf(outage) < outagesArray.length - 1;
+                                            return (
+                                                <Link 
+                                                    key={outage}
+                                                    href={`outage/${outage}`}
+                                                    className={
+                                                        clsx(
+                                                            'hover:text-red-600',
+                                                            {
+                                                                'mr-1': !isLastOutage
+                                                            }
+                                                        )
+                                                    }
+                                                >
+                                                    {outage}
+                                                </Link>
+                                            )
+                                        }) :
+                                        <span>{section.value}</span>
+                                }
                             </div>
                         );
                     })
@@ -110,6 +140,9 @@ function getSectionIcon(icon: string) {
     }
     if (icon === 'MapPinIcon') {
         return <MapPinIcon className="w-7" />;
+    }
+    if (icon === 'BoltIcon') {
+        return <BoltIcon className="w-7" />;
     }
 
     return null;

@@ -5,8 +5,6 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { unstable_noStore as noStore } from 'next/cache';
 import { NotificationSub } from './definitions';
-import { Resend } from 'resend';
-import NotificationEmail from '../ui/notif-email'
 
 const FormSchema = z.object({
     name: z.string()
@@ -97,31 +95,5 @@ export async function deleteSubscription(subscription: NotificationSub) {
     catch(error) {
         console.error('Database Error:', error);
         return Promise.resolve(false);
-    }
-}
-
-// TODO integrate with cron job
-export async function sendEmailNotification(data: NotificationSub) {
-    try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        
-        // TODO tidy up subject
-        await resend.emails.send({
-            from: "Counties Power Outages <notifications@outages.ryanherkt.com>",
-            to: data.email,
-            subject: "Upcoming Power Outage",
-            react: NotificationEmail({data})
-        });
-        return {
-            error: null,
-            success: true
-        }
-    } 
-    catch (error) {
-        console.log(error);
-        return {
-            error: (error as Error).message,
-            success: false
-        };
     }
 }
