@@ -1,5 +1,3 @@
-# python app/api/outages.py in console to run
-
 import requests
 
 from flask import Flask
