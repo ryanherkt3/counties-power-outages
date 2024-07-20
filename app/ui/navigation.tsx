@@ -123,5 +123,5 @@ function getNavIcon(isMobileScreen: boolean, mobileNavOpen: boolean, toggleMobil
         return <Bars3Icon className="cursor-pointer w-8" onClick={toggleMobileNavOpen} />
     }
 
-    return false;
+    return null;
 }

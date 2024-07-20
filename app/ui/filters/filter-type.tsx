@@ -8,7 +8,14 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
 export default function FilterType(
-    { type, optionalDates }: { type: 'Status' | 'Start Date' | 'End Date'; optionalDates: any}
+    { 
+        type,
+        optionalDates
+    }: 
+    { 
+        type: 'Status' | 'Start Date' | 'End Date';
+        optionalDates: Array<string> | undefined;
+    }
 ) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
@@ -106,7 +113,7 @@ export default function FilterType(
     );
 }
 
-function getFilterOptions(type: string, filterOutcome: string, optionalDates: any) {
+function getFilterOptions(type: string, filterOutcome: string, optionalDates: Array<string> | undefined) {
     const commonOptionClass = "text-xl text-center p-3 font-semibold rounded-xl cursor-pointer";
     
     let options: JSX.Element[] = [];

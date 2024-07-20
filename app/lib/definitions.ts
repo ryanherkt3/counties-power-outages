@@ -28,3 +28,11 @@ export type OutageTimes = {
     startTime: string;
     endTime: string;
 };
+
+export type SearchData = {
+    page: string | undefined;
+    query: string | undefined;
+    status: string | undefined;
+    startdate: string | undefined;
+    enddate: string | undefined;
+};

@@ -8,7 +8,7 @@ export default function CurrentOutages({
     currentPageIsLast,
   }: {
     currentPage: number;
-    outages: any;
+    outages: Array<OutageData>;
     outagesPerPage: number;
     currentPageIsLast: boolean;
   }

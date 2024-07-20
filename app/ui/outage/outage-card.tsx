@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { OutageData } from "../../lib/definitions";
-import { CalendarIcon, ClockIcon, InformationCircleIcon, MinusIcon, PlusIcon, UserIcon } from '@heroicons/react/24/outline';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import clsx from "clsx";
 import LatestInfo from "../latest-info";
 import { useState } from "react";
 import { getOutageSections } from "../../lib/outagesections";
 import OutageStatus from "./outage-status";
+import CustomIcon from "../custom-icon";
 
 export default function OutageCard({ data }: { data: OutageData; }) {
     const [showContents, setShowContents] = useState(true);
@@ -27,9 +28,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                 <div className="cursor-pointer" onClick={
                     () => setShowContents(!showContents)
                 }>
-                    {
-                        getPMIcon(showContents)
-                    }
+                    <CustomIcon icon={showContents ? 'MinusIcon' : 'PlusIcon' } iconClass={"w-8"} />
                 </div>
             </div>
 
@@ -58,9 +57,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                                 className='flex md:flex-row md:justify-between gap-2 flex-col text-lg font-normal'
                             >
                                 <div className="flex flex-row gap-2">
-                                    {
-                                        getCardIcon(section.icon)
-                                    }
+                                    <CustomIcon icon={section.icon} iconClass={"w-7"} />
                                     <span className="font-semibold">{section.title}</span>
                                 </div>
                                 <span className={ clsx({ 'line-through': section.key === 'postponed-date' }) }>
@@ -74,26 +71,4 @@ export default function OutageCard({ data }: { data: OutageData; }) {
             </div>            
         </div>
     );
-}
-
-function getPMIcon(showContents: boolean) {
-    if (showContents) {
-        return <MinusIcon className="w-8" />;
-    }
-
-    return <PlusIcon className="w-8" />;
-}
-
-function getCardIcon(icon: string) {
-    if (icon === 'CalendarIcon') {
-        return <CalendarIcon className="w-7" />;
-    }
-    if (icon === 'ClockIcon') {
-        return <ClockIcon className="w-7" />;
-    }
-    if (icon === 'UserIcon') {
-        return <UserIcon className="w-7" />;
-    }
-
-    return null;
 }

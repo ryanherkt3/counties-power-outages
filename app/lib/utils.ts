@@ -1,4 +1,4 @@
-import { OutageData } from "./definitions";
+import { OutageData, SearchData } from "./definitions";
 
 export const isOutageActive = (
     dateStr: string,
@@ -118,8 +118,8 @@ export const getFilteredDate = (date: string) => {
 }
 
 export const getFilteredOutages = (
-    outages: any,
-    searchParams: any
+    outages: Array<OutageData>,
+    searchParams: SearchData
 ) => {
     const address = searchParams?.query;
     const status = searchParams?.status;
@@ -154,7 +154,7 @@ export const getFilteredOutages = (
 }
 
 export const getOutageByID = (
-    outages: any,
+    outages: Array<OutageData>,
     id: string
 ) => {
     // Return original list if no query

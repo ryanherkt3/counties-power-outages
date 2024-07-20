@@ -1,5 +1,5 @@
-import { BoltIcon, BellAlertIcon, ClipboardDocumentListIcon } from "@heroicons/react/24/solid";
 import { Metadata } from "next";
+import CustomIcon from "./ui/custom-icon";
 
 export const metadata: Metadata = {
     title: 'Home | Counties Power Outages App',
@@ -38,9 +38,7 @@ export default function HomePage() {
                 pageSegments.map((segments) => {
                     return (
                         <div key={segments.key} className="flex flex-row gap-6 items-center">
-                            {
-                                getContentIcon(segments.icon)
-                            }
+                            <CustomIcon icon={segments.icon} iconClass={"w-12 h-12 flex-shrink-0 text-red-600"} />
                             <div className="text-lg">{segments.content}</div>
                         </div>
                     )
@@ -48,21 +46,4 @@ export default function HomePage() {
             }
         </div>
     );
-}
-
-// TODO move this and similar to utils.js
-function getContentIcon(icon: string) {
-    const iconClass = "w-12 h-12 flex-shrink-0 text-red-600";
-
-    if (icon === 'ClipboardDocumentListIcon') {
-        return <ClipboardDocumentListIcon className={iconClass}></ClipboardDocumentListIcon>;        
-    }
-    if (icon === 'BoltIcon') {
-        return <BoltIcon className={iconClass}></BoltIcon>;
-    }
-    if (icon === 'BellAlertIcon') {
-        return <BellAlertIcon className={iconClass}></BellAlertIcon>;
-    }
-
-    return null;
 }
