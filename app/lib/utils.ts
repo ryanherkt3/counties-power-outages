@@ -119,7 +119,7 @@ export const getFilteredDate = (date: string) => {
 
 export const getFilteredOutages = (
     outages: Array<OutageData>,
-    searchParams: SearchData
+    searchParams: any // TODO fix type (?)
 ) => {
     const address = searchParams?.query;
     const status = searchParams?.status;
@@ -157,11 +157,6 @@ export const getOutageByID = (
     outages: Array<OutageData>,
     id: string
 ) => {
-    // Return original list if no query
-    if (!id) {
-        return false;
-    }
-    
     const outage = outages.filter((outage: OutageData) => {
         return outage.id === id;
     });

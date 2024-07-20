@@ -14,7 +14,7 @@ export default function FilterType(
     }: 
     { 
         type: 'Status' | 'Start Date' | 'End Date';
-        optionalDates: Array<string> | undefined;
+        optionalDates: Array<string> | null;
     }
 ) {
     const searchParams = useSearchParams();
@@ -113,7 +113,7 @@ export default function FilterType(
     );
 }
 
-function getFilterOptions(type: string, filterOutcome: string, optionalDates: Array<string> | undefined) {
+function getFilterOptions(type: string, filterOutcome: string, optionalDates: Array<string> | null) {
     const commonOptionClass = "text-xl text-center p-3 font-semibold rounded-xl cursor-pointer";
     
     let options: JSX.Element[] = [];

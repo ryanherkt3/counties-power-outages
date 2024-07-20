@@ -11,15 +11,20 @@ export const metadata: Metadata = {
     title: 'Outages List',
 };
 
-export default async function OutagesPage({searchParams}: {
-    searchParams?: {
-        query?: string;
-        page?: string;
-        status?: string;
-        startdate?: string;
-        enddate?: string;
-    };
-}) {
+export default async function OutagesPage(
+    {
+        searchParams
+    }: 
+    {
+        searchParams?: {
+            query?: string;
+            page?: string;
+            status?: string;
+            startdate?: string;
+            enddate?: string;
+        };
+    }
+) {
     const outages = await getActiveOutages();
     const currentPage = Number(searchParams?.page) || 1;
 
@@ -78,7 +83,7 @@ export default async function OutagesPage({searchParams}: {
 function getSearchSection(startDateSF: string, endDateSF: string, startDateEF: string, endDateEF: string) {
     return (
         <div className="flex flex-wrap flex-row gap-6">
-            <FilterType type="Status" optionalDates="" />
+            <FilterType type="Status" optionalDates={null} />
             <FilterType type="Start Date" optionalDates={[startDateSF, endDateSF]} />
             <FilterType type="End Date" optionalDates={[startDateEF, endDateEF]} />
             <div className="flex-grow min-w-full md:min-w-[unset]">
