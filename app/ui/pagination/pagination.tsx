@@ -4,8 +4,8 @@ import clsx from 'clsx';
 import { usePathname, useSearchParams } from 'next/navigation';
 import React from 'react';
 import Link from 'next/link';
-import { generatePagination } from '../lib/utils';
-import PageArrow from './pagearrow';
+import { generatePagination } from '../../lib/utils';
+import PageArrow from './page-arrow';
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
     // Search parameters

@@ -2,7 +2,18 @@
 
 import clsx from "clsx";
 
-export default function OutageStatus({ className, statusText, overrideBg }: { className: string; statusText: string; overrideBg: boolean }) {
+export default function OutageStatus(
+    { 
+        className,
+        statusText,
+        overrideBg
+    }: 
+    { 
+        className: string;
+        statusText: string;
+        overrideBg: boolean 
+    }
+) {
     return (
         <div 
             className={

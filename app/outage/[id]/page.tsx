@@ -1,9 +1,10 @@
 import { getActiveOutages, getOutageByID } from "@/app/lib/utils";
 import notFound from "./not-found";
-import getLatestInfo from "@/app/ui/latestinfo";
+import LatestInfo from "@/app/ui/latest-info";
 import { Metadata } from "next";
 import { getOutageSections } from "@/app/lib/outagesections";
-import OutageStatus from "@/app/ui/outagestatus";
+import OutageStatus from "@/app/ui/outage/outage-status";
+import { OutageData } from "@/app/lib/definitions";
 
 type Props = {
     params: { id: string }
@@ -21,7 +22,7 @@ export default async function OutagePage({ params }: { params: { id: string } })
     const id = params.id;
 
     const outages = await getActiveOutages();
-    const thisOutage = getOutageByID(outages, id)[0];
+    const thisOutage: OutageData = getOutageByID(outages, id)[0];
 
     // Show "not found" page if this specific outage doesn't exist
     if (!thisOutage) {
@@ -41,9 +42,7 @@ export default async function OutagePage({ params }: { params: { id: string } })
                 statusText={status}
                 overrideBg={false}
             />
-            {
-                getLatestInfo(thisOutage.latestInformation)
-            }
+            <LatestInfo latestInformation={thisOutage.latestInformation} />
             <div className="flex md:flex-row md:justify-between flex-col gap-4">
                 {
                     outageSections.map((section) => {

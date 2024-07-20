@@ -1,5 +1,5 @@
-import { OutageData } from "../lib/definitions";
-import OutageCard from "./outagecard";
+import { OutageData } from "../../lib/definitions";
+import OutageCard from "./outage-card";
 
 export default function CurrentOutages({
     currentPage,

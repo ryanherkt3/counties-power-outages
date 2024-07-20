@@ -1,13 +1,13 @@
 'use client';
 
 import Link from "next/link";
-import { OutageData } from "../lib/definitions";
+import { OutageData } from "../../lib/definitions";
 import { CalendarIcon, ClockIcon, InformationCircleIcon, MinusIcon, PlusIcon, UserIcon } from '@heroicons/react/24/outline';
 import clsx from "clsx";
-import getLatestInfo from "./latestinfo";
+import LatestInfo from "../latest-info";
 import { useState } from "react";
-import { getOutageSections } from "../lib/outagesections";
-import OutageStatus from "./outagestatus";
+import { getOutageSections } from "../../lib/outagesections";
+import OutageStatus from "./outage-status";
 
 export default function OutageCard({ data }: { data: OutageData; }) {
     const [showContents, setShowContents] = useState(true);
@@ -70,9 +70,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         );
                     })
                 }
-                {
-                    getLatestInfo(data.latestInformation)
-                }
+                <LatestInfo latestInformation={data.latestInformation} />
             </div>            
         </div>
     );

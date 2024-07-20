@@ -1,9 +1,9 @@
 'use client';
 
 import { JSX, useState } from "react";
-import OutageStatus from "./outagestatus";
+import OutageStatus from "../outage/outage-status";
 import clsx from "clsx";
-import FilterDate from "./filterdate";
+import FilterDate from "./filter-date";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
