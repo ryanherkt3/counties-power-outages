@@ -44,7 +44,7 @@ export const getTimeStrings = (
         return `${hourlySegment}:${minuteSegment} PM`;
     }
 
-    hourlySegment = parseInt(hourlySegment) === 12 ? '12' : `${parseInt(hourlySegment)}`;
+    hourlySegment = parseInt(hourlySegment) === 0 ? '12' : `${parseInt(hourlySegment)}`;
     return `${hourlySegment}:${minuteSegment} AM`;
 }
 
@@ -94,7 +94,7 @@ export const getActiveOutages = async () => {
     const outagesJson = await outagesReq.json();
     let outages = outagesJson.planned_outages;
     
-    outages.map((outage: { expiredOutage: boolean; statusText: string; shutdownTime1: string; ShutdownDateTime: string; }) => {
+    outages.map((outage: OutageData) => {
         const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownTime1, outage.ShutdownDateTime);
         outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 

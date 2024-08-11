@@ -6,6 +6,7 @@ import clsx from "clsx";
 import FilterDate from "./filter-date";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
+import CustomIcon from "../custom-icon";
 
 export default function FilterType(
     { 
@@ -67,7 +68,7 @@ export default function FilterType(
         <div 
             className={
                 clsx(
-                    'flex flex-row items-center gap-2 p-3 bg-red-600 hover:bg-red-800 text-white rounded-xl relative',
+                    'flex flex-row items-center gap-2 p-3 bg-red-600 hover:bg-red-800 text-white rounded-xl',
                     {
                         'cursor-pointer': hidePicker,
                         'cursor-default': !hidePicker,
@@ -82,31 +83,46 @@ export default function FilterType(
             }
             <div 
                 className={
-                    `flex flex-row fixed w-full h-full bottom-0 left-0 right-0 items-center justify-center bg-[rgba(0,0,0,0.5)] z-20 ${hidePicker ? 'hidden' : ''}`
+                    `fixed flex top-0 left-0 bottom-0 w-[100%] h-[100%] z-20 bg-[rgba(0,0,0,0.5)] ${hidePicker ? 'hidden' : ''}`
+                }
+                onClick={
+                    (e) => { e.stopPropagation() }
                 }
             >
-                <div className="flex flex-col gap-4 bg-white min-w-[50%] max-h-[50%] overflow-y-auto p-6">
-                    <span className="text-center text-black text-2xl font-semibold">Choose the {type}</span>
-                    {
-                        filterOptions.map((option) => {
-                            const propText = type.includes('Date') ?
-                                option.props.dateText :
-                                option.props.statusText;
-                            
-                            return (
-                                <span 
-                                    key={propText}
-                                    onClick={
-                                        () => {
-                                            handleFilterChoice(propText)
+                <div className='w-[50%] h-fit max-h-[60%] overflow-y-auto  m-auto'>
+                    <div 
+                        className="flex flex-col gap-4 bg-white p-6"
+                        onClick={
+                            (e) => { e.stopPropagation() }
+                        }
+                    >
+                        <div className="flex flex-row gap-2 justify-between text-black">
+                            <span className="text-center text-2xl font-semibold">Choose the {type}</span>
+                            <button onClick={ showFilterPicker }>
+                                <CustomIcon icon={"XMarkIcon"} iconClass={"w-7 cursor-pointer"} />
+                            </button>
+                        </div>
+                        {
+                            filterOptions.map((option) => {
+                                const propText = type.includes('Date') ?
+                                    option.props.dateText :
+                                    option.props.statusText;
+                                
+                                return (
+                                    <span 
+                                        key={propText}
+                                        onClick={
+                                            () => {
+                                                handleFilterChoice(propText)
+                                            }
                                         }
-                                    }
-                                >
-                                    {option}
-                                </span>
-                            )
-                        })
-                    }
+                                    >
+                                        {option}
+                                    </span>
+                                )
+                            })
+                        }
+                    </div>
                 </div>
             </div>
         </div>
