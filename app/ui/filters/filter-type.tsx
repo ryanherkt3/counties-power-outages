@@ -89,7 +89,7 @@ export default function FilterType(
                     (e) => { e.stopPropagation() }
                 }
             >
-                <div className='w-[50%] h-fit max-h-[60%] overflow-y-auto  m-auto'>
+                <div className='sm:w-[50%] w-[80%] h-fit max-h-[60%] overflow-y-auto  m-auto'>
                     <div 
                         className="flex flex-col gap-4 bg-white p-6"
                         onClick={
