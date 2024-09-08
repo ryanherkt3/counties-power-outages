@@ -18,7 +18,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
     return (
         <div className='flex flex-col gap-4 shrink-0 p-4 rounded-lg border border-gray-700' >
             <div className='flex flex-row justify-between'>
-                <Link 
+                <Link
                     key={data.id}
                     href={outageHref}
                     className="text-2xl font-semibold hover:text-red-400"
@@ -32,18 +32,18 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                 </div>
             </div>
 
-            <div className={ 
+            <div className={
                 clsx(
                     'flex flex-col gap-4 shrink-0',
                     { 'hidden': !showContents }
-                ) 
+                )
             }>
                 <div className='flex md:flex-row md:justify-between gap-2 md:items-center flex-col text-lg font-normal'>
                     <div className="flex flex-row gap-2">
                         <InformationCircleIcon className="w-7" />
                         <span className="font-semibold">Status</span>
                     </div>
-                    <OutageStatus 
+                    <OutageStatus
                         className="font-medium px-2 py-1 rounded text-center"
                         statusText={data.statusText}
                         overrideBg={false}
@@ -52,8 +52,8 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                 {
                     outageSections.map((section) => {
                         return (
-                            <div 
-                                key={section.key} 
+                            <div
+                                key={section.key}
                                 className='flex md:flex-row md:justify-between gap-2 flex-col text-lg font-normal'
                             >
                                 <div className="flex flex-row gap-2">
@@ -68,7 +68,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                     })
                 }
                 <LatestInfo latestInformation={data.latestInformation} />
-            </div>            
+            </div>
         </div>
     );
 }

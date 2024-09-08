@@ -31,4 +31,4 @@ export default function CustomIcon({ icon, iconClass }: { icon: string; iconClas
     }
 
     return null;
-};
+}

@@ -13,7 +13,7 @@ export default function Navigation() {
     const [mobileNavOpen, setMobileNavOpen] = useState(false);
     const [isMobileScreen, setIsMobileScreen] = useState(false);
     const [isMobileScreenSet, setIsMobileScreenSet] = useState(false);
-    
+
     const toggleMobileNavOpen = () => {
         setMobileNavOpen(!mobileNavOpen);
         document.querySelector('body')?.classList.toggle('no-scroll', !mobileNavOpen);
@@ -39,7 +39,7 @@ export default function Navigation() {
         if (!isMobileScreenSet) {
             setIsMobileScreen(window.innerWidth <= 768);
         }
-        setIsMobileScreenSet(true);    
+        setIsMobileScreenSet(true);
 
         window.addEventListener('resize', handleResize);
 
@@ -58,7 +58,7 @@ export default function Navigation() {
             href: '/notifications',
             linkName: 'Notifications'
         }
-    ]
+    ];
 
     return (
         <div className="flex sticky top-0 h-20 p-4 items-center justify-between border-b border-gray-400 bg-white z-10">
@@ -78,7 +78,7 @@ export default function Navigation() {
                 </Link>
             </div>
             <div className={
-                clsx (
+                clsx(
                     'md:flex md:flex-row md:gap-3',
                     {
                         'hidden': !mobileNavOpen,
@@ -104,7 +104,7 @@ export default function Navigation() {
                             >
                                 <span>{rightLink.linkName}</span>
                             </Link>
-                        )
+                        );
                     })
                 }
             </div>
@@ -118,9 +118,9 @@ export default function Navigation() {
 function getNavIcon(isMobileScreen: boolean, mobileNavOpen: boolean, toggleMobileNavOpen: any) {
     if (isMobileScreen) {
         if (mobileNavOpen) {
-            return <XMarkIcon className="cursor-pointer w-8" onClick={toggleMobileNavOpen} />
+            return <XMarkIcon className="cursor-pointer w-8" onClick={toggleMobileNavOpen} />;
         }
-        return <Bars3Icon className="cursor-pointer w-8" onClick={toggleMobileNavOpen} />
+        return <Bars3Icon className="cursor-pointer w-8" onClick={toggleMobileNavOpen} />;
     }
 
     return null;

@@ -30,7 +30,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
             />
             {
                 paginationNumber.map((pageNumber) => {
-                    return getPaginationItem(pageNumber, currentPage, createPageURL)
+                    return getPaginationItem(pageNumber, currentPage, createPageURL);
                 })
             }
             <PageArrow
@@ -39,8 +39,8 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
                 isDisabled={currentPage >= totalPages}
             />
         </div>
-    )
-};
+    );
+}
 
 function getPaginationItem(pageNumber: number | string, currentPage: number, createPageURL: Function) {
     if (pageNumber === '...') {
@@ -48,22 +48,24 @@ function getPaginationItem(pageNumber: number | string, currentPage: number, cre
             <div className='text-sm font-medium rounded-full p-3'>
                 {pageNumber}
             </div>
-        )
+        );
     }
 
+    const fontPaddingClasses = 'text-xs p-2 md:text-sm md:p-3 font-medium';
+
     return (
-        <Link 
+        <Link
             href={createPageURL(pageNumber)}
             key={pageNumber}
             className={
                 clsx(
-                    'text-xs p-2 md:text-sm md:p-3 font-medium rounded-full self-center hover:bg-red-400 hover:text-white',
+                    `${fontPaddingClasses} rounded-full self-center hover:bg-red-400 hover:text-white`,
                     {
                         'bg-red-600 text-white': currentPage === pageNumber,
                     },
                 )
             }
-            >
+        >
             {pageNumber}
         </Link>
     );

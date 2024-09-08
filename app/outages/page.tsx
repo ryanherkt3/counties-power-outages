@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default async function OutagesPage(
     {
         searchParams
-    }: 
+    }:
     {
         searchParams?: {
             query?: string;
@@ -40,7 +40,7 @@ export default async function OutagesPage(
     const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.ShutdownDateTime || '';
     const startDateEF = searchParams?.enddate ? getFilteredDate(searchParams?.enddate) : endDate;
     const endDateSF = searchParams?.startdate ? getFilteredDate(searchParams?.startdate) : startDate;
-    
+
     const searchSection = getSearchSection(startDate, startDateEF, endDateSF, endDate);
 
     // Early return if there are no outages to report
@@ -55,21 +55,21 @@ export default async function OutagesPage(
                     </div>
                 </div>
             </main>
-        )
+        );
     }
 
     // Redirect user to first page if they enter an invalid (or no) page number
     if (currentPage > totalPages || currentPage <= 0) {
         const params = new URLSearchParams(searchParams);
         params.set('page', '1'); // reset to page 1
-        
+
         redirect(`/outages/?${params.toString()}`);
     }
 
     return (
         <main className="flex flex-col gap-6 px-4 py-6 page-min-height">
             {searchSection}
-            <CurrentOutages 
+            <CurrentOutages
                 currentPage={currentPage}
                 outages={filteredOutages}
                 outagesPerPage={outagesPerPage}
@@ -90,5 +90,5 @@ function getSearchSection(startDateSF: string, endDateSF: string, startDateEF: s
                 <Search placeholder="Search outages..." />
             </div>
         </div>
-    )
+    );
 }

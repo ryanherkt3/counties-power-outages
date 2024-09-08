@@ -9,11 +9,11 @@ import { useDebouncedCallback } from "use-debounce";
 import CustomIcon from "../custom-icon";
 
 export default function FilterType(
-    { 
+    {
         type,
         optionalDates
-    }: 
-    { 
+    }:
+    {
         type: 'Status' | 'Start Date' | 'End Date';
         optionalDates: Array<string> | null;
     }
@@ -31,7 +31,7 @@ export default function FilterType(
 
     const [hidePicker, setHidePicker] = useState(true);
     const filterOptions = getFilterOptions(type, filterOutcome, optionalDates);
-    
+
     const showFilterPicker = () => {
         setHidePicker(!hidePicker);
         document.querySelector('body')?.classList.toggle('no-scroll', hidePicker);
@@ -41,10 +41,10 @@ export default function FilterType(
         if (!filterOutcome) {
             return null;
         }
-        
+
         return (
             <div>{filterOutcome}</div>
-        )
+        );
     };
 
     const handleFilterChoice = useDebouncedCallback((propText) => {
@@ -57,15 +57,17 @@ export default function FilterType(
         if (propText) {
             params.set(thisParam, propText.toLowerCase());
         }
-        else{
+        else {
             params.delete(thisParam);
         }
-        
+
         replace(`${pathname}?${params.toString()}`);
     }, 300);
-    
+
+    const positionClasses = 'fixed flex top-0 left-0 bottom-0 w-[100%] h-[100%] z-20';
+
     return (
-        <div 
+        <div
             className={
                 clsx(
                     'flex flex-row items-center gap-2 p-3 bg-red-600 hover:bg-red-800 text-white rounded-xl',
@@ -81,19 +83,21 @@ export default function FilterType(
             {
                 getFilterOutcomeDiv()
             }
-            <div 
-                className={
-                    `fixed flex top-0 left-0 bottom-0 w-[100%] h-[100%] z-20 bg-[rgba(0,0,0,0.5)] ${hidePicker ? 'hidden' : ''}`
-                }
+            <div
+                className={`${positionClasses} z-20 bg-[rgba(0,0,0,0.5)] ${hidePicker ? 'hidden' : ''}`}
                 onClick={
-                    (e) => { e.stopPropagation() }
+                    (e) => {
+                        e.stopPropagation();
+                    }
                 }
             >
-                <div className='sm:w-[50%] w-[80%] h-fit max-h-[60%] overflow-y-auto  m-auto'>
-                    <div 
+                <div className='sm:w-[50%] w-[80%] h-fit max-h-[60%] overflow-y-auto m-auto'>
+                    <div
                         className="flex flex-col gap-4 bg-white p-6"
                         onClick={
-                            (e) => { e.stopPropagation() }
+                            (e) => {
+                                e.stopPropagation();
+                            }
                         }
                     >
                         <div className="flex flex-row gap-2 justify-between text-black">
@@ -107,19 +111,19 @@ export default function FilterType(
                                 const propText = type.includes('Date') ?
                                     option.props.dateText :
                                     option.props.statusText;
-                                
+
                                 return (
-                                    <span 
+                                    <span
                                         key={propText}
                                         onClick={
                                             () => {
-                                                handleFilterChoice(propText)
+                                                handleFilterChoice(propText);
                                             }
                                         }
                                     >
                                         {option}
                                     </span>
-                                )
+                                );
                             })
                         }
                     </div>
@@ -131,9 +135,9 @@ export default function FilterType(
 
 function getFilterOptions(type: string, filterOutcome: string, optionalDates: Array<string> | null) {
     const commonOptionClass = "text-xl text-center p-3 font-semibold rounded-xl cursor-pointer";
-    
+
     let options: JSX.Element[] = [];
-    
+
     if (type === 'Status') {
         const unselectedHoverClass = "text-black bg-gray-300 hover:text-white";
 
@@ -142,17 +146,17 @@ function getFilterOptions(type: string, filterOutcome: string, optionalDates: Ar
                 text: 'Active',
                 selectedClass: `${commonOptionClass} hover:bg-green-600`,
                 unselectedClass: `${commonOptionClass} ${unselectedHoverClass} hover:bg-green-600`,
-            }, 
+            },
             {
                 text: 'Scheduled',
                 selectedClass: `${commonOptionClass} hover:bg-blue-700`,
                 unselectedClass: `${commonOptionClass} ${unselectedHoverClass} hover:bg-blue-700`,
-            }, 
+            },
             {
                 text: 'Postponed',
                 selectedClass: `${commonOptionClass} hover:bg-red-600 hover:text-white`,
                 unselectedClass: `${commonOptionClass} ${unselectedHoverClass} hover:bg-red-600`,
-            }, 
+            },
             {
                 text: 'Cancelled',
                 selectedClass: `${commonOptionClass} hover:bg-orange-600 hover:text-white`,
@@ -163,10 +167,10 @@ function getFilterOptions(type: string, filterOutcome: string, optionalDates: Ar
         for (const status of statuses) {
             const isSelected = filterOutcome === status.text;
             const classToUse = isSelected ? status.selectedClass : status.unselectedClass;
-            
+
             options.push(
-                <OutageStatus 
-                    className={classToUse} 
+                <OutageStatus
+                    className={classToUse}
                     statusText={status.text}
                     overrideBg={!isSelected}
                 />,
@@ -180,27 +184,27 @@ function getFilterOptions(type: string, filterOutcome: string, optionalDates: Ar
         const lastDateString = `${lastDay.getDate()}/${lastDay.getMonth() + 1}/${lastDay.getFullYear()}`;
 
         let isSelected = filterOutcome === firstDateString;
-        
+
         options = [
-            <FilterDate 
-                key={firstDateString} 
-                dateText={firstDateString} 
+            <FilterDate
+                key={firstDateString}
+                dateText={firstDateString}
                 overrideBg={isSelected}
             />
         ];
-        
+
         let addDates = true;
         let dateDays = 1;
         while (addDates) {
             const nextDay = new Date(firstDay.getTime() + (86400 * 1000 * dateDays));
             const dateString = `${nextDay.getDate()}/${nextDay.getMonth() + 1}/${nextDay.getFullYear()}`;
             isSelected = filterOutcome === dateString;
-            
-            if (nextDay.getTime() < lastDay.getTime()) {    
+
+            if (nextDay.getTime() < lastDay.getTime()) {
                 options.push(
-                    <FilterDate 
-                        key={dateString} 
-                        dateText={dateString} 
+                    <FilterDate
+                        key={dateString}
+                        dateText={dateString}
                         overrideBg={isSelected}
                     />
                 );
@@ -208,14 +212,14 @@ function getFilterOptions(type: string, filterOutcome: string, optionalDates: Ar
             }
             else {
                 addDates = false;
-            }            
+            }
         }
-        
+
         isSelected = filterOutcome === lastDateString;
         options.push(
-            <FilterDate 
-                key={lastDateString} 
-                dateText={lastDateString} 
+            <FilterDate
+                key={lastDateString}
+                dateText={lastDateString}
                 overrideBg={isSelected}
             />
         );
@@ -223,7 +227,7 @@ function getFilterOptions(type: string, filterOutcome: string, optionalDates: Ar
 
     if (filterOutcome) {
         options.unshift(
-            <div 
+            <div
                 className={`${commonOptionClass} bg-gray-600 hover:bg-gray-800 text-white`}
             >
                 Reset Filter

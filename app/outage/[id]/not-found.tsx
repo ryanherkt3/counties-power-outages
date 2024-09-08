@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { BoltIcon } from '@heroicons/react/24/outline';
- 
+
 export default function NotFound() {
     return (
         <main className="flex flex-col gap-4 py-10 items-center justify-center page-min-height">
