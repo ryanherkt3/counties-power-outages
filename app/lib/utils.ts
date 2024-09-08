@@ -1,4 +1,4 @@
-import { OutageData, SearchData } from "./definitions";
+import { OutageData } from "./definitions";
 
 export const isOutageActive = (
     dateStr: string,
@@ -46,14 +46,14 @@ export const getTimeStrings = (
 
     hourlySegment = parseInt(hourlySegment) === 0 ? '12' : `${parseInt(hourlySegment)}`;
     return `${hourlySegment}:${minuteSegment} AM`;
-}
+};
 
 export const getTimesAndActiveOutage = (
     time: string,
     shutdownDate: string
 ) => {
-    let newTimes: string[] = [];
-    let newTimeString = time.split(' - ');
+    const newTimes: string[] = [];
+    const newTimeString = time.split(' - ');
 
     // Get start hour and check if outage is accurate
     const startHour = newTimeString[0].split(':')[0];
@@ -75,7 +75,7 @@ export const getTimesAndActiveOutage = (
                 startTime: newTimes[0],
                 endTime: newTimes[1],
             }
-        }
+        };
     }
 
     return {
@@ -86,14 +86,14 @@ export const getTimesAndActiveOutage = (
             endTime: newTimes[1],
         }
     };
-}
+};
 
 export const getActiveOutages = async () => {
     const apiUrl = "https://outages.ryanherkt.com/api/getoutages";
     const outagesReq = await fetch(apiUrl, {cache: "no-store"});
     const outagesJson = await outagesReq.json();
     let outages = outagesJson.planned_outages;
-    
+
     outages.map((outage: OutageData) => {
         const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownTime1, outage.ShutdownDateTime);
         outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
@@ -109,13 +109,13 @@ export const getActiveOutages = async () => {
     });
 
     return outages;
-}
+};
 
 export const getFilteredDate = (date: string) => {
     const dateYear = date.slice(4); // "/2024"
     const dateArr = date.replace(dateYear, '').split('/'); // [Day, Month]
     return `${dateArr[1]}/${dateArr[0]}/${dateYear}`;
-}
+};
 
 export const getFilteredOutages = (
     outages: Array<OutageData>,
@@ -133,25 +133,25 @@ export const getFilteredOutages = (
 
     const getDateMatch = (outage: OutageData, date: string, isStartDate: boolean) => {
         date = getFilteredDate(date);
-        
+
         if (isStartDate) {
             return new Date(outage.ShutdownDateTime).getTime() >= new Date(date).getTime();
         }
         return new Date(outage.ShutdownDateTime).getTime() <= new Date(date).getTime();
-    }
+    };
 
     // Otherwise return filtered outages
     const filteredOutages = outages.filter((outage: OutageData) => {
         const matchesAddress = address ? outage.address.toLowerCase().includes(address) : true;
         const matchesStatus = status ? outage.statusText.toLowerCase().includes(status) : true;
-        const onOrAfterStartDate = startDate ? getDateMatch(outage, startDate, true) : true;        
+        const onOrAfterStartDate = startDate ? getDateMatch(outage, startDate, true) : true;
         const onOrBeforeEndDate = endDate ? getDateMatch(outage, endDate, false) : true;
 
         return matchesAddress && matchesStatus && onOrAfterStartDate && onOrBeforeEndDate;
     });
 
     return filteredOutages;
-}
+};
 
 export const getOutageByID = (
     outages: Array<OutageData>,
@@ -162,7 +162,7 @@ export const getOutageByID = (
     });
 
     return outage;
-}
+};
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
     // If the total number of pages is 7 or less, display all pages without any ellipsis
@@ -188,7 +188,7 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
             totalPages,
         ];
     }
-  
+
     // If the current page is among the last 3 pages, show the first 2, an ellipsis, and the last 3 pages
     return [1, 2, '...', totalPages - 2, totalPages - 1, totalPages];
 };

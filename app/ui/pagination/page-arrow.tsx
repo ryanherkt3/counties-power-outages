@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function PageArrow(
     { href, direction, isDisabled }: { href: string, direction : 'left' | 'right', isDisabled: boolean }) {
-    const icon = direction === 'left' ? 
+    const icon = direction === 'left' ?
         (<ArrowLeftIcon className="w-5" />) :
         (<ArrowRightIcon className="w-5" />);
 
@@ -17,16 +17,16 @@ export default function PageArrow(
     if (isDisabled) {
         return (
             <div className={className}>{icon}</div>
-        )
+        );
     }
-    
+
     return (
-        <Link 
+        <Link
             href={href}
             key={`page-arrow-${direction}`}
             className={className}
         >
             {icon}
         </Link>
-    )
-};
+    );
+}

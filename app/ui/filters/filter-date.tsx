@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 export default function FilterDate({ dateText, overrideBg }: { dateText: string, overrideBg: boolean }) {
     return (
-        <div 
+        <div
             className={
                 clsx(
                     'text-xl text-center p-3 font-semibold rounded-xl cursor-pointer hover:text-white',

@@ -15,15 +15,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children, }: {children: React.ReactNode;}) {
     const currentYear = new Date().getFullYear();
-    
+
+    const footerClasses = 'antialiased text-lg flex flex-row h-20 p-4 justify-between items-center border-t';
+    const colourClasses = 'bg-white border-gray-400';
+
     return (
         <html lang="en">
             <body className={`${inter.className} antialiased relative`}>
                 <Navigation />
                 {children}
-                <footer 
+                <footer
                     className={
-                        `${inter.className} antialiased text-lg flex flex-row h-20 p-4 justify-between items-center bg-white border-t border-gray-400`
+                        `${inter.className} ${footerClasses} ${colourClasses}`
                     }
                 >
                     <div>&copy; Ryan Herkt {currentYear}</div>
