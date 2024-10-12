@@ -88,21 +88,23 @@ export default function Navigation() {
             }>
                 {
                     rightLinks.map((rightLink) => {
+                        const { href, linkName } = rightLink;
+
                         return (
                             <Link
-                                key={rightLink.href}
-                                href={rightLink.href}
+                                key={href}
+                                href={href}
                                 onClick={resetMobileNavOpen}
                                 className={
                                     clsx(
                                         'text-xl font-semibold text-black hover:text-red-400',
                                         {
-                                            'text-red-600 hover:text-red-400': pathname === rightLink.href,
+                                            'text-red-600 hover:text-red-400': pathname === href,
                                         },
                                     )
                                 }
                             >
-                                <span>{rightLink.linkName}</span>
+                                <span>{linkName}</span>
                             </Link>
                         );
                     })

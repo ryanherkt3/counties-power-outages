@@ -37,10 +37,12 @@ export default function HomePage() {
             <div className="text-center text-3xl font-semibold">App Features</div>
             {
                 pageSegments.map((segments) => {
+                    const { key, icon, content } = segments;
+
                     return (
-                        <div key={segments.key} className="flex flex-row gap-6 items-center">
-                            <CustomIcon icon={segments.icon} iconClass={'w-12 h-12 flex-shrink-0 text-red-600'} />
-                            <div className="text-lg">{segments.content}</div>
+                        <div key={key} className="flex flex-row gap-6 items-center">
+                            <CustomIcon icon={icon} iconClass={'w-12 h-12 flex-shrink-0 text-red-600'} />
+                            <div className="text-lg">{content}</div>
                         </div>
                     );
                 })

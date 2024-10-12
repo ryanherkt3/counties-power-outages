@@ -108,9 +108,11 @@ export default function FilterType(
                         </div>
                         {
                             filterOptions.map((option) => {
+                                const { dateText, statusText } = option.props;
+
                                 const propText = type.includes('Date') ?
-                                    option.props.dateText :
-                                    option.props.statusText;
+                                    dateText :
+                                    statusText;
 
                                 return (
                                     <span
@@ -165,13 +167,15 @@ function getFilterOptions(type: string, filterOutcome: string, optionalDates: Ar
         ];
 
         for (const status of statuses) {
-            const isSelected = filterOutcome === status.text;
-            const classToUse = isSelected ? status.selectedClass : status.unselectedClass;
+            const { text, selectedClass, unselectedClass } = status;
+
+            const isSelected = filterOutcome === text;
+            const classToUse = isSelected ? selectedClass : unselectedClass;
 
             options.push(
                 <OutageStatus
                     className={classToUse}
-                    statusText={status.text}
+                    statusText={text}
                     overrideBg={!isSelected}
                 />,
             );

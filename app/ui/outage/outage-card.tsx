@@ -11,19 +11,21 @@ import OutageStatus from './outage-status';
 import CustomIcon from '../custom-icon';
 
 export default function OutageCard({ data }: { data: OutageData; }) {
+    const { id, address, statusText, latestInformation } = data;
+
     const [showContents, setShowContents] = useState(true);
     const outageSections = getOutageSections(false, true, data);
-    const outageHref = `outage/${data.id}`;
+    const outageHref = `outage/${id}`;
 
     return (
         <div className='flex flex-col gap-4 shrink-0 p-4 rounded-lg border border-gray-700' >
             <div className='flex flex-row justify-between'>
                 <Link
-                    key={data.id}
+                    key={id}
                     href={outageHref}
                     className="text-2xl font-semibold hover:text-red-400"
                 >
-                    {data.address}
+                    {address}
                 </Link>
                 <div className="cursor-pointer" onClick={
                     () => setShowContents(!showContents)
@@ -45,29 +47,31 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                     </div>
                     <OutageStatus
                         className="font-medium px-2 py-1 rounded text-center"
-                        statusText={data.statusText}
+                        statusText={statusText}
                         overrideBg={false}
                     />
                 </div>
                 {
                     outageSections.map((section) => {
+                        const { key, icon, title, value } = section;
+
                         return (
                             <div
-                                key={section.key}
+                                key={key}
                                 className='flex md:flex-row md:justify-between gap-2 flex-col text-lg font-normal'
                             >
                                 <div className="flex flex-row gap-2">
-                                    <CustomIcon icon={section.icon} iconClass={'w-7'} />
-                                    <span className="font-semibold">{section.title}</span>
+                                    <CustomIcon icon={icon} iconClass={'w-7'} />
+                                    <span className="font-semibold">{title}</span>
                                 </div>
-                                <span className={ clsx({ 'line-through': section.key === 'postponed-date' }) }>
-                                    {section.value}
+                                <span className={ clsx({ 'line-through': key === 'postponed-date' }) }>
+                                    {value}
                                 </span>
                             </div>
                         );
                     })
                 }
-                <LatestInfo latestInformation={data.latestInformation} />
+                <LatestInfo latestInformation={latestInformation} />
             </div>
         </div>
     );
