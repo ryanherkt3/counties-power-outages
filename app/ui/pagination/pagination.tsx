@@ -42,6 +42,14 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
     );
 }
 
+/**
+ * Get a pagination item
+ *
+ * @param {number | string} pageNumber
+ * @param {number} currentPage
+ * @param {Function} createPageURL
+ * @returns HTML/React object
+ */
 function getPaginationItem(pageNumber: number | string, currentPage: number, createPageURL: Function) {
     if (pageNumber === '...') {
         return (

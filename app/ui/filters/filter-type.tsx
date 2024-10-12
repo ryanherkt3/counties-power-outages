@@ -135,12 +135,20 @@ export default function FilterType(
     );
 }
 
-function getFilterOptions(type: string, filterOutcome: string, optionalDates: Array<string> | null) {
+/**
+ * Get the filter options
+ *
+ * @param {string} filterType status or start/end date
+ * @param {string} filterOutcome the user selected option (an outage status or a date)
+ * @param {Array<string>} optionalDates optional start and end dates for the date filters
+ * @returns Array of react components
+ */
+function getFilterOptions(filterType: string, filterOutcome: string, optionalDates: Array<string> | null) {
     const commonOptionClass = 'text-xl text-center p-3 font-semibold rounded-xl cursor-pointer';
 
     let options: JSX.Element[] = [];
 
-    if (type === 'Status') {
+    if (filterType === 'Status') {
         const unselectedHoverClass = 'text-black bg-gray-300 hover:text-white';
 
         const statuses = [
@@ -181,7 +189,7 @@ function getFilterOptions(type: string, filterOutcome: string, optionalDates: Ar
             );
         }
     }
-    else if (type.includes('Date') && optionalDates) {
+    else if (filterType.includes('Date') && optionalDates) {
         const firstDay = new Date(optionalDates[0]);
         const firstDateString = `${firstDay.getDate()}/${firstDay.getMonth() + 1}/${firstDay.getFullYear()}`;
         const lastDay = new Date(optionalDates[1]);

@@ -1,23 +1,33 @@
 import { OutageData } from './definitions';
 
-export const isOutageActive = (
-    dateStr: string,
-    startHour: number,
-) => {
+/**
+ * Return if an outage is active or not by checking if the current time is greater than
+ * the outage's start time
+ *
+ * @param {string} dateStr
+ * @param {number} startHour
+ * @returns {Boolean}
+ */
+export function isOutageActive(dateStr: string, startHour: number) {
     const outageStartDate = new Date(dateStr);
     outageStartDate.setHours(startHour);
 
     const currentDate = new Date();
 
     return currentDate.getTime() >= outageStartDate.getTime();
-};
+}
 
-export const isOutageExpired = (
-    dateStr: string,
-    startHour: number,
-    endHour: number,
-    endMinute: number,
-) => {
+/**
+ * Return whether the outage has expired or not by checking if the current time is greater than
+ * the outage's end time
+ *
+ * @param {string} dateStr the date in string format (e.g. TODO add example)
+ * @param {number} startHour e.g. 9
+ * @param {number} endHour e.g. 15
+ * @param {number} endMinute e.g. 45
+ * @returns {boolean}
+ */
+export function isOutageExpired(dateStr: string, startHour: number, endHour: number, endMinute: number) {
     const outageEndDate = new Date(dateStr);
     outageEndDate.setHours(endHour);
     outageEndDate.setMinutes(endMinute);
@@ -31,11 +41,15 @@ export const isOutageExpired = (
     const currentDate = new Date();
 
     return currentDate.getTime() >= outageEndDate.getTime();
-};
+}
 
-export const getTimeStrings = (
-    splitTime: Array<string>
-) => {
+/**
+ * Get the time strings (e.g. 9:00 AM, 3:00 PM)
+ *
+ * @param {Array<string>} splitTime [hour, minute]
+ * @returns {string} the time string
+ */
+export function getTimeStrings(splitTime: Array<string>) {
     let hourlySegment = splitTime[0];
     const minuteSegment = splitTime[1];
 
@@ -46,12 +60,16 @@ export const getTimeStrings = (
 
     hourlySegment = parseInt(hourlySegment) === 0 ? '12' : `${parseInt(hourlySegment)}`;
     return `${hourlySegment}:${minuteSegment} AM`;
-};
+}
 
-export const getTimesAndActiveOutage = (
-    time: string,
-    shutdownDate: string
-) => {
+/**
+ * Return an object containing the outage's start and end times, if it is active, if it is expired
+ *
+ * @param {string} time TODO add explanation
+ * @param {string} shutdownDate TODO add explanation
+ * @returns {Object} the outage's start and end times, if it is active, if it is expired
+ */
+export function getTimesAndActiveOutage(time: string, shutdownDate: string) {
     const newTimes: string[] = [];
     const newTimeString = time.split(' - ');
 
@@ -86,9 +104,14 @@ export const getTimesAndActiveOutage = (
             endTime: newTimes[1],
         }
     };
-};
+}
 
-export const getActiveOutages = async () => {
+/**
+ * Return the active outages
+ *
+ * @returns {Object} outages
+ */
+export async function getActiveOutages() {
     const apiUrl = 'https://outages.ryanherkt.com/api/getoutages';
     const outagesReq = await fetch(apiUrl, {cache: 'no-store'});
     const outagesJson = await outagesReq.json();
@@ -109,18 +132,28 @@ export const getActiveOutages = async () => {
     });
 
     return outages;
-};
+}
 
-export const getFilteredDate = (date: string) => {
+/**
+ * Return a date in the DD/MM/YYYY format
+ *
+ * @param {string} date the date to filter (e.g. TODO add example)
+ * @returns {string}
+ */
+export function getFilteredDate(date: string) {
     const dateYear = date.slice(4); // "/2024"
     const dateArr = date.replace(dateYear, '').split('/'); // [Day, Month]
     return `${dateArr[1]}/${dateArr[0]}/${dateYear}`;
-};
+}
 
-export const getFilteredOutages = (
-    outages: Array<OutageData>,
-    searchParams: any // TODO fix type (?)
-) => {
+/**
+ * Return a list of outages based on the user's search parameters
+ *
+ * @param {Array<OutageData>} outages original list of outages
+ * @param {any} searchParams address / status / start date / end date (TODO fix type?)
+ * @returns {Array<OutageData>} new filtered list of outages
+ */
+export function getFilteredOutages(outages: Array<OutageData>, searchParams: any) {
     const address = searchParams?.query;
     const status = searchParams?.status;
     const startDate = searchParams?.startdate;
@@ -151,20 +184,31 @@ export const getFilteredOutages = (
     });
 
     return filteredOutages;
-};
+}
 
-export const getOutageByID = (
-    outages: Array<OutageData>,
-    id: string
-) => {
+/**
+ * Return a specific outages by ID
+ *
+ * @param {Array<OutageData>} outages original list of outages
+ * @param {string} id outage ID to filter by
+ * @returns {OutageData | undefined} the outage data (or nothing if it cannot be found)
+ */
+export function getOutageByID(outages: Array<OutageData>, id: string) {
     const outage = outages.filter((outage: OutageData) => {
         return outage.id === id;
     });
 
     return outage;
-};
+}
 
-export const generatePagination = (currentPage: number, totalPages: number) => {
+/**
+ * Return a pagination object
+ *
+ * @param {number} currentPage
+ * @param {number} totalPages
+ * @returns {Array<number | string>} pagination object
+ */
+export function generatePagination(currentPage: number, totalPages: number) {
     // If the total number of pages is 7 or less, display all pages without any ellipsis
     if (totalPages <= 7) {
         return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -191,4 +235,4 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
 
     // If the current page is among the last 3 pages, show the first 2, an ellipsis, and the last 3 pages
     return [1, 2, '...', totalPages - 2, totalPages - 1, totalPages];
-};
+}

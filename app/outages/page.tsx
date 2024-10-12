@@ -80,6 +80,15 @@ export default async function OutagesPage(
     );
 }
 
+/**
+ * Get the search section component contaning the various filter types
+ *
+ * @param {string} startDateSF start date for the start date filter
+ * @param {string} endDateSF end date for the start date filter
+ * @param {string} startDateEF start date for the end date filter
+ * @param {string} endDateEF end date for the end date filter
+ * @returns HTML object
+ */
 function getSearchSection(startDateSF: string, endDateSF: string, startDateEF: string, endDateEF: string) {
     return (
         <div className="flex flex-wrap flex-row gap-6">

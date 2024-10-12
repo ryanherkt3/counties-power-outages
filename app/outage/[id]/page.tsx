@@ -66,6 +66,13 @@ export default async function OutagePage({ params }: { params: { id: string } })
     );
 }
 
+/**
+ * Get the iframe of the map showing roughly where the outage is happening
+ *
+ * @param {number} lat the latitude
+ * @param {number} lng the longtitude
+ * @returns HTML object (or nothing if co-ordinates are not provided)
+ */
 function getOutageIFrame(lat: number, lng: number) {
     if (lat && lng) {
         const embedLink = `https://maps.google.com/maps?q=${lat.toString()},${lng.toString()}&hl=en&z=16&output=embed`;

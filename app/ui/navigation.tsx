@@ -117,12 +117,20 @@ export default function Navigation() {
     );
 }
 
-function getNavIcon(isMobileScreen: boolean, mobileNavOpen: boolean, toggleMobileNavOpen: any) {
+/**
+ * Get the icon to show on the mobile nav bar
+ *
+ * @param {boolean} isMobileScreen if the user is on a mobile device
+ * @param {boolean} mobileNavOpen if the mobile nav menu is open or not
+ * @param {Function} toggleMobileNavOpen the callback for when the icon is clicked
+ * @returns React component (or nothing if not on a mobile device)
+ */
+function getNavIcon(isMobileScreen: boolean, mobileNavOpen: boolean, toggleMobileNavOpen: Function) {
     if (isMobileScreen) {
         if (mobileNavOpen) {
-            return <XMarkIcon className="cursor-pointer w-8" onClick={toggleMobileNavOpen} />;
+            return <XMarkIcon className="cursor-pointer w-8" onClick={toggleMobileNavOpen.bind(null)} />;
         }
-        return <Bars3Icon className="cursor-pointer w-8" onClick={toggleMobileNavOpen} />;
+        return <Bars3Icon className="cursor-pointer w-8" onClick={toggleMobileNavOpen.bind(null)} />;
     }
 
     return null;
