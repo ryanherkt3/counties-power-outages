@@ -1,10 +1,10 @@
 'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { useEffect, useState } from "react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from 'react';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export default function Navigation() {
     const pathname = usePathname();
@@ -69,7 +69,7 @@ export default function Navigation() {
                         clsx(
                             'text-xl font-semibold text-black hover:text-red-400',
                             {
-                                'text-red-600 hover:text-red-400': pathname === "/",
+                                'text-red-600 hover:text-red-400': pathname === '/',
                             },
                         )
                     }

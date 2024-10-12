@@ -1,5 +1,5 @@
-import { BoltIcon, BellAlertIcon, ClipboardDocumentListIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import { CalendarIcon, ClockIcon, UserIcon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { BoltIcon, BellAlertIcon, ClipboardDocumentListIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { CalendarIcon, ClockIcon, UserIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 export default function CustomIcon({ icon, iconClass }: { icon: string; iconClass: string }) {
     if (icon === 'ClipboardDocumentListIcon') {

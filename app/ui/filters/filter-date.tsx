@@ -1,6 +1,6 @@
 'use client';
 
-import clsx from "clsx";
+import clsx from 'clsx';
 
 export default function FilterDate({ dateText, overrideBg }: { dateText: string, overrideBg: boolean }) {
     return (

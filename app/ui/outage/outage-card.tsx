@@ -1,14 +1,14 @@
 'use client';
 
-import Link from "next/link";
-import { OutageData } from "../../lib/definitions";
+import Link from 'next/link';
+import { OutageData } from '../../lib/definitions';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import clsx from "clsx";
-import LatestInfo from "../latest-info";
-import { useState } from "react";
-import { getOutageSections } from "../../lib/outagesections";
-import OutageStatus from "./outage-status";
-import CustomIcon from "../custom-icon";
+import clsx from 'clsx';
+import LatestInfo from '../latest-info';
+import { useState } from 'react';
+import { getOutageSections } from '../../lib/outagesections';
+import OutageStatus from './outage-status';
+import CustomIcon from '../custom-icon';
 
 export default function OutageCard({ data }: { data: OutageData; }) {
     const [showContents, setShowContents] = useState(true);
@@ -28,7 +28,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                 <div className="cursor-pointer" onClick={
                     () => setShowContents(!showContents)
                 }>
-                    <CustomIcon icon={showContents ? 'MinusIcon' : 'PlusIcon' } iconClass={"w-8"} />
+                    <CustomIcon icon={showContents ? 'MinusIcon' : 'PlusIcon' } iconClass={'w-8'} />
                 </div>
             </div>
 
@@ -57,7 +57,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                                 className='flex md:flex-row md:justify-between gap-2 flex-col text-lg font-normal'
                             >
                                 <div className="flex flex-row gap-2">
-                                    <CustomIcon icon={section.icon} iconClass={"w-7"} />
+                                    <CustomIcon icon={section.icon} iconClass={'w-7'} />
                                     <span className="font-semibold">{section.title}</span>
                                 </div>
                                 <span className={ clsx({ 'line-through': section.key === 'postponed-date' }) }>

@@ -1,5 +1,5 @@
-import { OutageData } from "./definitions";
-import { getTimesAndActiveOutage } from "./utils";
+import { OutageData } from './definitions';
+import { getTimesAndActiveOutage } from './utils';
 
 // Dynamically create outage section segments for the outage cards and outage/[id] page
 export const getOutageSections = (

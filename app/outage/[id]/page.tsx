@@ -1,10 +1,10 @@
-import { getActiveOutages, getOutageByID } from "@/app/lib/utils";
-import notFound from "./not-found";
-import LatestInfo from "@/app/ui/latest-info";
-import { Metadata } from "next";
-import { getOutageSections } from "@/app/lib/outagesections";
-import OutageStatus from "@/app/ui/outage/outage-status";
-import { OutageData } from "@/app/lib/definitions";
+import { getActiveOutages, getOutageByID } from '@/app/lib/utils';
+import notFound from './not-found';
+import LatestInfo from '@/app/ui/latest-info';
+import { Metadata } from 'next';
+import { getOutageSections } from '@/app/lib/outagesections';
+import OutageStatus from '@/app/ui/outage/outage-status';
+import { OutageData } from '@/app/lib/definitions';
 
 type Props = {
     params: { id: string }

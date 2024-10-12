@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { Metadata } from "next";
-import CustomIcon from "./ui/custom-icon";
+import { Metadata } from 'next';
+import CustomIcon from './ui/custom-icon';
 
 export const metadata: Metadata = {
     title: 'Home | Counties Power Outages App',
@@ -39,7 +39,7 @@ export default function HomePage() {
                 pageSegments.map((segments) => {
                     return (
                         <div key={segments.key} className="flex flex-row gap-6 items-center">
-                            <CustomIcon icon={segments.icon} iconClass={"w-12 h-12 flex-shrink-0 text-red-600"} />
+                            <CustomIcon icon={segments.icon} iconClass={'w-12 h-12 flex-shrink-0 text-red-600'} />
                             <div className="text-lg">{segments.content}</div>
                         </div>
                     );

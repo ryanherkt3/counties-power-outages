@@ -1,12 +1,12 @@
 'use client';
 
-import { JSX, useState } from "react";
-import OutageStatus from "../outage/outage-status";
-import clsx from "clsx";
-import FilterDate from "./filter-date";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useDebouncedCallback } from "use-debounce";
-import CustomIcon from "../custom-icon";
+import { JSX, useState } from 'react';
+import OutageStatus from '../outage/outage-status';
+import clsx from 'clsx';
+import FilterDate from './filter-date';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useDebouncedCallback } from 'use-debounce';
+import CustomIcon from '../custom-icon';
 
 export default function FilterType(
     {
@@ -103,7 +103,7 @@ export default function FilterType(
                         <div className="flex flex-row gap-2 justify-between text-black">
                             <span className="text-center text-2xl font-semibold">Choose the {type}</span>
                             <button onClick={ showFilterPicker }>
-                                <CustomIcon icon={"XMarkIcon"} iconClass={"w-7 cursor-pointer"} />
+                                <CustomIcon icon={'XMarkIcon'} iconClass={'w-7 cursor-pointer'} />
                             </button>
                         </div>
                         {
@@ -134,12 +134,12 @@ export default function FilterType(
 }
 
 function getFilterOptions(type: string, filterOutcome: string, optionalDates: Array<string> | null) {
-    const commonOptionClass = "text-xl text-center p-3 font-semibold rounded-xl cursor-pointer";
+    const commonOptionClass = 'text-xl text-center p-3 font-semibold rounded-xl cursor-pointer';
 
     let options: JSX.Element[] = [];
 
     if (type === 'Status') {
-        const unselectedHoverClass = "text-black bg-gray-300 hover:text-white";
+        const unselectedHoverClass = 'text-black bg-gray-300 hover:text-white';
 
         const statuses = [
             {

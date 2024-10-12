@@ -1,9 +1,9 @@
 import Search from '../ui/search';
-import Pagination from "../ui/pagination/pagination";
-import { redirect } from "next/navigation";
-import { getActiveOutages, getFilteredDate, getFilteredOutages } from "../lib/utils";
-import CurrentOutages from "../ui/outage/current-outages";
-import { Metadata } from "next";
+import Pagination from '../ui/pagination/pagination';
+import { redirect } from 'next/navigation';
+import { getActiveOutages, getFilteredDate, getFilteredOutages } from '../lib/utils';
+import CurrentOutages from '../ui/outage/current-outages';
+import { Metadata } from 'next';
 import { BoltIcon } from '@heroicons/react/24/outline';
 import FilterType from '../ui/filters/filter-type';
 

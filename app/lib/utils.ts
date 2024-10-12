@@ -1,4 +1,4 @@
-import { OutageData } from "./definitions";
+import { OutageData } from './definitions';
 
 export const isOutageActive = (
     dateStr: string,
@@ -89,8 +89,8 @@ export const getTimesAndActiveOutage = (
 };
 
 export const getActiveOutages = async () => {
-    const apiUrl = "https://outages.ryanherkt.com/api/getoutages";
-    const outagesReq = await fetch(apiUrl, {cache: "no-store"});
+    const apiUrl = 'https://outages.ryanherkt.com/api/getoutages';
+    const outagesReq = await fetch(apiUrl, {cache: 'no-store'});
     const outagesJson = await outagesReq.json();
     let outages = outagesJson.planned_outages;
 
