@@ -22,7 +22,10 @@ export default function Navigation() {
     // Reset the state of mobileNavOpen when going to another page
     const resetMobileNavOpen = () => {
         if (mobileNavOpen) {
-            setTimeout(() => setMobileNavOpen(false), 300);
+            setTimeout(() => {
+                setMobileNavOpen(false);
+                document.querySelector('body')?.classList.remove('no-scroll');
+            }, 300);
         }
     };
 
