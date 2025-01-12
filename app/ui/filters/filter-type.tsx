@@ -110,13 +110,11 @@ export default function FilterType(
                             filterOptions.map((option) => {
                                 const { dateText, statusText } = option.props;
 
-                                const propText = type.includes('Date') ?
-                                    dateText :
-                                    statusText;
+                                const propText = type.includes('Date') ? dateText : statusText;
 
                                 return (
                                     <span
-                                        key={propText}
+                                        key={propText || 'reset-filter'}
                                         onClick={
                                             () => {
                                                 handleFilterChoice(propText);
@@ -239,11 +237,7 @@ function getFilterOptions(filterType: string, filterOutcome: string, optionalDat
 
     if (filterOutcome) {
         options.unshift(
-            <div
-                className={`${commonOptionClass} bg-gray-600 hover:bg-gray-800 text-white`}
-            >
-                Reset Filter
-            </div>,
+            <div className={`${commonOptionClass} bg-gray-600 hover:bg-gray-800 text-white`}>Reset Filter</div>
         );
     }
 

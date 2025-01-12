@@ -21,9 +21,9 @@ export function isOutageActive(dateStr: string, startHour: number) {
  * Return whether the outage has expired or not by checking if the current time is greater than
  * the outage's end time
  *
- * @param {string} dateStr the date in string format (e.g. TODO add example)
- * @param {number} startHour e.g. 9
- * @param {number} endHour e.g. 15
+ * @param {string} dateStr string representation of the shutdown date e.g. 2025-01-13T00:00:00+13:00
+ * @param {number} startHour 0 (12 AM) to 23 (11 PM) e.g. 9
+ * @param {number} endHour 0 (12 AM) to 23 (11 PM) e.g. 15
  * @param {number} endMinute e.g. 45
  * @returns {boolean}
  */
@@ -65,8 +65,8 @@ export function getTimeStrings(splitTime: Array<string>) {
 /**
  * Return an object containing the outage's start and end times, if it is active, if it is expired
  *
- * @param {string} time TODO add explanation
- * @param {string} shutdownDate TODO add explanation
+ * @param {string} time the duration of the outage e.g. 09:00 - 15:30 (9 AM to 3:30 PM)
+ * @param {string} shutdownDate string representation of the shutdown date e.g. 2025-01-13T00:00:00+13:00
  * @returns {Object} the outage's start and end times, if it is active, if it is expired
  */
 export function getTimesAndActiveOutage(time: string, shutdownDate: string) {
@@ -121,7 +121,6 @@ export async function getActiveOutages() {
         const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownTime1, outage.ShutdownDateTime);
         outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
-        // TODO test this change works
         if (timesAndIsActiveOutage.activeOutage && outage.statusText !== 'Cancelled') {
             outage.statusText = 'Active';
         }
@@ -135,22 +134,22 @@ export async function getActiveOutages() {
 }
 
 /**
- * Return a date in the DD/MM/YYYY format
+ * Return a date in the MM/DD/YYYY format
  *
- * @param {string} date the date to filter (e.g. TODO add example)
+ * @param {string} date the date to filter (e.g. 15/1/2025)
  * @returns {string}
  */
 export function getFilteredDate(date: string) {
-    const dateYear = date.slice(4); // "/2024"
-    const dateArr = date.replace(dateYear, '').split('/'); // [Day, Month]
-    return `${dateArr[1]}/${dateArr[0]}/${dateYear}`;
+    const segments = date.split('/'); // [Day, Month, Year]
+
+    return `${segments[1]}/${segments[0]}/${segments[2]}`;
 }
 
 /**
  * Return a list of outages based on the user's search parameters
  *
  * @param {Array<OutageData>} outages original list of outages
- * @param {any} searchParams address / status / start date / end date (TODO fix type?)
+ * @param {any} searchParams address / status / start date / end date
  * @returns {Array<OutageData>} new filtered list of outages
  */
 export function getFilteredOutages(outages: Array<OutageData>, searchParams: any) {
