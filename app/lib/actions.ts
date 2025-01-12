@@ -35,7 +35,7 @@ export type State = {
         email?: string[];
     };
     message?: string | null;
-};   
+};
 
 export async function addSubscription(prevState: State, formData: FormData) {
     const validatedFields = AddSub.safeParse({
@@ -58,18 +58,18 @@ export async function addSubscription(prevState: State, formData: FormData) {
 
     const dateSubscribed = new Date().toLocaleString();
 
-    try {  
+    try {
         await sql`
             INSERT INTO notifications (outageName, lat, lng, email, dateSubscribed)
             VALUES (${name}, ${lat}, ${lng}, ${email}, ${dateSubscribed})
         `;
     }
-    catch(error) {
-        return { message: `Subscription already exists` };
+    catch (error) {
+        return { message: 'Subscription already exists' };
     }
 
     revalidatePath('/notifications'); // clear cache
-    return { message: 'Subscription successfully created!', errors: {} }
+    return { message: 'Subscription successfully created!', errors: {} };
 }
 
 export async function getSubscriptions(email: string) {
@@ -79,12 +79,13 @@ export async function getSubscriptions(email: string) {
         const outages = await sql<NotificationSub>`SELECT * FROM notifications WHERE email = ${email}`;
         return outages.rows;
     }
-    catch(error) {
+    catch (error) {
         console.error('Database Error:', error);
         throw new Error('Database Error: Failed to fetch subscriptions');
     }
 }
 
+// eslint-disable-next-line no-unused-vars
 export async function deleteSubscription(subscription: NotificationSub) {
     try {
         // TODO fix where clause
@@ -92,7 +93,7 @@ export async function deleteSubscription(subscription: NotificationSub) {
         // revalidatePath('/notifications');
         return Promise.resolve(true);
     }
-    catch(error) {
+    catch (error) {
         console.error('Database Error:', error);
         return Promise.resolve(false);
     }

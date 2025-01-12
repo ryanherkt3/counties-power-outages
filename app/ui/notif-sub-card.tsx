@@ -1,10 +1,12 @@
 'use client';
 
-import { AtSymbolIcon, BoltIcon, CalendarIcon, MapPinIcon, MinusIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { NotificationSub } from "../lib/definitions";
-import { useState } from "react";
-import clsx from "clsx";
-import Link from "next/link";
+import {
+    AtSymbolIcon, BoltIcon, CalendarIcon, MapPinIcon, MinusIcon, PlusIcon, TrashIcon
+} from '@heroicons/react/24/outline';
+import { NotificationSub } from '../lib/definitions';
+import { useState } from 'react';
+import clsx from 'clsx';
+import Link from 'next/link';
 
 export default function NotificationCard({ data, plannedOutages }: { data: NotificationSub; plannedOutages: String}) {
     const [showContents, setShowContents] = useState(true);
@@ -52,17 +54,17 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
                 </div>
             </div>
 
-            <div className={ 
+            <div className={
                 clsx(
                     'flex flex-col gap-4 shrink-0',
                     { 'hidden': !showContents }
-                ) 
+                )
             }>
                 {
                     cardSections.map((section) => {
                         return (
-                            <div 
-                                key={section.key} 
+                            <div
+                                key={section.key}
                                 className='flex md:flex-row md:justify-between gap-2 flex-col text-lg font-normal'
                             >
                                 <div className="flex flex-row gap-2">
@@ -76,7 +78,7 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
                                         outagesArray.map((outage) => {
                                             const isLastOutage = outagesArray.indexOf(outage) < outagesArray.length - 1;
                                             return (
-                                                <Link 
+                                                <Link
                                                     key={outage}
                                                     href={`outage/${outage}`}
                                                     className={
@@ -90,7 +92,7 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
                                                 >
                                                     {outage}
                                                 </Link>
-                                            )
+                                            );
                                         }) :
                                         <span>{section.value}</span>
                                 }
@@ -101,7 +103,7 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
             </div>
 
             {/* TODO delete individual outage from DB and re-search */}
-            <button 
+            <button
                 className={
                     clsx(
                         'flex flex-row gap-2 bg-red-600 hover:bg-red-800 text-white rounded-xl w-fit p-3',

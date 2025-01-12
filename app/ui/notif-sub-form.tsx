@@ -13,7 +13,7 @@ export default function NotifSubForm() {
 
     return (
         <form action={dispatch}>
-            <div className="flex flex-col gap-4">                
+            <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                     <label htmlFor="name" className="text-lg font-medium">Name</label>
                     <div className="relative rounded-md">
@@ -28,13 +28,14 @@ export default function NotifSubForm() {
                         <BookmarkIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2" />
                     </div>
                     <div id="name-error" aria-live="polite" aria-atomic="true">
-                    {state.errors?.name &&
-                        state.errors.name.map((error: string) => (
-                            <p className="mt-2 text-md font-semibold text-red-600" key={error}>
-                                {error}
-                            </p>
-                        ))
-                    }
+                        {
+                            state.errors?.name &&
+                            state.errors.name.map((error: string) => (
+                                <p className="mt-2 text-md font-semibold text-red-600" key={error}>
+                                    {error}
+                                </p>
+                            ))
+                        }
                     </div>
                 </div>
 
@@ -52,13 +53,14 @@ export default function NotifSubForm() {
                         <AtSymbolIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2" />
                     </div>
                     <div id="email-error" aria-live="polite" aria-atomic="true">
-                    {state.errors?.email &&
-                        state.errors.email.map((error: string) => (
-                            <p className="mt-2 text-md font-semibold text-red-600" key={error}>
-                                {error}
-                            </p>
-                        ))
-                    }
+                        {
+                            state.errors?.email &&
+                            state.errors.email.map((error: string) => (
+                                <p className="mt-2 text-md font-semibold text-red-600" key={error}>
+                                    {error}
+                                </p>
+                            ))
+                        }
                     </div>
                 </div>
 
@@ -76,13 +78,13 @@ export default function NotifSubForm() {
                         <MinusIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2" />
                     </div>
                     <div id="lat-error" aria-live="polite" aria-atomic="true">
-                    {
-                        state.errors?.lat && state.errors.lat.map((error: string) => (
-                            <p className="mt-2 text-md font-semibold text-red-600" key={error}>
-                                {error}
-                            </p>
-                        ))
-                    }
+                        {
+                            state.errors?.lat && state.errors.lat.map((error: string) => (
+                                <p className="mt-2 text-md font-semibold text-red-600" key={error}>
+                                    {error}
+                                </p>
+                            ))
+                        }
                     </div>
                 </div>
 
@@ -100,42 +102,44 @@ export default function NotifSubForm() {
                         <PlusIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2" />
                     </div>
                     <div id="lng-error" aria-live="polite" aria-atomic="true">
-                    {
-                        state.errors?.lng && state.errors.lng.map((error: string) => (
-                            <p className="mt-2 text-md font-semibold text-red-600" key={error}>
-                                {error}
-                            </p>
-                        ))
-                    }
+                        {
+                            state.errors?.lng && state.errors.lng.map((error: string) => (
+                                <p className="mt-2 text-md font-semibold text-red-600" key={error}>
+                                    {error}
+                                </p>
+                            ))
+                        }
                     </div>
                 </div>
 
-                <button 
+                <button
                     className="bg-red-600 hover:bg-red-800 text-white rounded-xl w-fit p-3"
                     type="submit"
                 >
                     Subscribe
                 </button>
 
-                {state.message ?
-                    (
-                        <div id="missing-fields" aria-live="polite" aria-atomic="true">
-                            <p 
-                                className={
-                                    clsx(
-                                        'mt-2 text-md font-semibold',
-                                        {
-                                            'text-green-600': state.message.includes('success'),
-                                            'text-red-600': !state.message.includes('success'),
-                                        }
-                                    )
-                                }
-                                key={state.message}
-                            >
-                                {state.message}
-                            </p>
-                        </div>
-                    ) : null
+                {
+                    state.message ?
+                        (
+                            <div id="missing-fields" aria-live="polite" aria-atomic="true">
+                                <p
+                                    className={
+                                        clsx(
+                                            'mt-2 text-md font-semibold',
+                                            {
+                                                'text-green-600': state.message.includes('success'),
+                                                'text-red-600': !state.message.includes('success'),
+                                            }
+                                        )
+                                    }
+                                    key={state.message}
+                                >
+                                    {state.message}
+                                </p>
+                            </div>
+                        ) :
+                        null
                 }
             </div>
         </form>

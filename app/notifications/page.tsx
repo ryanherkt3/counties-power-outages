@@ -1,12 +1,12 @@
-import Search from "../ui/search";
-import NotifSubForm from "../ui/notif-sub-form";
+/* eslint-disable max-len */
+import Search from '../ui/search';
+import NotifSubForm from '../ui/notif-sub-form';
 import { Metadata } from 'next';
-import { WrenchIcon } from '@heroicons/react/24/outline';
-import { getSubscriptions } from "../lib/actions";
-import { NotificationSub, OutageData } from "../lib/definitions";
-import NotificationCard from "../ui/notif-sub-card";
-import clsx from "clsx";
-import { coordIsInOutageZone, getActiveOutages } from "../lib/utils";
+import { getSubscriptions } from '../lib/actions';
+import { NotificationSub, OutageData } from '../lib/definitions';
+import NotificationCard from '../ui/notif-sub-card';
+import clsx from 'clsx';
+import { coordIsInOutageZone, getActiveOutages } from '../lib/utils';
 
 export const metadata: Metadata = {
     title: 'Notifications',
@@ -20,8 +20,8 @@ export default async function NotificationsPage({searchParams}: {
     const query = searchParams?.email || '';
     const subscriptions = await getSubscriptions(query);
     const outages = await getActiveOutages();
-    
-    const mapsLink = <a 
+
+    const mapsLink = <a
         className="visited:text-purple-500 hover:text-blue-500 text-blue-500"
         href="https://www.google.com/maps/"
         target="_blank"
@@ -89,15 +89,15 @@ export default async function NotificationsPage({searchParams}: {
             ],
             note: null,
         },
-    ]
-    
+    ];
+
     return (
         <main className="flex flex-col gap-8 px-4 py-6 page-min-height">
             <div className="flex flex-col gap-4">
                 {
                     notifsInfo.map((item) => {
                         return (
-                            <div 
+                            <div
                                 key={item.key}
                                 className="flex flex-col gap-2"
                             >
@@ -110,14 +110,14 @@ export default async function NotificationsPage({searchParams}: {
                                                     <li key={listItem.key}>
                                                         {listItem.text.replace('${mapsLink}', '')} {mapsLink}
                                                     </li>
-                                                )
+                                                );
                                             }
 
                                             return (
                                                 <li key={listItem.key}>
                                                     {listItem.text}
                                                 </li>
-                                            )
+                                            );
                                         })
                                     }
                                     {
@@ -125,17 +125,17 @@ export default async function NotificationsPage({searchParams}: {
                                     }
                                 </ol>
                             </div>
-                        )
+                        );
                     })
                 }
             </div>
-            
+
             <div className="flex flex-col gap-4 relative">
                 <div className="text-xl font-semibold">Active Notifications ({subscriptions.length})</div>
                 <Search placeholder="Enter your email address"/>
             </div>
 
-            <div 
+            <div
                 className={
                     clsx(
                         'flex flex-col gap-4',
@@ -158,17 +158,17 @@ export default async function NotificationsPage({searchParams}: {
                                 lat: outage.lat,
                                 lng: outage.lng
                             };
-                            
+
                             if (coordIsInOutageZone(point, outage.hull, outageCoords)) {
                                 outageIds = `${outageIds.length ? `${outageIds},` : ''}${outage.id}`;
                             }
-                        })
-                        
+                        });
+
                         return (
-                            <NotificationCard 
-                                key={subscriptions.indexOf(subscription)} 
-                                data={subscription} 
-                                plannedOutages={outageIds} 
+                            <NotificationCard
+                                key={subscriptions.indexOf(subscription)}
+                                data={subscription}
+                                plannedOutages={outageIds}
                             />
                         );
                     })
@@ -189,7 +189,7 @@ function getNote(itemNote: string | null) {
             <div>
                 <span className="font-semibold">Note:</span> {itemNote}
             </div>
-        )
+        );
     }
 
     return null;
