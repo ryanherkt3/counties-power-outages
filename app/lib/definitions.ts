@@ -10,7 +10,7 @@ export type OutageData = {
     lat: number;
     lng: number;
     distance: number;
-    hull: Coordinates[];
+    hull: Coordinate[];
     address: string;
     statusText: 'Scheduled' | 'Postponed' | 'Cancelled' | 'Active';
     latestInformation: string;
@@ -20,7 +20,7 @@ export type OutageData = {
     expiredOutage: boolean;
 };
 
-export type Coordinates = {
+export type Coordinate = {
     lng: number;
     lat: number;
 };
@@ -36,4 +36,13 @@ export type SearchData = {
     status: string | undefined;
     startdate: string | undefined;
     enddate: string | undefined;
+};
+
+export type NotificationSub = {
+    outagename: string;
+    lat: number;
+    lng: number;
+    email: string;
+    datesubscribed: string;
+    outageinfo: string | null;
 };

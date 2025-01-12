@@ -1,4 +1,4 @@
-import { OutageData } from './definitions';
+import { Coordinate, OutageData } from './definitions';
 
 /**
  * Return if an outage is active or not by checking if the current time is greater than
@@ -234,4 +234,41 @@ export function generatePagination(currentPage: number, totalPages: number) {
 
     // If the current page is among the last 3 pages, show the first 2, an ellipsis, and the last 3 pages
     return [1, 2, '...', totalPages - 2, totalPages - 1, totalPages];
+}
+
+export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], outageCoords: Coordinate) {
+    if (!polygon) {
+        const outageLat = parseInt(outageCoords.lat.toFixed(5));
+        const outageLng = parseInt(outageCoords.lng.toFixed(5));
+
+        return point.lat === outageLat && point.lng === outageLng;
+    }
+
+    const num_vertices = polygon.length;
+    const { lat, lng } = point;
+    let isInZone = false;
+
+    // Store the first point in the polygon and initialize the second point
+    let p1 = polygon[0];
+    let p2;
+
+    for (let i = 1; i <= num_vertices; i++) {
+        p2 = polygon[i % num_vertices];
+
+        if (lng > Math.min(p1.lng, p2.lng)) {
+            if (lng <= Math.max(p1.lng, p2.lng)) {
+                if (lat <= Math.max(p1.lat, p2.lat)) {
+                    const x_intersection = ((lng - p1.lng) * (p2.lat - p1.lat)) / (p2.lng - p1.lng) + p1.lat;
+
+                    if (p1.lat === p2.lat || lat <= x_intersection) {
+                        isInZone = !isInZone;
+                    }
+                }
+            }
+        }
+
+        p1 = p2;
+    }
+
+    return isInZone;
 }
