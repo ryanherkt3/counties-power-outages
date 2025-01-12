@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Navigation from "./ui/navigation";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import Navigation from './ui/navigation';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
     title: {
@@ -15,15 +15,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children, }: {children: React.ReactNode;}) {
     const currentYear = new Date().getFullYear();
-    
+
+    const footerClasses = 'antialiased text-lg flex flex-row h-20 p-4 justify-between items-center border-t';
+    const colourClasses = 'bg-white border-gray-400';
+
     return (
         <html lang="en">
-            <body className={`${inter.className} antialiased`}>
+            <body className={`${inter.className} antialiased relative`}>
                 <Navigation />
                 {children}
-                <footer 
+                <footer
                     className={
-                        `${inter.className} antialiased text-lg flex flex-row h-20 p-4 justify-between items-center bg-white border-t border-gray-400`
+                        `${inter.className} ${footerClasses} ${colourClasses}`
                     }
                 >
                     <div>&copy; Ryan Herkt {currentYear}</div>

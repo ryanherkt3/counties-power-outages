@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Counties Power Outages Website
 
-## Getting Started
+This website (https://outages.ryanherkt.com) is built using [Next.js](https://nextjs.org/) - a modern React framework, and hosted on [Vercel](https://vercel.com/).
 
-First, run the development server:
+For a package manager, npm is preferred (Node.js must also be installed) - https://docs.npmjs.com/downloading-and-installing-node-js-and-npm.
+
+### Installation
+
+To clone the local repository and install the Node/NPM packages, run:
+
+```bash
+npx create-next-app@latest counties-power-outages --use-npm --example "https://github.com/ryanherkt3/counties-power-outages/tree/main"
+npm install
+```
+
+For local development, Python is also required. To download version 3.12 go to https://www.python.org/downloads/.
+
+Then, to install the required Python packages, run:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Local Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+And browse to http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Website Features
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+* Outages page with filters - search for a specific outage by status (Active / Scheduled / Postponed / Cancelled), start and end date, and by the location name.
+* Notification system (WIP 🔧) - subscribe to notifications for outages in your neighbourhood without the need for an account.
+** **Note:** if developing locally, the notification system requires a database to be set up (e.g. on Vercel) and `.env` variables for this to work. You will also need a [Resend](https://resend.com/) account to be able to send the notification emails.
 
-## Learn More
+### Future improvements
 
-To learn more about Next.js, take a look at the following resources:
+* Notifications: edit page, unsubscribe page.
+* Contact form (for bug reports etc).
+* A filter on the outages page for outages per page (configurable to 5 / 10 / 15).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Bug reports, Feature requests
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+For any bugs or feature requests, create an issue on the repo's [Issues page](https://github.com/ryanherkt3/counties-power-outages/issues) with the appropriate label.

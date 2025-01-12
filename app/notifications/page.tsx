@@ -1,6 +1,7 @@
 import Search from "../ui/search";
 import NotifSubForm from "../ui/notif-sub-form";
-import { Metadata } from "next";
+import { Metadata } from 'next';
+import { WrenchIcon } from '@heroicons/react/24/outline';
 import { getSubscriptions } from "../lib/actions";
 import { NotificationSub, OutageData } from "../lib/definitions";
 import NotificationCard from "../ui/notif-sub-card";

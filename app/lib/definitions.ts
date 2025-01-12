@@ -17,6 +17,7 @@ export type OutageData = {
     originalShutdownDate: string;
     originalShutdownTime1: string;
     originalShutdownTime2: string;
+    expiredOutage: boolean;
 };
 
 export type Coordinate = {
@@ -27,6 +28,14 @@ export type Coordinate = {
 export type OutageTimes = {
     startTime: string;
     endTime: string;
+};
+
+export type SearchData = {
+    page: string | undefined;
+    query: string | undefined;
+    status: string | undefined;
+    startdate: string | undefined;
+    enddate: string | undefined;
 };
 
 export type NotificationSub = {
