@@ -21,7 +21,7 @@ export default function HomePage() {
         {
             key: 'notifications',
             icon: 'BellAlertIcon',
-            content: 'Subscribe to email alerts for notifications in your area on our Notifications page. All that is needed is your email address - no account required! You can also check for existing subscriptions on this page, and unsubscribe to any if you wish. In the future you may even be able to trigger an email alert with the click of a button, and subscribe to an alert on an Individual Outage page.'
+            content: 'COMING SOON - the ability to subscribe to email alerts for notifications in your area on our Notifications page. All that is needed is your email address - no account required! You can also check for existing subscriptions on this page, and unsubscribe to any if you wish. Future functionality may include triggering an email alert with the click of a button, and subscribing to an alert on an Individual Outage page.'
         },
     ];
 
