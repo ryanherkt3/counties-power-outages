@@ -1,9 +1,9 @@
 import Search from '../ui/search';
-import Pagination from "../ui/pagination/pagination";
-import { redirect } from "next/navigation";
-import { getActiveOutages, getFilteredDate, getFilteredOutages } from "../lib/utils";
-import CurrentOutages from "../ui/outage/current-outages";
-import { Metadata } from "next";
+import Pagination from '../ui/pagination/pagination';
+import { redirect } from 'next/navigation';
+import { getActiveOutages, getFilteredDate, getFilteredOutages } from '../lib/utils';
+import CurrentOutages from '../ui/outage/current-outages';
+import { Metadata } from 'next';
 import { BoltIcon } from '@heroicons/react/24/outline';
 import FilterType from '../ui/filters/filter-type';
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default async function OutagesPage(
     {
         searchParams
-    }: 
+    }:
     {
         searchParams?: {
             query?: string;
@@ -40,7 +40,7 @@ export default async function OutagesPage(
     const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.ShutdownDateTime || '';
     const startDateEF = searchParams?.enddate ? getFilteredDate(searchParams?.enddate) : endDate;
     const endDateSF = searchParams?.startdate ? getFilteredDate(searchParams?.startdate) : startDate;
-    
+
     const searchSection = getSearchSection(startDate, startDateEF, endDateSF, endDate);
 
     // Early return if there are no outages to report
@@ -55,21 +55,21 @@ export default async function OutagesPage(
                     </div>
                 </div>
             </main>
-        )
+        );
     }
 
     // Redirect user to first page if they enter an invalid (or no) page number
     if (currentPage > totalPages || currentPage <= 0) {
         const params = new URLSearchParams(searchParams);
         params.set('page', '1'); // reset to page 1
-        
+
         redirect(`/outages/?${params.toString()}`);
     }
 
     return (
         <main className="flex flex-col gap-6 px-4 py-6 page-min-height">
             {searchSection}
-            <CurrentOutages 
+            <CurrentOutages
                 currentPage={currentPage}
                 outages={filteredOutages}
                 outagesPerPage={outagesPerPage}
@@ -80,6 +80,15 @@ export default async function OutagesPage(
     );
 }
 
+/**
+ * Get the search section component contaning the various filter types
+ *
+ * @param {string} startDateSF start date for the start date filter
+ * @param {string} endDateSF end date for the start date filter
+ * @param {string} startDateEF start date for the end date filter
+ * @param {string} endDateEF end date for the end date filter
+ * @returns HTML object
+ */
 function getSearchSection(startDateSF: string, endDateSF: string, startDateEF: string, endDateEF: string) {
     return (
         <div className="flex flex-wrap flex-row gap-6">
@@ -90,5 +99,5 @@ function getSearchSection(startDateSF: string, endDateSF: string, startDateEF: s
                 <Search placeholder="Search outages..." />
             </div>
         </div>
-    )
+    );
 }

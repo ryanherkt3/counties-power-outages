@@ -1,5 +1,5 @@
-import { OutageData } from "./definitions";
-import { getTimesAndActiveOutage } from "./utils";
+import { OutageData } from './definitions';
+import { getTimesAndActiveOutage } from './utils';
 
 // Dynamically create outage section segments for the outage cards and outage/[id] page
 export const getOutageSections = (
@@ -19,8 +19,8 @@ export const getOutageSections = (
     const endTimeString = uppercaseTitles ? 'END TIME' :
         (`${outageIsPostponed && addNewPrefix ? 'New ' : ''}End Time`);
     const customersAffectedString = 'Customers Affected';
-    
-    const outageSections = outageIsPostponed ? 
+
+    const outageSections = outageIsPostponed ?
         [
             {
                 key: 'postponed-date',
@@ -59,4 +59,4 @@ export const getOutageSections = (
     );
 
     return outageSections;
-}
+};

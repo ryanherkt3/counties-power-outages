@@ -1,10 +1,10 @@
 'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { useEffect, useState } from "react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from 'react';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export default function Navigation() {
     const pathname = usePathname();
@@ -13,7 +13,7 @@ export default function Navigation() {
     const [mobileNavOpen, setMobileNavOpen] = useState(false);
     const [isMobileScreen, setIsMobileScreen] = useState(false);
     const [isMobileScreenSet, setIsMobileScreenSet] = useState(false);
-    
+
     const toggleMobileNavOpen = () => {
         setMobileNavOpen(!mobileNavOpen);
         document.querySelector('body')?.classList.toggle('no-scroll', !mobileNavOpen);
@@ -22,7 +22,10 @@ export default function Navigation() {
     // Reset the state of mobileNavOpen when going to another page
     const resetMobileNavOpen = () => {
         if (mobileNavOpen) {
-            setTimeout(() => setMobileNavOpen(false), 300);
+            setTimeout(() => {
+                setMobileNavOpen(false);
+                document.querySelector('body')?.classList.remove('no-scroll');
+            }, 300);
         }
     };
 
@@ -39,7 +42,7 @@ export default function Navigation() {
         if (!isMobileScreenSet) {
             setIsMobileScreen(window.innerWidth <= 768);
         }
-        setIsMobileScreenSet(true);    
+        setIsMobileScreenSet(true);
 
         window.addEventListener('resize', handleResize);
 
@@ -58,7 +61,7 @@ export default function Navigation() {
             href: '/notifications',
             linkName: 'Notifications'
         }
-    ]
+    ];
 
     return (
         <div className="flex sticky top-0 h-20 p-4 items-center justify-between border-b border-gray-400 bg-white z-10">
@@ -69,7 +72,7 @@ export default function Navigation() {
                         clsx(
                             'text-xl font-semibold text-black hover:text-red-400',
                             {
-                                'text-red-600 hover:text-red-400': pathname === "/",
+                                'text-red-600 hover:text-red-400': pathname === '/',
                             },
                         )
                     }
@@ -78,7 +81,7 @@ export default function Navigation() {
                 </Link>
             </div>
             <div className={
-                clsx (
+                clsx(
                     'md:flex md:flex-row md:gap-3',
                     {
                         'hidden': !mobileNavOpen,
@@ -88,23 +91,25 @@ export default function Navigation() {
             }>
                 {
                     rightLinks.map((rightLink) => {
+                        const { href, linkName } = rightLink;
+
                         return (
                             <Link
-                                key={rightLink.href}
-                                href={rightLink.href}
+                                key={href}
+                                href={href}
                                 onClick={resetMobileNavOpen}
                                 className={
                                     clsx(
                                         'text-xl font-semibold text-black hover:text-red-400',
                                         {
-                                            'text-red-600 hover:text-red-400': pathname === rightLink.href,
+                                            'text-red-600 hover:text-red-400': pathname === href,
                                         },
                                     )
                                 }
                             >
-                                <span>{rightLink.linkName}</span>
+                                <span>{linkName}</span>
                             </Link>
-                        )
+                        );
                     })
                 }
             </div>
@@ -115,12 +120,20 @@ export default function Navigation() {
     );
 }
 
-function getNavIcon(isMobileScreen: boolean, mobileNavOpen: boolean, toggleMobileNavOpen: any) {
+/**
+ * Get the icon to show on the mobile nav bar
+ *
+ * @param {boolean} isMobileScreen if the user is on a mobile device
+ * @param {boolean} mobileNavOpen if the mobile nav menu is open or not
+ * @param {Function} toggleMobileNavOpen the callback for when the icon is clicked
+ * @returns React component (or nothing if not on a mobile device)
+ */
+function getNavIcon(isMobileScreen: boolean, mobileNavOpen: boolean, toggleMobileNavOpen: Function) {
     if (isMobileScreen) {
         if (mobileNavOpen) {
-            return <XMarkIcon className="cursor-pointer w-8" onClick={toggleMobileNavOpen} />
+            return <XMarkIcon className="cursor-pointer w-8" onClick={toggleMobileNavOpen.bind(null)} />;
         }
-        return <Bars3Icon className="cursor-pointer w-8" onClick={toggleMobileNavOpen} />
+        return <Bars3Icon className="cursor-pointer w-8" onClick={toggleMobileNavOpen.bind(null)} />;
     }
 
     return null;

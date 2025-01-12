@@ -18,24 +18,27 @@ export default function Search({ placeholder }: { placeholder: string }) {
         if (!cleared && !term) {
             return;
         }
-        
+
         const params = new URLSearchParams(searchParams);
 
         params.set('page', '1');
         if (term) {
             params.set('query', term);
-        } 
+        }
         else {
             params.delete('query');
         }
         replace(`${pathname}?${params.toString()}`);
     }, 300);
 
+    const inputClasses = 'peer block w-full rounded-lg p-3 pr-9 text-lg';
+    const xIconClasses = 'absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 h-7 w-7';
+
     return (
         <div className="relative flex-grow">
             <label htmlFor="search" className="sr-only">Search</label>
             <input
-                className="peer block w-full rounded-lg p-3 pr-9 text-lg placeholder:text-gray-500 border border-red-600 outline-none"
+                className={`${inputClasses} placeholder:text-gray-500 border border-red-600 outline-none`}
                 placeholder={placeholder}
                 onChange={
                     (e) => {
@@ -45,22 +48,22 @@ export default function Search({ placeholder }: { placeholder: string }) {
                 }
                 value={inputValue}
             />
-            <XMarkIcon 
+            <XMarkIcon
                 className={
                     clsx(
-                        'absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 h-7 w-7 text-gray-500 peer-focus:text-gray-900',
+                        `${xIconClasses} text-gray-500 peer-focus:text-gray-900`,
                         {
                             'hidden': !inputValue
                         }
                     )
-                } 
+                }
                 onClick={
                     () => {
                         setInputValue('');
                         handleSearch(null, true);
-                    } 
+                    }
                 }
             />
         </div>
-    )
-};
+    );
+}
