@@ -7,44 +7,18 @@ import { NotificationSub } from '../lib/definitions';
 import { useState } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { getCardSections } from '../lib/outagesections';
+import { deleteSubscription } from '../lib/actions';
 
 export default function NotificationCard({ data, plannedOutages }: { data: NotificationSub; plannedOutages: String}) {
     const [showContents, setShowContents] = useState(true);
-
-    const { lat, lng, datesubscribed, email } = data;
-    const cardSections = [
-        {
-            key: 'email',
-            icon: 'AtSymbolIcon',
-            title: 'Email',
-            value: email
-        },
-        {
-            key: 'coordinates',
-            icon: 'MapPinIcon',
-            title: 'Coordinates',
-            value: `${lat}, ${lng}`
-        },
-        {
-            key: 'date-subbed',
-            icon: 'CalendarIcon',
-            title: 'Date Subscribed',
-            value: datesubscribed
-        },
-        {
-            key: 'location-planned-outage',
-            icon: 'BoltIcon',
-            title: 'Planned Outages in Area',
-            value: ''
-        }
-    ];
-
+    const cardSections = getCardSections(false, data);
     const outagesArray = plannedOutages.split(',');
 
     return (
         <div className='flex flex-col gap-4 shrink-0 p-4 rounded-lg border border-gray-700' >
             <div className='flex flex-row justify-between'>
-                <div className="text-2xl font-semibold">{data.outagename}</div>
+                <div className="text-2xl font-semibold">{data.location}</div>
                 <div className="cursor-pointer" onClick={
                     () => setShowContents(!showContents)
                 }>
@@ -102,7 +76,6 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
                 }
             </div>
 
-            {/* TODO delete individual outage from DB and re-search */}
             <button
                 className={
                     clsx(
@@ -114,7 +87,7 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
                 }
                 onClick={
                     () => {
-                        console.log('remove notif');
+                        deleteSubscription(data);
                     }
                 }
             >

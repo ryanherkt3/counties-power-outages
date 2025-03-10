@@ -1,6 +1,9 @@
 const { db } = require('@vercel/postgres');
 
-// outageInfo - JSON string {emailSent: unix timestamp, outageId: id, status: 'Scheduled' | 'Postponed' | 'Cancelled'}
+// TODO put outageInfo back:
+// Update individual subscrption entries with JSON string (outageInfo section):
+// {emailSent: unix timestamp, outageId: id, status: 'Scheduled' | 'Postponed' | 'Cancelled'}
+// whenever cron job is run and email gets sent to a user.
 async function createNotifsTable(client) {
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -8,23 +11,21 @@ async function createNotifsTable(client) {
         // Create the "notifications" table if it doesn't exist
         const createTable = await client.sql`
             CREATE TABLE IF NOT EXISTS notifications (
-                id SERIAL,
-                outageName VARCHAR(255) NOT NULL,
-                lat FLOAT NOT NULL,
-                lng FLOAT NOT NULL,
+                id SERIAL PRIMARY KEY,
+                location VARCHAR(255) NOT NULL,
+                lat FLOAT,
+                lng FLOAT,
                 email TEXT NOT NULL,
-                dateSubscribed VARCHAR(255) NOT NULL,
-                outageInfo TEXT,
-                PRIMARY KEY(lat, lng, email)
+                datesubscribed VARCHAR(255) NOT NULL
             );
         `;
 
-        console.log(`Created "notifications" table`);
+        console.log('Created notifications table');
 
         return {
             createTable
         };
-    } 
+    }
     catch (error) {
         console.error('Error creating notifications table:', error);
         throw error;

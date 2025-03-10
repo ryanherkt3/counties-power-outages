@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { generatePagination } from '../../lib/utils';
 import PageArrow from './page-arrow';
 
+// TODO unique key prop for each child
 export default function Pagination({ totalPages }: { totalPages: number }) {
     // Search parameters
     const pathname = usePathname();

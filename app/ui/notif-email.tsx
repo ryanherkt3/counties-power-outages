@@ -1,29 +1,10 @@
 import { Html, Heading, Text } from '@react-email/components';
 import { NotificationSub } from '../lib/definitions';
+import { getCardSections } from '../lib/outagesections';
 
 export default function NotificationEmail({ data }: { data: NotificationSub; }) {
-    const { lat, lng, datesubscribed, email } = data;
     // eslint-disable-next-line no-unused-vars
-    const cardSections = [
-        {
-            key: 'email',
-            icon: 'AtSymbolIcon',
-            title: 'Email',
-            value: email
-        },
-        {
-            key: 'coordinates',
-            icon: 'MapPinIcon',
-            title: 'Coordinates',
-            value: `${lat}, ${lng}`
-        },
-        {
-            key: 'date-subbed',
-            icon: 'CalendarIcon',
-            title: 'Date Subscribed',
-            value: datesubscribed
-        }
-    ];
+    const cardSections = getCardSections(true, data);
 
     // TODO prettify email
     return (

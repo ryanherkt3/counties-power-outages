@@ -237,6 +237,10 @@ export function generatePagination(currentPage: number, totalPages: number) {
 }
 
 export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], outageCoords: Coordinate) {
+    if (!outageCoords.lat || !outageCoords.lng) {
+        return false;
+    }
+
     if (!polygon) {
         const outageLat = parseInt(outageCoords.lat.toFixed(5));
         const outageLng = parseInt(outageCoords.lng.toFixed(5));
@@ -252,8 +256,16 @@ export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], ou
     let p1 = polygon[0];
     let p2;
 
+    if (!lat || !lng) {
+        return false;
+    }
+
     for (let i = 1; i <= num_vertices; i++) {
         p2 = polygon[i % num_vertices];
+
+        if (isInZone || !p1.lat || !p1.lng || !p2.lat || !p2.lng) {
+            break;
+        }
 
         if (lng > Math.min(p1.lng, p2.lng)) {
             if (lng <= Math.max(p1.lng, p2.lng)) {

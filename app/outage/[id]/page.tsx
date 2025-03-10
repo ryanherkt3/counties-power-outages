@@ -71,7 +71,7 @@ export default async function OutagePage({ params }: { params: { id: string } })
  *
  * @param {number} lat the latitude
  * @param {number} lng the longtitude
- * @returns HTML object (or nothing if co-ordinates are not provided)
+ * @returns HTML object (or nothing if coordinates are not provided)
  */
 function getOutageIFrame(lat: number, lng: number) {
     if (lat && lng) {

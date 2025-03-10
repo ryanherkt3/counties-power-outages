@@ -21,8 +21,8 @@ export type OutageData = {
 };
 
 export type Coordinate = {
-    lng: number;
-    lat: number;
+    lng: number | null;
+    lat: number | null;
 };
 
 export type OutageTimes = {
@@ -39,10 +39,10 @@ export type SearchData = {
 };
 
 export type NotificationSub = {
-    outagename: string;
-    lat: number;
-    lng: number;
+    id: number;
+    location: string | null;
+    lat: number | null;
+    lng: number | null;
     email: string;
     datesubscribed: string;
-    outageinfo: string | null;
 };

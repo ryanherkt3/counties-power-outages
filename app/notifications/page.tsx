@@ -50,27 +50,42 @@ export default async function NotificationsPage({searchParams}: {
             note: null,
         },
         {
-            key: 'subscribe',
-            title: 'How to subscribe to outages in your area',
+            key: 'subscribe-with-coords',
+            title: 'How to subscribe to outages in your area (with coordinates)',
             listItems: [
                 {
-                    key: 'sub-step-1',
+                    key: 'sub-step-coordy-1',
                     text: 'Search for your address on ${mapsLink}'
                 },
                 {
-                    key: 'sub-step-2',
+                    key: 'sub-step-coordy-2',
                     text: 'Right click your address and click the first option to copy the coordinates'
                 },
                 {
-                    key: 'sub-step-3',
-                    text: 'In the "Subscribe to Outages" form below, paste the coordinates in the form below with your email address'
+                    key: 'sub-step-coordy-3',
+                    text: 'In the "Subscribe to Outages" form below, ensure the "Yes" option in the question is clicked, and paste the coordinates in the form below with your email address'
                 },
                 {
-                    key: 'sub-step-4',
+                    key: 'sub-step-coordy-4',
                     text: 'You should then get a confirmation email with details of your notification'
                 }
             ],
             note: 'For the latitude, remove the minus sign from the input'
+        },
+        {
+            key: 'subscribe-without-coords',
+            title: 'How to subscribe to outages in your area (without coordinates)',
+            listItems: [
+                {
+                    key: 'sub-step-coordn-1',
+                    text: 'In the "Subscribe to Outages" form below, ensure the "No" option in the question is clicked and enter your street address in the "Location" field'
+                },
+                {
+                    key: 'sub-step-coordn-2',
+                    text: 'You should then get a confirmation email with details of your notification'
+                }
+            ],
+            note: null,
         },
         {
             // TODO add support for un-subbing via email
@@ -147,7 +162,7 @@ export default async function NotificationsPage({searchParams}: {
             >
                 {
                     subscriptions.map((subscription: NotificationSub) => {
-                        const point = {
+                        const subCoords = {
                             lat: subscription.lat,
                             lng: subscription.lng
                         };
@@ -159,7 +174,12 @@ export default async function NotificationsPage({searchParams}: {
                                 lng: outage.lng
                             };
 
-                            if (coordIsInOutageZone(point, outage.hull, outageCoords)) {
+                            const { location } = subscription;
+                            const locationMatches = location && outage.address.includes(location);
+
+                            const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull, outageCoords);
+
+                            if (coordsMatch || locationMatches) {
                                 outageIds = `${outageIds.length ? `${outageIds},` : ''}${outage.id}`;
                             }
                         });
@@ -185,11 +205,7 @@ export default async function NotificationsPage({searchParams}: {
 
 function getNote(itemNote: string | null) {
     if (itemNote) {
-        return (
-            <div>
-                <span className="font-semibold">Note:</span> {itemNote}
-            </div>
-        );
+        return <span><span className="font-semibold">Note:</span> {itemNote}</span>;
     }
 
     return null;
