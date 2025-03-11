@@ -112,8 +112,7 @@ export function getTimesAndActiveOutage(time: string, shutdownDate: string) {
  * @returns {Object} outages
  */
 export async function getActiveOutages() {
-    const apiUrl = 'https://outages.ryanherkt.com/api/getoutages';
-    const outagesReq = await fetch(apiUrl, {cache: 'no-store'});
+    const outagesReq = await fetch('https://app.countiespower.com/api/v300/outages/range/current');
     const outagesJson = await outagesReq.json();
     let outages = outagesJson.planned_outages;
 
@@ -183,21 +182,6 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: any
     });
 
     return filteredOutages;
-}
-
-/**
- * Return a specific outages by ID
- *
- * @param {Array<OutageData>} outages original list of outages
- * @param {string} id outage ID to filter by
- * @returns {OutageData | undefined} the outage data (or nothing if it cannot be found)
- */
-export function getOutageByID(outages: Array<OutageData>, id: string) {
-    const outage = outages.filter((outage: OutageData) => {
-        return outage.id === id;
-    });
-
-    return outage;
 }
 
 /**

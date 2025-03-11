@@ -7,6 +7,8 @@ import { Metadata } from 'next';
 import { BoltIcon } from '@heroicons/react/24/outline';
 import FilterType from '../ui/filters/filter-type';
 
+export const fetchCache = 'force-no-store';
+
 export const metadata: Metadata = {
     title: 'Outages List',
 };
@@ -68,6 +70,9 @@ export default async function OutagesPage(
 
     return (
         <main className="flex flex-col gap-6 px-4 py-6 page-min-height">
+            <div className="text-xl text-center">
+                Click on an outage to display more information, or use the search functions to find a specific outage
+            </div>
             {searchSection}
             <CurrentOutages
                 currentPage={currentPage}
