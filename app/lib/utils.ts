@@ -1,4 +1,5 @@
 import { Coordinate, OutageData } from './definitions';
+import { z } from 'zod';
 
 /**
  * Return if an outage is active or not by checking if the current time is greater than
@@ -236,6 +237,14 @@ export function generatePagination(currentPage: number, totalPages: number) {
     return [1, 2, '...', totalPages - 2, totalPages - 1, totalPages];
 }
 
+/**
+ * Check if the coordinates given are inside a given polygon, or match where the outage is happening
+ *
+ * @param point the coordinates of the subscription
+ * @param polygon
+ * @param outageCoords the coordinates of where the outage is happening
+ * @returns {Boolean}
+ */
 export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], outageCoords: Coordinate) {
     if (!outageCoords.lat || !outageCoords.lng) {
         return false;
@@ -283,4 +292,21 @@ export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], ou
     }
 
     return isInZone;
+}
+
+/**
+ * Check an email address is valid using Zod
+ *
+ * @param email
+ * @returns {Boolean}
+ */
+export function isValidEmail(email: String) {
+    try {
+        const emailSchema = z.string().email();
+        emailSchema.parse(email);
+        return true;
+    }
+    catch (error) {
+        return false;
+    }
 }

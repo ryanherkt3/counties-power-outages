@@ -1,9 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
-import { unstable_noStore as noStore } from 'next/cache';
 import { NotificationSub } from './definitions';
 
 const FormSchema = z.object({
@@ -98,52 +96,35 @@ export async function addSubscription(includeCoords: boolean, prevState: State, 
 
     const datesubscribed = new Date().toLocaleString();
 
-    // TODO move to backend
-    try {
-        if (includeCoords) {
-            await sql`
-            INSERT INTO notifications (location, lat, lng, email, datesubscribed)
-            VALUES (${location}, ${lat}, ${lng}, ${email}, ${datesubscribed})
-            `;
-        }
-        else {
-            await sql`
-            INSERT INTO notifications (location, email, datesubscribed)
-            VALUES (${location}, ${email}, ${datesubscribed})
-            `;
-        }
-    }
-    catch (error) {
-        return { message: 'Subscription already exists' };
-    }
+    await fetch(process.env.API_URL + '/outage', {
+        method: 'POST',
+        body: JSON.stringify(
+            {
+                location: location,
+                lat: lat,
+                lng: lng,
+                email: email,
+                datesubscribed: datesubscribed,
+                includeCoords: includeCoords
+            }
+        )
+    });
 
     revalidatePath('/notifications'); // clear cache
     return { message: 'Subscription successfully created!', errors: {} };
 }
 
 export async function getSubscriptions(email: string) {
-    noStore();
-
-    // TODO move to backend
-    try {
-        const outages = await sql<NotificationSub>`SELECT * FROM notifications WHERE email = ${email}`;
-        return outages.rows;
-    }
-    catch (error) {
-        console.error('Database Error:', error);
-        throw new Error('Database Error: Failed to fetch subscriptions');
-    }
+    const subsReq = await fetch(process.env.API_URL + `/outage?email=${email}`);
+    const subsJson = await subsReq.json();
+    return subsJson.rows;
 }
 
 export async function deleteSubscription(subscription: NotificationSub) {
-    // TODO move to backend
-    try {
-        await sql`DELETE FROM notifications WHERE id = ${subscription.id}`;
-        revalidatePath('/notifications'); // clear cache
-        return Promise.resolve(true);
-    }
-    catch (error) {
-        console.error('Database Error:', error);
-        return Promise.resolve(false);
-    }
+    await fetch(process.env.API_URL + '/outage', {
+        method: 'DELETE',
+        body: JSON.stringify({ id: subscription.id })
+    });
+    // TODO remove card from UI without needing another API request
+    revalidatePath('/notifications'); // clear cache
 }
