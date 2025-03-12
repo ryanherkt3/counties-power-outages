@@ -13,14 +13,6 @@ npx create-next-app@latest counties-power-outages --use-npm --example "https://g
 npm install
 ```
 
-For local development, Python is also required. To download version 3.12 go to https://www.python.org/downloads/.
-
-Then, to install the required Python packages, run:
-
-```bash
-pip install -r requirements.txt
-```
-
 ### Local Development
 
 ```bash
@@ -33,7 +25,7 @@ And browse to http://localhost:3000.
 
 * Outages page with filters - search for a specific outage by status (Active / Scheduled / Postponed / Cancelled), start and end date, and by the location name.
 * Notification system (WIP 🔧) - subscribe to notifications for outages in your neighbourhood without the need for an account.
-** **Note:** if developing locally, the notification system requires a database to be set up (e.g. on Vercel) and `.env` variables for this to work. You will also need a [Resend](https://resend.com/) account to be able to send the notification emails.
+** **Note:** if developing locally, the notification system requires a database to be set up (e.g. on Vercel via [Neon Postgres](https://neon.tech/)) and `.env` variables for this to work. You will also need a [Resend](https://resend.com/) account to be able to send the notification emails, as well as a purchased domain.
 
 ### Future improvements
 
