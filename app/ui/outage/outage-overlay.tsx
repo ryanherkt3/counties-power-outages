@@ -18,11 +18,9 @@ export default function OutageOverlay(
         closeCallback: Function
     }
 ) {
-    const thisOutage = data;
+    const { statusText, lat: outageLat, lng: outageLng, address, latestInformation } = data;
 
-    const { statusText, lat: outageLat, lng: outageLng, address, latestInformation } = thisOutage;
-
-    const outageSections = getOutageSections(true, false, thisOutage);
+    const outageSections = getOutageSections(true, false, data);
 
     return (
         <div

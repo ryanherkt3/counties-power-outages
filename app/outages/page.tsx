@@ -69,7 +69,7 @@ export default async function OutagesPage(
     }
 
     return (
-        <main className="flex flex-col gap-6 px-4 py-6 page-min-height">
+        <div className="flex flex-col gap-6 px-4 py-6 page-min-height">
             <div className="text-xl text-center">
                 Click on an outage to display more information, or use the search functions to find a specific outage
             </div>
@@ -81,7 +81,7 @@ export default async function OutagesPage(
                 currentPageIsLast={currentPage === totalPages}
             />
             <Pagination totalPages={totalPages} />
-        </main>
+        </div>
     );
 }
 
