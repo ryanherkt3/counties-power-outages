@@ -197,14 +197,14 @@ export function generatePagination(currentPage: number, totalPages: number) {
         return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 
-    // If the current page is among the first 2 pages, show the first 3, an ellipsis, and the last page
-    if (currentPage <= 2) {
+    // If the current page is among the first 3 pages, show the first 3, an ellipsis, and the last page
+    if (currentPage <= 3) {
         return [1, 2, 3, '...', totalPages];
     }
 
-    // If the current page is the 3rd or more (up to the 3rd last page),
-    // show the first 3, an ellipsis, and the last page
-    if (currentPage >= 3 && currentPage < totalPages - 2) {
+    // If the current page is the 4th or more (up to the 3rd last page),
+    // show 1, an ellipsis, the next 3, and the last page
+    if (currentPage > 3 && currentPage < totalPages - 2) {
         return [
             1,
             '...',

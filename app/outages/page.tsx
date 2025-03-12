@@ -13,22 +13,21 @@ export const metadata: Metadata = {
     title: 'Outages List',
 };
 
-export default async function OutagesPage(
-    {
-        searchParams
-    }:
-    {
-        searchParams?: {
-            query?: string;
-            page?: string;
-            status?: string;
-            startdate?: string;
-            enddate?: string;
-        };
-    }
-) {
+type SearchParams = Promise<{
+    query: string | undefined,
+    page: string | undefined,
+    status: string | undefined,
+    startdate: string | undefined,
+    enddate: string | undefined
+}>
+
+export default async function OutagesPage(props: {
+    searchParams: SearchParams
+}) {
     const outages = await getActiveOutages();
-    const currentPage = Number(searchParams?.page) || 1;
+    const searchParams = await props.searchParams;
+
+    const currentPage = Number(searchParams.page) || 1;
 
     const filteredNotSearchedOutages = getFilteredOutages(outages, {});
     const filteredOutages = getFilteredOutages(outages, searchParams);
@@ -40,8 +39,8 @@ export default async function OutagesPage(
     // Start and end dates for the filters
     const startDate = filteredNotSearchedOutages[0]?.ShutdownDateTime || '';
     const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.ShutdownDateTime || '';
-    const startDateEF = searchParams?.enddate ? getFilteredDate(searchParams?.enddate) : endDate;
-    const endDateSF = searchParams?.startdate ? getFilteredDate(searchParams?.startdate) : startDate;
+    const startDateEF = searchParams.enddate ? getFilteredDate(searchParams.enddate) : endDate;
+    const endDateSF = searchParams.startdate ? getFilteredDate(searchParams.startdate) : startDate;
 
     const searchSection = getSearchSection(startDate, startDateEF, endDateSF, endDate);
 
@@ -62,7 +61,21 @@ export default async function OutagesPage(
 
     // Redirect user to first page if they enter an invalid (or no) page number
     if (currentPage > totalPages || currentPage <= 0) {
-        const params = new URLSearchParams(searchParams);
+        let queryString = `page=${searchParams.page}`;
+        if (searchParams.query) {
+            queryString += `&query=${searchParams.query}`;
+        }
+        if (searchParams.status) {
+            queryString += `&status=${searchParams.status}`;
+        }
+        if (searchParams.startdate) {
+            queryString += `&startdate=${searchParams.startdate}`;
+        }
+        if (searchParams.enddate) {
+            queryString += `&enddate=${searchParams.enddate}`;
+        }
+
+        const params = new URLSearchParams(queryString);
         params.set('page', '1'); // reset to page 1
 
         redirect(`/outages/?${params.toString()}`);
