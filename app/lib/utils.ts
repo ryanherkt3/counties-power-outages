@@ -112,8 +112,7 @@ export function getTimesAndActiveOutage(time: string, shutdownDate: string) {
  * @returns {Object} outages
  */
 export async function getActiveOutages() {
-    const apiUrl = 'https://outages.ryanherkt.com/api/getoutages';
-    const outagesReq = await fetch(apiUrl, {cache: 'no-store'});
+    const outagesReq = await fetch('https://app.countiespower.com/api/v300/outages/range/current');
     const outagesJson = await outagesReq.json();
     let outages = outagesJson.planned_outages;
 
@@ -186,21 +185,6 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: any
 }
 
 /**
- * Return a specific outages by ID
- *
- * @param {Array<OutageData>} outages original list of outages
- * @param {string} id outage ID to filter by
- * @returns {OutageData | undefined} the outage data (or nothing if it cannot be found)
- */
-export function getOutageByID(outages: Array<OutageData>, id: string) {
-    const outage = outages.filter((outage: OutageData) => {
-        return outage.id === id;
-    });
-
-    return outage;
-}
-
-/**
  * Return a pagination object
  *
  * @param {number} currentPage
@@ -213,14 +197,14 @@ export function generatePagination(currentPage: number, totalPages: number) {
         return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 
-    // If the current page is among the first 2 pages, show the first 3, an ellipsis, and the last page
-    if (currentPage <= 2) {
+    // If the current page is among the first 3 pages, show the first 3, an ellipsis, and the last page
+    if (currentPage <= 3) {
         return [1, 2, 3, '...', totalPages];
     }
 
-    // If the current page is the 3rd or more (up to the 3rd last page),
-    // show the first 3, an ellipsis, and the last page
-    if (currentPage >= 3 && currentPage < totalPages - 2) {
+    // If the current page is the 4th or more (up to the 3rd last page),
+    // show 1, an ellipsis, the next 3, and the last page
+    if (currentPage > 3 && currentPage < totalPages - 2) {
         return [
             1,
             '...',

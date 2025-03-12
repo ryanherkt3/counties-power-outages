@@ -53,7 +53,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
 function getPaginationItem(pageNumber: number | string, currentPage: number, createPageURL: Function) {
     if (pageNumber === '...') {
         return (
-            <div className='text-sm font-medium rounded-full p-3'>
+            <div key="more-pages" className='text-sm font-medium rounded-full p-3'>
                 {pageNumber}
             </div>
         );
