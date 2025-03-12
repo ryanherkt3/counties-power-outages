@@ -12,12 +12,16 @@ export const metadata: Metadata = {
     title: 'Notifications',
 };
 
-export default async function NotificationsPage({searchParams}: {
-    searchParams?: {
-        email?: string;
-    };
+type SearchParams = Promise<{
+    email: string | undefined
+}>
+
+export default async function NotificationsPage(props: {
+    searchParams: SearchParams
 }) {
-    const query = searchParams?.email || '';
+    const searchParams = await props.searchParams;
+    const query = searchParams.email || '';
+
     const subscriptions = await getSubscriptions(query);
     const outages = await getActiveOutages();
 

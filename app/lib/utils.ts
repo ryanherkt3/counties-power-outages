@@ -153,13 +153,13 @@ export function getFilteredDate(date: string) {
  * @returns {Array<OutageData>} new filtered list of outages
  */
 export function getFilteredOutages(outages: Array<OutageData>, searchParams: any) {
-    const address = searchParams?.query;
-    const status = searchParams?.status;
-    const startDate = searchParams?.startdate;
-    const endDate = searchParams?.enddate;
+    const address = searchParams.query;
+    const outageStatus = searchParams.status;
+    const startDate = searchParams.startdate;
+    const endDate = searchParams.enddate;
 
     // Return original list if no search parameters
-    if (!address && !status && !startDate && !endDate) {
+    if (!address && !outageStatus && !startDate && !endDate) {
         return outages;
     }
 
@@ -175,7 +175,7 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: any
     // Otherwise return filtered outages
     const filteredOutages = outages.filter((outage: OutageData) => {
         const matchesAddress = address ? outage.address.toLowerCase().includes(address) : true;
-        const matchesStatus = status ? outage.statusText.toLowerCase().includes(status) : true;
+        const matchesStatus = outageStatus ? outage.statusText.toLowerCase().includes(outageStatus) : true;
         const onOrAfterStartDate = startDate ? getDateMatch(outage, startDate, true) : true;
         const onOrBeforeEndDate = endDate ? getDateMatch(outage, endDate, false) : true;
 
