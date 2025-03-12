@@ -1,41 +1,46 @@
-import { getActiveOutages, getOutageByID } from '@/app/lib/utils';
-import notFound from './not-found';
 import LatestInfo from '@/app/ui/latest-info';
-import { Metadata } from 'next';
 import { getOutageSections } from '@/app/lib/outagesections';
 import OutageStatus from '@/app/ui/outage/outage-status';
 import { OutageData } from '@/app/lib/definitions';
+import CustomIcon from '../custom-icon';
+import clsx from 'clsx';
 
-type Props = {
-    params: { id: string }
-}
-
-export async function generateMetadata(
-    { params }: Props,
-): Promise<Metadata> {
-    return {
-        title: `Outage ${params.id}`,
-    };
-}
-
-export default async function OutagePage({ params }: { params: { id: string } }) {
-    const { id } = params;
-
-    const outages = await getActiveOutages();
-    const thisOutage: OutageData = getOutageByID(outages, id)[0];
-
-    // Show "not found" page if this specific outage doesn't exist
-    if (!thisOutage) {
-        return notFound();
+export default function OutageOverlay(
+    {
+        data,
+        hidden,
+        closeCallback
+    }:
+    {
+        data: OutageData;
+        hidden: Boolean;
+        closeCallback: Function
     }
+) {
+    const { statusText, lat: outageLat, lng: outageLng, address, latestInformation } = data;
 
-    const { statusText, lat: outageLat, lng: outageLng, address, latestInformation } = thisOutage;
+    const outageSections = getOutageSections(true, false, data);
 
-    const outageSections = getOutageSections(true, false, thisOutage);
+    const layoutClasses = 'fixed flex flex-col gap-8';
+    const positionScrollClasses = 'top-0 left-0 bottom-0 overflow-y-auto';
 
     return (
-        <main className="flex flex-col gap-8 px-4 py-6 text-center">
-            <div className="text-2xl font-semibold text-black">{address}</div>
+        <div
+            className={
+                clsx(
+                    `${layoutClasses} px-4 py-6 text-center ${positionScrollClasses} w-[100%] h-[100%] z-20 bg-white`,
+                    {
+                        'hidden': hidden
+                    }
+                )
+            }
+        >
+            <div className="flex flex-row gap-2 justify-between">
+                <div className="text-2xl font-semibold text-black">{address}</div>
+                <button onClick={ closeCallback.bind(null) }>
+                    <CustomIcon icon={'XMarkIcon'} iconClass={'w-7 cursor-pointer'} />
+                </button>
+            </div>
             <OutageStatus
                 className="text-xl p-3 font-semibold rounded-xl"
                 statusText={statusText}
@@ -62,7 +67,7 @@ export default async function OutagePage({ params }: { params: { id: string } })
             {
                 getOutageIFrame(outageLat, outageLng)
             }
-        </main>
+        </div>
     );
 }
 
