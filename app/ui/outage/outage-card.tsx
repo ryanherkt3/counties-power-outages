@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 'use client';
 
 import { OutageData } from '../../lib/definitions';
@@ -22,6 +21,8 @@ export default function OutageCard({ data }: { data: OutageData; }) {
         setHideOverlay(!hideOverlay);
         document.querySelector('body')?.classList.toggle('no-scroll', hideOverlay);
     };
+
+    const cardClasses = 'flex md:flex-row md:justify-between gap-2 flex-col text-lg font-normal';
 
     return (
         <>
@@ -51,7 +52,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         { 'hidden': !showContents }
                     )
                 }>
-                    <div className='flex md:flex-row md:justify-between gap-2 md:items-center flex-col text-lg font-normal'>
+                    <div className={`${cardClasses} md:items-center`}>
                         <div className="flex flex-row gap-2">
                             <InformationCircleIcon className="w-7" />
                             <span className="font-semibold">Status</span>
@@ -69,7 +70,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                             return (
                                 <div
                                     key={key}
-                                    className='flex md:flex-row md:justify-between gap-2 flex-col text-lg font-normal'
+                                    className={`${cardClasses}`}
                                 >
                                     <div className="flex flex-row gap-2">
                                         <CustomIcon icon={icon} iconClass={'w-7'} />

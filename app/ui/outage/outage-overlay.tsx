@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import LatestInfo from '@/app/ui/latest-info';
 import { getOutageSections } from '@/app/lib/outagesections';
 import OutageStatus from '@/app/ui/outage/outage-status';
@@ -22,11 +21,14 @@ export default function OutageOverlay(
 
     const outageSections = getOutageSections(true, false, data);
 
+    const layoutClasses = 'fixed flex flex-col gap-8';
+    const positionScrollClasses = 'top-0 left-0 bottom-0 overflow-y-auto';
+
     return (
         <div
             className={
                 clsx(
-                    'fixed flex flex-col gap-8 px-4 py-6 text-center top-0 left-0 overflow-y-auto bottom-0 w-[100%] h-[100%] z-20 bg-white',
+                    `${layoutClasses} px-4 py-6 text-center ${positionScrollClasses} w-[100%] h-[100%] z-20 bg-white`,
                     {
                         'hidden': hidden
                     }
