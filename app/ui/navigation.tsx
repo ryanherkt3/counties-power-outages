@@ -84,8 +84,8 @@ export default function Navigation() {
                 clsx(
                     'md:flex md:flex-row md:gap-3',
                     {
-                        'hidden': !mobileNavOpen,
-                        'absolute-nav': mobileNavOpen,
+                        'hidden': !mobileNavOpen && isMobileScreen,
+                        'absolute-nav': mobileNavOpen && isMobileScreen,
                     }
                 )
             }>

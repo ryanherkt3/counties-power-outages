@@ -291,6 +291,7 @@ export function isValidEmail(email: String) {
         return true;
     }
     catch (error) {
+        console.log(error);
         return false;
     }
 }
