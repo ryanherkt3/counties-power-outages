@@ -50,7 +50,7 @@ export async function POST(request: Request) {
             headers: { 'Content-Type': 'application/json' }
         });
     }
-    
+
     // TODO check for valid location, date subscribed, lat, lng
     const { includeCoords, location, lat, lng, email, datesubscribed } = body;
 
