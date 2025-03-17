@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl;
-    const email = searchParams.get('email'); // api/outage?email=xx
+    const email = searchParams.get('email'); // api/subscription?email=xx
 
     if (!email || !isValidEmail(email)) {
         return new NextResponse(JSON.stringify({ 'error': 'Invalid arguments', 'rows': [] }), {
@@ -50,7 +50,8 @@ export async function POST(request: Request) {
             headers: { 'Content-Type': 'application/json' }
         });
     }
-
+    
+    // TODO check for valid location, date subscribed, lat, lng
     const { includeCoords, location, lat, lng, email, datesubscribed } = body;
 
     // Add outage subscription to DB

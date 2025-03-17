@@ -96,7 +96,7 @@ export async function addSubscription(includeCoords: boolean, prevState: State, 
 
     const datesubscribed = new Date().toLocaleString();
 
-    await fetch(process.env.API_URL + '/outage', {
+    await fetch(process.env.API_URL + '/subscription', {
         method: 'POST',
         body: JSON.stringify(
             {
@@ -115,13 +115,13 @@ export async function addSubscription(includeCoords: boolean, prevState: State, 
 }
 
 export async function getSubscriptions(email: string) {
-    const subsReq = await fetch(process.env.API_URL + `/outage?email=${email}`);
+    const subsReq = await fetch(process.env.API_URL + `/subscription?email=${email}`);
     const subsJson = await subsReq.json();
     return subsJson.rows;
 }
 
 export async function deleteSubscription(subscription: NotificationSub) {
-    await fetch(process.env.API_URL + '/outage', {
+    await fetch(process.env.API_URL + '/subscription', {
         method: 'DELETE',
         body: JSON.stringify({ id: subscription.id })
     });
