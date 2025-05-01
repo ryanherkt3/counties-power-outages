@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { OutageData } from './definitions';
 
 /**
@@ -6,11 +7,13 @@ import { OutageData } from './definitions';
  *
  * @param {string} dateStr
  * @param {number} startHour
+ * @param {number} startMinute
  * @returns {Boolean}
  */
-export function isOutageActive(dateStr: string, startHour: number) {
+export function isOutageActive(dateStr: string, startHour: number, startMinute: number) {
     const outageStartDate = new Date(dateStr);
     outageStartDate.setHours(startHour);
+    outageStartDate.setMinutes(startMinute);
 
     const currentDate = new Date();
 
@@ -65,43 +68,38 @@ export function getTimeStrings(splitTime: Array<string>) {
 /**
  * Return an object containing the outage's start and end times, if it is active, if it is expired
  *
- * @param {string} time the duration of the outage e.g. 09:00 - 15:30 (9 AM to 3:30 PM)
- * @param {string} shutdownDate string representation of the shutdown date e.g. 2025-01-13T00:00:00+13:00
+ * @param {string} startTime string representation of the shutdown start date e.g. 2025-01-13T00:00:00+13:00
+ * @param {string} endTime string representation of the shutdown end date e.g. 2025-01-13T00:00:00+13:00
  * @returns {Object} the outage's start and end times, if it is active, if it is expired
  */
-export function getTimesAndActiveOutage(time: string, shutdownDate: string) {
-    const newTimes: string[] = [];
-    const newTimeString = time.split(' - ');
+export function getTimesAndActiveOutage(startTime: string, endTime: string) {
+    const startTimeString = startTime.split('T')[1].split('+')[0];
+    const endTimeString = endTime.split('T')[1].split('+')[0];
 
     // Get start hour and check if outage is accurate
-    const startHour = newTimeString[0].split(':')[0];
-    const endHour = newTimeString[1].split(':')[0];
-    const endMinute = newTimeString[1].split(':')[1];
-
-    // Get formatted times (e.g. 8:30 AM)
-    newTimeString.map((newTime : string) => {
-        const timeSegments = newTime.split(':');
-        newTimes.push(getTimeStrings(timeSegments));
-    });
+    const startHour = startTimeString.split(':')[0];
+    const startMinute = startTimeString.split(':')[1];
+    const endHour = endTimeString.split(':')[0];
+    const endMinute = endTimeString.split(':')[1];
 
     // If the outage has passed, do not show it
-    if (isOutageExpired(shutdownDate, parseInt(startHour), parseInt(endHour), parseInt(endMinute))) {
+    if (isOutageExpired(startTime, parseInt(startHour), parseInt(endHour), parseInt(endMinute))) {
         return {
             activeOutage: false,
             expiredOutage: true,
             times: {
-                startTime: newTimes[0],
-                endTime: newTimes[1],
+                startTime: getTimeStrings(startTimeString.split(':')),
+                endTime: getTimeStrings(endTimeString.split(':')),
             }
         };
     }
 
     return {
-        activeOutage: isOutageActive(shutdownDate, parseInt(startHour)),
+        activeOutage: isOutageActive(startTime, parseInt(startHour), parseInt(startMinute)),
         expiredOutage: false,
         times: {
-            startTime: newTimes[0],
-            endTime: newTimes[1],
+            startTime: getTimeStrings(startTimeString.split(':')),
+            endTime: getTimeStrings(endTimeString.split(':')),
         }
     };
 }
@@ -112,12 +110,14 @@ export function getTimesAndActiveOutage(time: string, shutdownDate: string) {
  * @returns {Object} outages
  */
 export async function getActiveOutages() {
-    const outagesReq = await fetch('https://app.countiespower.com/api/v300/outages/range/current');
+    const outagesReq = await fetch('https://api.integration.countiesenergy.co.nz/user/v1.0/shutdowns');
     const outagesJson = await outagesReq.json();
     let outages = outagesJson.planned_outages;
 
     outages.map((outage: OutageData) => {
-        const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownTime1, outage.ShutdownDateTime);
+        const shutdownPeriods = outage.shutdownPeriods[0];
+
+        const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownPeriods.start, shutdownPeriods.end);
         outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
         if (timesAndIsActiveOutage.activeOutage && outage.statusText !== 'Cancelled') {

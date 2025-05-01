@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import LatestInfo from '@/app/ui/latest-info';
 import { getOutageSections } from '@/app/lib/outagesections';
 import OutageStatus from '@/app/ui/outage/outage-status';
@@ -13,7 +14,7 @@ export default function OutageOverlay(
     }:
     {
         data: OutageData;
-        hidden: Boolean;
+        hidden: boolean;
         closeCallback: Function
     }
 ) {

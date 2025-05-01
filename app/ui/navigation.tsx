@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 'use client';
 
 import Link from 'next/link';
@@ -5,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import SkeletonNavBar from './skeletons/skeleton-nav-bar';
 
 export default function Navigation() {
     const pathname = usePathname();
@@ -63,6 +65,13 @@ export default function Navigation() {
         }
     ];
 
+    // Show a temporary skeleton nav while figuring out if the device is a mobile one or not
+    // TODO implement more robust fix for nav links showing on mobile when they shouldn't (due to tailwind 4 updates)
+    // Revert back to tailwind 3?
+    if (!isMobileScreenSet) {
+        return <SkeletonNavBar />;
+    }
+
     return (
         <div className="flex sticky top-0 h-20 p-4 items-center justify-between border-b border-gray-400 bg-white z-10">
             <div>
@@ -84,8 +93,8 @@ export default function Navigation() {
                 clsx(
                     'md:flex md:flex-row md:gap-3',
                     {
-                        'hidden': !mobileNavOpen,
-                        'absolute-nav': mobileNavOpen,
+                        'hidden': !mobileNavOpen && isMobileScreen,
+                        'absolute-nav': mobileNavOpen && isMobileScreen,
                     }
                 )
             }>
