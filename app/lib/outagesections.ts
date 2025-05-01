@@ -7,7 +7,9 @@ export const getOutageSections = (
     addNewPrefix: boolean,
     data: OutageData,
 ) => {
-    const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownTime1, data.ShutdownDateTime);
+    const shutdownPeriods = data.shutdownPeriods[0];
+
+    const timesAndActiveOutage = getTimesAndActiveOutage(shutdownPeriods.start, shutdownPeriods.end);
 
     const shutdownTimes = timesAndActiveOutage.times;
     const outageIsPostponed = data.statusText === 'Postponed';

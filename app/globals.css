@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 .hidden {
     display: none;
@@ -39,5 +37,18 @@ iframe.map-size {
 @media screen and (min-width: 768px) {
     iframe.map-size {
         height: 600px;
+    }
+}
+
+.shimmer {
+    background: linear-gradient(-45deg, #eee 40%, #fafafa 50%, #eee 60%);
+    background-size: 300%;
+    background-position-x: 100%;
+    animation: shimmer 1s infinite linear;
+}
+
+@keyframes shimmer {
+    to {
+       background-position-x: 0%
     }
 }
