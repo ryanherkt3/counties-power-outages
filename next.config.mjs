@@ -3,8 +3,10 @@ const nextConfig = {
     async rewrites() {
         return [
             {
-                source: '/api/getoutages',
-                destination: 'https://api.integration.countiesenergy.co.nz/user/v1.0/shutdowns',
+                source: '/api/:path*',
+                destination: process.env.NODE_ENV === 'development'
+                    ? 'http://127.0.0.1:8080/api/:path*'
+                    : '/api/',
             },
         ]
     },

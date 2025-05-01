@@ -14,8 +14,6 @@ export async function GET() {
         });
     }
 
-    console.log(outages.rows);
-
     if (outages && outages.rows) {
         return new Response(JSON.stringify({ 'rows': outages.rows }), {
             status: 200,
