@@ -7,8 +7,6 @@ import { Metadata } from 'next';
 import { BoltIcon } from '@heroicons/react/24/outline';
 import FilterType from '../ui/filters/filter-type';
 
-export const fetchCache = 'force-no-store';
-
 export const metadata: Metadata = {
     title: 'Outages List',
 };
