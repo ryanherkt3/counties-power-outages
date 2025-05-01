@@ -166,9 +166,9 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: any
         date = getFilteredDate(date);
 
         if (isStartDate) {
-            return new Date(outage.ShutdownDateTime).getTime() >= new Date(date).getTime();
+            return new Date(outage.shutdownDateTime).getTime() >= new Date(date).getTime();
         }
-        return new Date(outage.ShutdownDateTime).getTime() <= new Date(date).getTime();
+        return new Date(outage.shutdownDateTime).getTime() <= new Date(date).getTime();
     };
 
     // Otherwise return filtered outages

@@ -1,7 +1,7 @@
 export type OutageData = {
     id: string;
     description: string;
-    ShutdownDateTime: string;
+    shutdownDateTime: string;
     shutdownDate: string;
     shutdownPeriods: Array<ShutdownPeriods>;
     feeder: string;

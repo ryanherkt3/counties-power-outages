@@ -37,8 +37,8 @@ export default async function OutagesPage(props: {
     const totalPages = Math.ceil(filteredOutages.length / outagesPerPage);
 
     // Start and end dates for the filters
-    const startDate = filteredNotSearchedOutages[0]?.ShutdownDateTime || '';
-    const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.ShutdownDateTime || '';
+    const startDate = filteredNotSearchedOutages[0]?.shutdownDateTime || '';
+    const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.shutdownDateTime || '';
     const startDateEF = searchParams.enddate ? getFilteredDate(searchParams.enddate) : endDate;
     const endDateSF = searchParams.startdate ? getFilteredDate(searchParams.startdate) : startDate;
 
