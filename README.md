@@ -13,6 +13,14 @@ npx create-next-app@latest counties-power-outages --use-npm --example "https://g
 npm install
 ```
 
+For local development, Python is also required. To download version 3.12 go to https://www.python.org/downloads/.
+
+Then, to install the required Python packages, run:
+
+```bash
+pip install -r requirements.txt
+```
+
 ### Local Development
 
 ```bash
