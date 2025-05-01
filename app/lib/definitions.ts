@@ -1,5 +1,6 @@
 export type OutageData = {
     id: string;
+    projectType: string;
     description: string;
     shutdownDateTime: string;
     shutdownDate: string;
@@ -16,6 +17,7 @@ export type OutageData = {
     originalShutdownDate: string;
     originalShutdownPeriods: ShutdownPeriods;
     expiredOutage: boolean;
+    lastModified: string;
 };
 
 export type ShutdownPeriods = {

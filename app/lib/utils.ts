@@ -110,12 +110,12 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
  * @returns {Object} outages
  */
 export async function getActiveOutages() {
-    const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages');
-    // const outagesReq = await fetch('https://api.integration.countiesenergy.co.nz/user/v1.0/shutdowns');
-
-    console.log(outagesReq);
-
+    // Revalidate every 12 hours
+    const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages', { next: { revalidate: 43200 } });
     const outagesJson = await outagesReq.json();
+
+    console.log(outagesJson);
+
     let outages = outagesJson.planned_outages;
 
     outages.map((outage: OutageData) => {
