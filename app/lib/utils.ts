@@ -110,8 +110,8 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
  * @returns {Object} outages
  */
 export async function getActiveOutages() {
-    // const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages');
-    const outagesReq = await fetch('https://api.integration.countiesenergy.co.nz/user/v1.0/shutdowns');
+    const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages');
+    // const outagesReq = await fetch('https://api.integration.countiesenergy.co.nz/user/v1.0/shutdowns');
 
     console.log(outagesReq);
 
