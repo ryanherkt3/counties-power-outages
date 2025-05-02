@@ -11,7 +11,7 @@ import CustomIcon from '../custom-icon';
 import OutageOverlay from './outage-overlay';
 
 export default function OutageCard({ data }: { data: OutageData; }) {
-    const { id, address, statusText, latestInformation } = data;
+    const { id, address, statustext, latestinformation } = data;
 
     const [showContents, setShowContents] = useState(true);
     const outageSections = getOutageSections(false, true, data);
@@ -59,7 +59,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         </div>
                         <OutageStatus
                             className="font-medium px-2 py-1 rounded text-center"
-                            statusText={statusText}
+                            statusText={statustext}
                             overrideBg={false}
                         />
                     </div>
@@ -83,7 +83,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                             );
                         })
                     }
-                    <LatestInfo latestInformation={latestInformation} />
+                    <LatestInfo latestInformation={latestinformation} />
                 </div>
             </div>
             <OutageOverlay data={data} hidden={hideOverlay} closeCallback={showOutageOverlay} />
