@@ -1,12 +1,11 @@
 import Search from '../ui/search';
 import Pagination from '../ui/pagination/pagination';
 import { redirect } from 'next/navigation';
-import { getFilteredDate, getFilteredOutages } from '../lib/utils';
+import { getActiveOutages, getFilteredDate, getFilteredOutages } from '../lib/utils';
 import CurrentOutages from '../ui/outage/current-outages';
 import { Metadata } from 'next';
 import { BoltIcon } from '@heroicons/react/24/outline';
 import FilterType from '../ui/filters/filter-type';
-import { OutageData } from '../lib/definitions';
 
 export const metadata: Metadata = {
     title: 'Outages List',
@@ -23,7 +22,7 @@ type SearchParams = Promise<{
 export default async function OutagesPage(props: {
     searchParams: SearchParams
 }) {
-    const outages: OutageData[] = [];
+    const outages = await getActiveOutages();
     const searchParams = await props.searchParams;
 
     const currentPage = Number(searchParams.page) || 1;

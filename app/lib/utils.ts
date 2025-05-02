@@ -112,6 +112,11 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
 export async function getActiveOutages() {
     // Revalidate every 12 hours
     const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages', { next: { revalidate: 43200 } });
+
+    // For local development only
+    // const localApiUrl = 'http://localhost:3000/api/getoutages';
+    // const outagesReq = await fetch(localApiUrl);
+
     const outagesJson = await outagesReq.json();
 
     let outages = outagesJson.planned_outages;
