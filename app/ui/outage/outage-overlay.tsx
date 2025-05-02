@@ -18,7 +18,7 @@ export default function OutageOverlay(
         closeCallback: Function
     }
 ) {
-    const { statusText, lat: outageLat, lng: outageLng, address, latestInformation } = data;
+    const { statustext, lat: outageLat, lng: outageLng, address, latestinformation } = data;
 
     const outageSections = getOutageSections(true, false, data);
 
@@ -44,10 +44,10 @@ export default function OutageOverlay(
             </div>
             <OutageStatus
                 className="text-xl p-3 font-semibold rounded-xl"
-                statusText={statusText}
+                statusText={statustext}
                 overrideBg={false}
             />
-            <LatestInfo latestInformation={latestInformation} />
+            <LatestInfo latestInformation={latestinformation} />
             <div className="flex md:flex-row md:justify-between flex-col gap-4">
                 {
                     outageSections.map((section) => {

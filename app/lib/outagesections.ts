@@ -10,10 +10,10 @@ import { getTimesAndActiveOutage } from './utils';
  * @returns {Object} outage section segments
  */
 export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolean, data: OutageData) {
-    const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownTime1, data.ShutdownDateTime);
+    const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownperiods[0].start, data.shutdownperiods[0].end);
 
     const shutdownTimes = timesAndActiveOutage.times;
-    const outageIsPostponed = data.statusText === 'Postponed';
+    const outageIsPostponed = data.statustext === 'Postponed';
 
     const postponedDateString = 'Original Date';
     const dateString = `${outageIsPostponed ? 'New ' : ''}Date`;
@@ -29,7 +29,7 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
                 key: 'postponed-date',
                 icon: 'CalendarIcon',
                 title: uppercaseTitles ? postponedDateString.toUpperCase() : postponedDateString,
-                value: data.originalShutdownDate,
+                value: data.originalshutdowndate,
             }
         ]:
         [];
@@ -39,7 +39,7 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
             key: 'outage-date',
             icon: 'CalendarIcon',
             title: uppercaseTitles ? dateString.toUpperCase() : dateString,
-            value: data.shutdownDate,
+            value: data.shutdowndate,
         },
         {
             key: 'outage-start',
@@ -57,7 +57,7 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
             key: 'customers-affected',
             icon: 'UserIcon',
             title: uppercaseTitles ? customersAffectedString.toUpperCase() : customersAffectedString,
-            value: data.affectedCustomers.toString(),
+            value: data.affectedcustomers.toString(),
         }
     );
 

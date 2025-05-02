@@ -113,20 +113,23 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
 export async function getActiveOutages() {
     // Revalidate every 12 hours
     const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages', { next: { revalidate: 43200 } });
-    const outagesJson = await outagesReq.json();
 
-    console.log(outagesJson);
+    // For local development only
+    // const localApiUrl = 'http://localhost:3000/api/getoutages';
+    // const outagesReq = await fetch(localApiUrl);
+
+    const outagesJson = await outagesReq.json();
 
     let outages = outagesJson.planned_outages;
 
     outages.map((outage: OutageData) => {
-        const shutdownPeriods = outage.shutdownPeriods[0];
+        const shutdownperiods = outage.shutdownperiods[0];
 
-        const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownPeriods.start, shutdownPeriods.end);
+        const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
         outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
-        if (timesAndIsActiveOutage.activeOutage && outage.statusText !== 'Cancelled') {
-            outage.statusText = 'Active';
+        if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
+            outage.statustext = 'Active';
         }
     });
 
@@ -171,15 +174,15 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: any
         date = getFilteredDate(date);
 
         if (isStartDate) {
-            return new Date(outage.shutdownDateTime).getTime() >= new Date(date).getTime();
+            return new Date(outage.shutdowndatetime).getTime() >= new Date(date).getTime();
         }
-        return new Date(outage.shutdownDateTime).getTime() <= new Date(date).getTime();
+        return new Date(outage.shutdowndatetime).getTime() <= new Date(date).getTime();
     };
 
     // Otherwise return filtered outages
     const filteredOutages = outages.filter((outage: OutageData) => {
         const matchesAddress = address ? outage.address.toLowerCase().includes(address) : true;
-        const matchesStatus = outageStatus ? outage.statusText.toLowerCase().includes(outageStatus) : true;
+        const matchesStatus = outageStatus ? outage.statustext.toLowerCase().includes(outageStatus) : true;
         const onOrAfterStartDate = startDate ? getDateMatch(outage, startDate, true) : true;
         const onOrBeforeEndDate = endDate ? getDateMatch(outage, endDate, false) : true;
 
@@ -288,7 +291,7 @@ export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], ou
  * @param email
  * @returns {Boolean}
  */
-export function isValidEmail(email: String) {
+export function isValidEmail(email: string) {
     try {
         const emailSchema = z.string().email();
         emailSchema.parse(email);

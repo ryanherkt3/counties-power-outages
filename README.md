@@ -1,8 +1,6 @@
 # Counties Power Outages Website
 
-**NOTE:** The developers who built the official Counties Power Outages website have made API updates which has made fetching the outages data not work on my live website, so the live link has been temporarily removed until this gets fixed.
-
-This website is built using [Next.js](https://nextjs.org/) - a modern React framework, and hosted on [Vercel](https://vercel.com/). This website / source code is not affiliated with Counties Power.
+This website (https://outages.ryanherkt.com) is built using [Next.js](https://nextjs.org/) - a modern React framework, and hosted on [Vercel](https://vercel.com/). This website / source code is not affiliated with Counties Power.
 
 For a package manager, npm is preferred (Node.js must also be installed) - https://docs.npmjs.com/downloading-and-installing-node-js-and-npm.
 
@@ -12,24 +10,35 @@ To clone the local repository and install the Node/NPM packages, run:
 
 ```bash
 npx create-next-app@latest counties-power-outages --use-npm --example "https://github.com/ryanherkt3/counties-power-outages/tree/main"
-npm install
-```
-
-For local development, Python is also required. To download version 3.12 go to https://www.python.org/downloads/.
-
-Then, to install the required Python packages, run:
-
-```bash
-pip install -r requirements.txt
+npm install --ignore-scripts
 ```
 
 ### Local Development
 
+Prior to visiting your localhost site, to see the outages list, you will need your own database to store the entries (as Counties Power no longer allows querying their API on production sites). I use Neon Postgres - setup instructions can be found [here](https://neon.tech/docs/get-started-with-neon/connect-neon).
+
+To create the necessary tables and get the outages list, run:
+```bash
+npm run create-tables
+npm run update-outages
+```
+
+Then, in `app/lib/utils.ts`, edit the start of the `getActiveOutages()` function as follows:
+```
+// Revalidate every 12 hours
+// const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages', { next: { revalidate: 43200 } }); <-- remove this line
+
+// For local development only
+const localApiUrl = 'http://localhost:3000/api/getoutages';
+const outagesReq = await fetch(localApiUrl);
+```
+
+Finally, start the dev server:
 ```bash
 npm run dev
 ```
 
-And browse to http://localhost:3000.
+And browse to http://localhost:3000, or whatever port NPM assigns in the case where 3000 is already taken.
 
 ### Website Features
 

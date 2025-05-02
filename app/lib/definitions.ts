@@ -1,23 +1,23 @@
 export type OutageData = {
     id: string;
-    projectType: string;
+    projecttype: string;
     description: string;
-    shutdownDateTime: string;
-    shutdownDate: string;
-    shutdownPeriods: Array<ShutdownPeriods>;
+    shutdowndatetime: string;
+    shutdowndate: string;
+    shutdownperiods: Array<ShutdownPeriods>;
     feeder: string;
-    affectedCustomers: number;
+    affectedcustomers: number;
     lat: number;
     lng: number;
     distance: number;
     hull: Coordinate[];
     address: string;
-    statusText: 'Scheduled' | 'Postponed' | 'Cancelled' | 'Active';
-    latestInformation: string;
-    originalShutdownDate: string;
-    originalShutdownPeriods: ShutdownPeriods;
+    statustext: 'Scheduled' | 'Postponed' | 'Cancelled' | 'Active';
+    latestinformation: string;
+    originalshutdowndate: string;
+    originalshutdownperiods: ShutdownPeriods;
     expiredOutage: boolean;
-    lastModified: string;
+    lastmodified: string;
 };
 
 export type ShutdownPeriods = {

@@ -4,27 +4,27 @@ import { db } from '@vercel/postgres';
 async function updateOutages(client, outage) {
     const {
         id,
-        projectType,
-        shutdownDateTime,
+        projecttype,
+        shutdowndatetime,
         shutdownDate,
-        shutdownPeriods,
+        shutdownperiods,
         feeder,
-        affectedCustomers,
+        affectedcustomers,
         lat, lng,
         distance,
         hull,
         address,
-        statusText,
-        latestInformation,
-        originalShutdownDate,
-        originalShutdownPeriods,
-        lastModified
+        statustext,
+        latestinformation,
+        originalshutdowndate,
+        originalshutdownperiods,
+        lastmodified
     } = outage;
 
-    const shutDownStart = shutdownPeriods[0].start;
-    const shutDownEnd = shutdownPeriods[0].end;
-    const ogShutDownStart = originalShutdownPeriods.length ? originalShutdownPeriods[0].start : '';
-    const ogShutDownEnd = originalShutdownPeriods.length ? originalShutdownPeriods[0].end :  '';
+    const shutDownStart = shutdownperiods[0].start;
+    const shutDownEnd = shutdownperiods[0].end;
+    const ogShutDownStart = originalshutdownperiods.length ? originalshutdownperiods[0].start : '';
+    const ogShutDownEnd = originalshutdownperiods.length ? originalshutdownperiods[0].end :  '';
 
     const hullObj = [];
     let hullString = '';
@@ -46,10 +46,10 @@ async function updateOutages(client, outage) {
                 originalshutdownperiodend, lastmodified
             )
             VALUES (
-                ${id}, ${projectType}, ${shutdownDateTime}, ${shutdownDate}, ${shutDownStart}, ${shutDownEnd},
-                ${feeder}, ${affectedCustomers}, ${lat}, ${lng}, ${distance}, ${hullString}, ${address},
-                ${statusText}, ${latestInformation || ''}, ${originalShutdownDate || ''}, ${ogShutDownStart},
-                ${ogShutDownEnd}, ${lastModified}
+                ${id}, ${projecttype}, ${shutdowndatetime}, ${shutdownDate}, ${shutDownStart}, ${shutDownEnd},
+                ${feeder}, ${affectedcustomers}, ${lat}, ${lng}, ${distance}, ${hullString}, ${address},
+                ${statustext}, ${latestinformation || ''}, ${originalshutdowndate || ''}, ${ogShutDownStart},
+                ${ogShutDownEnd}, ${lastmodified}
             )
             ON CONFLICT (id, lastmodified) DO UPDATE
             SET 
