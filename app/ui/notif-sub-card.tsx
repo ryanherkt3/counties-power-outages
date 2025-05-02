@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { getCardSections } from '../lib/outagesections';
 import { deleteSubscription } from '../lib/actions';
 
-export default function NotificationCard({ data, plannedOutages }: { data: NotificationSub; plannedOutages: String}) {
+export default function NotificationCard({ data, plannedOutages }: { data: NotificationSub; plannedOutages: string}) {
     const [showContents, setShowContents] = useState(true);
     const cardSections = getCardSections(false, data);
     const outagesArray = plannedOutages.split(',');

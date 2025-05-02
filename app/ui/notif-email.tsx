@@ -3,7 +3,7 @@ import { NotificationSub } from '../lib/definitions';
 import { getCardSections } from '../lib/outagesections';
 
 export default function NotificationEmail({ data }: { data: NotificationSub; }) {
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     const cardSections = getCardSections(true, data);
 
     // TODO prettify email
