@@ -1,30 +1,29 @@
 // TODO create cron script for this to run automatically
 import { db } from '@vercel/postgres';
 
-async function updateOutages(client, outage) {
+async function addOutages(client, outage) {
     const {
         id,
-        projecttype,
-        shutdowndatetime,
-        shutdownDate,
-        shutdownperiods,
+        projectType,
+        shutdownDateTime,
+        shutdownPeriods,
         feeder,
-        affectedcustomers,
+        affectedCustomers,
         lat, lng,
         distance,
         hull,
         address,
-        statustext,
-        latestinformation,
-        originalshutdowndate,
-        originalshutdownperiods,
-        lastmodified
+        statusText,
+        latestInformation,
+        originalShutdownDateTime,
+        originalShutdownPeriods,
+        lastModified
     } = outage;
 
-    const shutDownStart = shutdownperiods[0].start;
-    const shutDownEnd = shutdownperiods[0].end;
-    const ogShutDownStart = originalshutdownperiods.length ? originalshutdownperiods[0].start : '';
-    const ogShutDownEnd = originalshutdownperiods.length ? originalshutdownperiods[0].end :  '';
+    const shutDownStart = shutdownPeriods[0].start;
+    const shutDownEnd = shutdownPeriods[0].end;
+    const ogShutDownStart = originalShutdownPeriods.length ? originalShutdownPeriods[0].start : '';
+    const ogShutDownEnd = originalShutdownPeriods.length ? originalShutdownPeriods[0].end :  '';
 
     const hullObj = [];
     let hullString = '';
@@ -35,8 +34,10 @@ async function updateOutages(client, outage) {
         hullString = JSON.stringify(hullObj);
     }
 
+    const dateString = shutdownDateTime.split('T')[0];
+    const ogDateString = originalShutdownDateTime.length ? originalShutdownDateTime.split('T')[0] : dateString;
+
     // Add outage to DB
-    // TODO delete if shutdownperiodend time has passed
     try {
         const addOutage = await client.sql`
             INSERT INTO outages (
@@ -46,22 +47,20 @@ async function updateOutages(client, outage) {
                 originalshutdownperiodend, lastmodified
             )
             VALUES (
-                ${id}, ${projecttype}, ${shutdowndatetime}, ${shutdownDate}, ${shutDownStart}, ${shutDownEnd},
-                ${feeder}, ${affectedcustomers}, ${lat}, ${lng}, ${distance}, ${hullString}, ${address},
-                ${statustext}, ${latestinformation || ''}, ${originalshutdowndate || ''}, ${ogShutDownStart},
-                ${ogShutDownEnd}, ${lastmodified}
+                ${id}, ${projectType}, ${shutdownDateTime}, ${dateString}, ${shutDownStart}, ${shutDownEnd},
+                ${feeder}, ${affectedCustomers}, ${lat}, ${lng}, ${distance}, ${hullString}, ${address},
+                ${statusText}, ${latestInformation || ''}, ${ogDateString}, ${ogShutDownStart},
+                ${ogShutDownEnd}, ${lastModified}
             )
-            ON CONFLICT (id, lastmodified) DO UPDATE
+            ON CONFLICT (id) DO UPDATE
             SET 
-                shutdowndate = EXCLUDED.shutdowndate,
-                shutdownperiodstart = EXCLUDED.shutdownperiodstart,
-                shutdownperiodend = EXCLUDED.shutdownperiodend,
-                statustext = EXCLUDED.statustext,
-                latestinformation = EXCLUDED.latestinformation,
-                originalshutdowndate = EXCLUDED.originalshutdowndate,
-                originalshutdownperiodstart = EXCLUDED.originalshutdownperiodstart,
-                originalshutdownperiodend = EXCLUDED.originalshutdownperiodend,
-                lastmodified = EXCLUDED.lastmodified
+                shutdowndate = ${dateString},
+                statustext = ${statusText},
+                latestinformation = ${latestInformation || ''},
+                originalshutdowndate = ${ogDateString},
+                originalshutdownperiodstart = ${ogShutDownStart},
+                originalshutdownperiodend = ${ogShutDownEnd},
+                lastmodified = ${lastModified}
         `;
 
         console.log('Added/updated outage');
@@ -76,6 +75,27 @@ async function updateOutages(client, outage) {
     }
 }
 
+async function removeOutages(client) {
+    // Remove outages from DB
+    // CURRENT_DATE - 1 DAY excludes any outages whose date is today's date (as these outages may not have started yet)
+    try {
+        const removeOutages = await client.sql`
+            DELETE FROM outages
+            WHERE shutdowndate::date < (CURRENT_DATE - INTERVAL '1 DAY')
+        `;
+
+        console.log('Removed expired outages');
+
+        return {
+            removeOutages
+        };
+    }
+    catch (error) {
+        console.error('Error removing expired outages:', error);
+        throw error;
+    }
+}
+
 async function main() {
     const outagesReq = await fetch('https://api.integration.countiesenergy.co.nz/user/v1.0/shutdowns');
     const outagesJson = await outagesReq.json();
@@ -84,10 +104,11 @@ async function main() {
     const client = await db.connect();
 
     for (const outage of outages) {
-        await updateOutages(client, outage);
+        await addOutages(client, outage);
     }
+    console.log('Outages added');
 
-    console.log('Entries added');
+    await removeOutages(client);
 
     await client.end();
 }

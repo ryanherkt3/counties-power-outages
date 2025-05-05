@@ -108,8 +108,6 @@ export default function FilterType(
                         </div>
                         {
                             filterOptions.map((option) => {
-                                console.log(option.props);
-
                                 const { dateText, statusText } = option.props;
 
                                 const propText = type.includes('Date') ? dateText : statusText;
