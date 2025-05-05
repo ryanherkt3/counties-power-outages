@@ -134,6 +134,16 @@ export async function getActiveOutages() {
 
     outages = outages.filter((outage: { expiredOutage: boolean; }) => {
         return outage.expiredOutage === false;
+    }).sort((a: any, b: any) => {
+        const aTime = new Date(a.shutdowndatetime).getTime() / 1000;
+        const bTime = new Date(b.shutdowndatetime).getTime() / 1000;
+        const aStartTime = new Date(a.shutdownperiods[0].start).getTime() / 1000;
+        const bStartTime = new Date(b.shutdownperiods[0].start).getTime() / 1000;
+
+        if (aTime === bTime) {
+            return aStartTime - bStartTime;
+        }
+        return aTime - bTime;
     });
 
     return outages;
@@ -170,14 +180,13 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: any
     }
 
     const getDateMatch = (outage: OutageData, date: string, isStartDate: boolean) => {
-        date = getFilteredDate(date);
+        const shutdownDateTime = new Date(outage.shutdowndatetime).getTime();
+        const filterDateTime = new Date(date.split('/').reverse().join('/')).getTime();
 
         if (isStartDate) {
-            return new Date(outage.shutdowndatetime).getTime() >= new Date(date).getTime();
-            return new Date(outage.shutdowndatetime).getTime() >= new Date(date).getTime();
+            return shutdownDateTime >= filterDateTime;
         }
-        return new Date(outage.shutdowndatetime).getTime() <= new Date(date).getTime();
-        return new Date(outage.shutdowndatetime).getTime() <= new Date(date).getTime();
+        return shutdownDateTime <= filterDateTime;
     };
 
     // Otherwise return filtered outages
