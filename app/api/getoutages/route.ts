@@ -18,6 +18,20 @@ export async function GET() {
         for (const outage of outages.rows) {
             outage.hull = outage.hull ? JSON.parse(outage.hull) : [];
 
+            // Convert shutdowndate to a string
+            const year = outage.shutdowndate.getFullYear();
+            const month = outage.shutdowndate.getMonth() + 1;
+            const day = outage.shutdowndate.getDate();
+            outage.shutdowndate = `${day}/${month}/${year}`;
+
+            // Convert originalshutdowndate to a string
+            if (outage.originalshutdowndate) {
+                const year = outage.originalshutdowndate.getFullYear();
+                const month = outage.originalshutdowndate.getMonth() + 1;
+                const day = outage.originalshutdowndate.getDate();
+                outage.originalshutdowndate = `${day}/${month}/${year}`;
+            }
+
             outage.shutdownperiods = [
                 {
                     start: outage.shutdownperiodstart,
