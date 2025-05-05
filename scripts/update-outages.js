@@ -77,7 +77,7 @@ async function addOutages(client, outage) {
 
 async function removeOutages(client) {
     // Remove outages from DB
-    // now() - 1 DAY excludes any outages whose date is today's date (as these outages may not have started yet)
+    // CURRENT_DATE - 1 DAY excludes any outages whose date is today's date (as these outages may not have started yet)
     try {
         const removeOutages = await client.sql`
             DELETE FROM outages
