@@ -10,7 +10,7 @@ To clone the local repository and install the Node/NPM packages, run:
 
 ```bash
 npx create-next-app@latest counties-power-outages --use-npm --example "https://github.com/ryanherkt3/counties-power-outages/tree/main"
-npm install
+npm install --ignore-scripts
 ```
 
 ### Local Development
@@ -26,7 +26,7 @@ npm run update-outages
 Then, in `app/lib/utils.ts`, edit the start of the `getActiveOutages()` function as follows:
 ```
 // Revalidate every 12 hours
-// const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages', { next: { revalidate: 43200 } });
+// const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages', { next: { revalidate: 43200 } }); <-- remove this line
 
 // For local development only
 const localApiUrl = 'http://localhost:3000/api/getoutages';

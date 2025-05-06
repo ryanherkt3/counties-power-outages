@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { OutageData } from './definitions';
+import { Coordinate, OutageData } from './definitions';
+import { z } from 'zod';
 
 /**
  * Return if an outage is active or not by checking if the current time is greater than
@@ -169,13 +170,13 @@ export function getFilteredDate(date: string) {
  * @returns {Array<OutageData>} new filtered list of outages
  */
 export function getFilteredOutages(outages: Array<OutageData>, searchParams: any) {
-    const address = searchParams?.query;
-    const status = searchParams?.status;
-    const startDate = searchParams?.startdate;
-    const endDate = searchParams?.enddate;
+    const address = searchParams.query;
+    const outageStatus = searchParams.status;
+    const startDate = searchParams.startdate;
+    const endDate = searchParams.enddate;
 
     // Return original list if no search parameters
-    if (!address && !status && !startDate && !endDate) {
+    if (!address && !outageStatus && !startDate && !endDate) {
         return outages;
     }
 
@@ -192,7 +193,7 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: any
     // Otherwise return filtered outages
     const filteredOutages = outages.filter((outage: OutageData) => {
         const matchesAddress = address ? outage.address.toLowerCase().includes(address) : true;
-        const matchesStatus = status ? outage.statustext.toLowerCase().includes(status) : true;
+        const matchesStatus = outageStatus ? outage.statustext.toLowerCase().includes(outageStatus) : true;
         const onOrAfterStartDate = startDate ? getDateMatch(outage, startDate, true) : true;
         const onOrBeforeEndDate = endDate ? getDateMatch(outage, endDate, false) : true;
 
@@ -236,4 +237,79 @@ export function generatePagination(currentPage: number, totalPages: number) {
 
     // If the current page is among the last 3 pages, show the first 2, an ellipsis, and the last 3 pages
     return [1, 2, '...', totalPages - 2, totalPages - 1, totalPages];
+}
+
+/**
+ * Check if the coordinates given are inside a given polygon, or match where the outage is happening
+ *
+ * @param point the coordinates of the subscription
+ * @param polygon
+ * @param outageCoords the coordinates of where the outage is happening
+ * @returns {Boolean}
+ */
+export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], outageCoords: Coordinate) {
+    if (!outageCoords.lat || !outageCoords.lng) {
+        return false;
+    }
+
+    if (!polygon) {
+        const outageLat = parseInt(outageCoords.lat.toFixed(5));
+        const outageLng = parseInt(outageCoords.lng.toFixed(5));
+
+        return point.lat === outageLat && point.lng === outageLng;
+    }
+
+    const num_vertices = polygon.length;
+    const { lat, lng } = point;
+    let isInZone = false;
+
+    // Store the first point in the polygon and initialize the second point
+    let p1 = polygon[0];
+    let p2;
+
+    if (!lat || !lng) {
+        return false;
+    }
+
+    for (let i = 1; i <= num_vertices; i++) {
+        p2 = polygon[i % num_vertices];
+
+        if (isInZone || !p1.lat || !p1.lng || !p2.lat || !p2.lng) {
+            break;
+        }
+
+        if (lng > Math.min(p1.lng, p2.lng)) {
+            if (lng <= Math.max(p1.lng, p2.lng)) {
+                if (lat <= Math.max(p1.lat, p2.lat)) {
+                    const x_intersection = ((lng - p1.lng) * (p2.lat - p1.lat)) / (p2.lng - p1.lng) + p1.lat;
+
+                    if (p1.lat === p2.lat || lat <= x_intersection) {
+                        isInZone = !isInZone;
+                    }
+                }
+            }
+        }
+
+        p1 = p2;
+    }
+
+    return isInZone;
+}
+
+/**
+ * Check an email address is valid using Zod
+ *
+ * @param email
+ * @returns {Boolean}
+ */
+export function isValidEmail(email: string) {
+    try {
+        const emailSchema = z.string().email();
+        emailSchema.parse(email);
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+        return false;
+    }
 }
