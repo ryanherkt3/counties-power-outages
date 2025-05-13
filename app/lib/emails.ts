@@ -2,21 +2,20 @@
 
 import { Resend } from 'resend';
 import NotificationEmail from '../ui/notif-email';
-import { NotificationSub } from './definitions';
+import { NotificationSub, OutageData } from './definitions';
 
 // TODO integrate with cron job
-export async function sendEmailNotification(data: NotificationSub) {
+export async function sendEmailNotification(notifSub: NotificationSub, outage: OutageData) {
     try {
         const resend = new Resend(process.env.RESEND_API_KEY);
+        const notifSubId = notifSub.id.toString();
 
-        // TODO
-        // 1. tidy up subject
-        // 2. update subscription info when done
+        // TODO update subscription info when done (via new api/emailsent route)
         await resend.emails.send({
             from: 'Counties Power Outages <notifications@outages.ryanherkt.com>',
-            to: data.email,
-            subject: 'Upcoming Power Outage',
-            react: NotificationEmail({data})
+            to: notifSub.email,
+            subject: `Upcoming Power Outage - ${notifSub.location}`,
+            react: NotificationEmail({notifSubId, outage})
         });
         return {
             error: null,

@@ -13,12 +13,12 @@
 
 #### `/getoutages`
 ```
-await fetch(process.env.API_URL +  + '/getoutages');
+await fetch(process.env.API_URL + '/getoutages');
 ```
 
 #### `/subscription` (`GET` method)
 ```
-await fetch(process.env.API_URL +  + '/subscription?email=test@gmail.com');
+await fetch(process.env.API_URL + '/subscription?email=test@gmail.com');
 ```
 
 #### `/subscription` (`POST` method)

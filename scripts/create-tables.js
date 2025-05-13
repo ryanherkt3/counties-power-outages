@@ -11,12 +11,13 @@ async function createTables(client) {
         // Create the "notifications" table if it doesn't exist
         const createNotifsTable = await client.sql`
             CREATE TABLE IF NOT EXISTS notifications (
-                id SERIAL PRIMARY KEY,
+                id VARCHAR(16) PRIMARY KEY,
                 location VARCHAR(255) NOT NULL,
                 lat FLOAT,
                 lng FLOAT,
                 email TEXT NOT NULL,
-                datesubscribed VARCHAR(255) NOT NULL
+                datesubscribed VARCHAR(255) NOT NULL,
+                outageinfo VARCHAR(700)
             );
         `;
 

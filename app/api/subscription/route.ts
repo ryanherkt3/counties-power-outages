@@ -54,18 +54,25 @@ export async function POST(request: Request) {
     // TODO check for valid location, date subscribed, lat, lng
     const { includeCoords, location, lat, lng, email, datesubscribed } = body;
 
+    // Generate a random 16 character string for the subscription ID - TODO test this works
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let idString = '';
+    for (let i = 0; i < 16; i++) {
+        idString += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
     // Add outage subscription to DB
     try {
         if (includeCoords) {
             await sql`
-            INSERT INTO notifications (location, lat, lng, email, datesubscribed)
-            VALUES (${location}, ${lat}, ${lng}, ${email}, ${datesubscribed})
+            INSERT INTO notifications (id, location, lat, lng, email, datesubscribed)
+            VALUES (${idString}, ${location}, ${lat}, ${lng}, ${email}, ${datesubscribed})
             `;
         }
         else {
             await sql`
-            INSERT INTO notifications (location, email, datesubscribed)
-            VALUES (${location}, ${email}, ${datesubscribed})
+            INSERT INTO notifications (id, location, email, datesubscribed)
+            VALUES (${idString}, ${location}, ${email}, ${datesubscribed})
             `;
         }
     }

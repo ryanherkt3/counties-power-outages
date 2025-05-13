@@ -15,7 +15,7 @@ export type OutageData = {
     statustext: 'Scheduled' | 'Postponed' | 'Cancelled' | 'Active';
     latestinformation: string;
     originalshutdowndate: string;
-    originalshutdownperiods: ShutdownPeriods;
+    originalshutdownperiods: Array<ShutdownPeriods>;
     expiredOutage: boolean;
     lastmodified: string;
 };

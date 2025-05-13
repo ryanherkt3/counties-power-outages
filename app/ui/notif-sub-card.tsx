@@ -6,7 +6,6 @@ import {
 import { NotificationSub } from '../lib/definitions';
 import { useState } from 'react';
 import clsx from 'clsx';
-import Link from 'next/link';
 import { getCardSections } from '../lib/outagesections';
 import { deleteSubscription } from '../lib/actions';
 
@@ -41,35 +40,30 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
                                 key={section.key}
                                 className='flex md:flex-row md:justify-between gap-2 flex-col text-lg font-normal'
                             >
-                                <div className="flex flex-row gap-2">
+                                <div className={
+                                    clsx(
+                                        'flex flex-row gap-2',
+                                        {
+                                            'items-center': section.key === 'location-planned-outage'
+                                        }
+                                    )
+                                }>
                                     {
                                         getSectionIcon(section.icon)
                                     }
                                     <span className="font-semibold">{section.title}</span>
                                 </div>
-                                {
-                                    section.key === 'location-planned-outage' ?
-                                        outagesArray.map((outage) => {
-                                            const isLastOutage = outagesArray.indexOf(outage) < outagesArray.length - 1;
-                                            return (
-                                                <Link
-                                                    key={outage}
-                                                    href={`outage/${outage}`}
-                                                    className={
-                                                        clsx(
-                                                            'hover:text-red-600',
-                                                            {
-                                                                'mr-1': !isLastOutage
-                                                            }
-                                                        )
-                                                    }
-                                                >
-                                                    {outage}
-                                                </Link>
-                                            );
-                                        }) :
-                                        <span>{section.value}</span>
-                                }
+                                <div className="flex flex-col">
+                                    {
+                                        section.key === 'location-planned-outage' ?
+                                            outagesArray.map((outage) => {
+                                                return (
+                                                    <span key={outage}>{outage}</span>
+                                                );
+                                            }) :
+                                            <span>{section.value}</span>
+                                    }
+                                </div>
                             </div>
                         );
                     })
@@ -79,7 +73,7 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
             <button
                 className={
                     clsx(
-                        'flex flex-row gap-2 bg-red-600 hover:bg-red-800 text-white rounded-xl w-fit p-3',
+                        'flex flex-row gap-2 bg-red-600 hover:bg-red-800 text-white rounded-xl w-fit p-3 cursor-pointer',
                         {
                             'mt-4': showContents
                         }

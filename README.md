@@ -26,11 +26,10 @@ npm run update-outages
 Then, in `app/lib/utils.ts`, edit the start of the `getActiveOutages()` function as follows:
 ```
 // Revalidate every 12 hours
-// const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages', { next: { revalidate: 43200 } }); <-- remove this line
+// const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages', { next: { revalidate: 43200 } }); <-- comment out this line
 
 // For local development only
-const localApiUrl = 'http://localhost:3000/api/getoutages';
-const outagesReq = await fetch(localApiUrl);
+const outagesReq = await fetch(process.env.API_URL + '/getoutages');
 ```
 
 Finally, start the dev server:
