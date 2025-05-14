@@ -113,9 +113,7 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
         try {
             await updateSubscriptionEmailSent(client, JSON.stringify(subInfo), sub.id);
         }
-        catch (error) {
-            return emailsSent;
-        }
+        catch (error) {}
     }
 
     return emailsSent;

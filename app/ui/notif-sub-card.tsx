@@ -10,7 +10,7 @@ import clsx from 'clsx';
 import { getCardSections } from '../lib/outagesections';
 import { deleteSubscription } from '../lib/actions';
 
-// TODO fix plannedOutages to be an array of outages
+// TODO fix plannedOutages to be an array of outages, so when clicked user can go to /outages?outage=<id>
 export default function NotificationCard({ data, plannedOutages }: { data: NotificationSub; plannedOutages: string}) {
     const [showContents, setShowContents] = useState(true);
     const cardSections = getCardSections(false, data);
