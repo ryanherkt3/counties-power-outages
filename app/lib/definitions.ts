@@ -44,10 +44,11 @@ export type SearchData = {
 };
 
 export type NotificationSub = {
-    id: number;
+    id: string;
     location: string | null;
     lat: number | null;
     lng: number | null;
     email: string;
     datesubscribed: string;
+    outageinfo: string;
 };

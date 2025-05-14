@@ -133,6 +133,9 @@ export async function getActiveOutages() {
         }
     });
 
+    // TODO remove debug logs (see why main site doesn't show all outages)
+    console.log(outages);
+
     outages = outages.filter((outage: { expiredOutage: boolean; }) => {
         return outage.expiredOutage === false;
     }).sort((a: any, b: any) => {
@@ -146,6 +149,8 @@ export async function getActiveOutages() {
         }
         return aTime - bTime;
     });
+
+    console.log(outages);
 
     return outages;
 }

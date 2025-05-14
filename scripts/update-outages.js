@@ -1,4 +1,3 @@
-// TODO create cron script for this to run automatically
 import { db } from '@vercel/postgres';
 
 async function addOutages(client, outage) {
@@ -110,7 +109,7 @@ async function main() {
 
     await removeOutages(client);
 
-    await client.end();
+    await client.release();
 }
 
 main().catch((err) => {

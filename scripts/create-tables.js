@@ -1,9 +1,5 @@
 import { db } from '@vercel/postgres';
 
-// TODO put outageInfo back:
-// Update individual subscrption entries with JSON string (outageInfo section):
-// {emailSent: unix timestamp, outageId: id, status: 'Scheduled' | 'Postponed' | 'Cancelled'}
-// whenever cron job is run and email gets sent to a user.
 async function createTables(client) {
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -66,7 +62,7 @@ async function main() {
 
     await createTables(client);
 
-    await client.end();
+    await client.release();
 }
 
 main().catch((err) => {

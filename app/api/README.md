@@ -6,7 +6,7 @@
 | -------- | ------ | ----------- | -----------------------
 | `/getoutages` | `GET` | Get a list of outages
 | `/subscription` | `GET` | Get a list of notification subscriptions for a given email. | A valid email address as a search paramater - e.g. `outage?email=test@gmail.com`.
-| `/subscription` | `POST` | Add a notification subscription to the database. | A JSON request body containing a valid location, subscription date (TODO what format), latitude and longtitude coordinates, and email address.
+| `/subscription` | `POST` | Add a notification subscription to the database. | A JSON request body containing a valid location, subscription date, latitude and longtitude coordinates, and email address.
 | `/subscription` | `DELETE` | Remove a notification subscription from the database. | A JSON request body containing a valid subscription ID.
 
 ### Endpoint examples
