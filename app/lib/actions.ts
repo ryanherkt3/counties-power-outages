@@ -115,7 +115,6 @@ export async function addSubscription(includeCoords: boolean, prevState: State, 
 }
 
 export async function getSubscriptions(email: string) {
-    console.log(`API url is: ${process.env.API_URL}`);
     const subsReq = await fetch(process.env.API_URL + `/subscription?email=${email}`);
     const subsJson = await subsReq.json();
     return subsJson.rows;

@@ -120,6 +120,8 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
 }
 
 async function main() {
+    // TODO when merging the update & email scripts, have a query to
+    // SELECT * FROM outages, in order to not call this API
     const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages');
     const outagesJson = await outagesReq.json();
     const outages = outagesJson.planned_outages.filter((outage: OutageData) => {
