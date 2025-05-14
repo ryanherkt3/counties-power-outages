@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { OutageData } from './definitions';
+import { z } from 'zod';
 
 /**
  * Return if an outage is active or not by checking if the current time is greater than
@@ -236,4 +237,22 @@ export function generatePagination(currentPage: number, totalPages: number) {
 
     // If the current page is among the last 3 pages, show the first 2, an ellipsis, and the last 3 pages
     return [1, 2, '...', totalPages - 2, totalPages - 1, totalPages];
+}
+
+/**
+ * Check an email address is valid using Zod
+ *
+ * @param email
+ * @returns {Boolean}
+ */
+export function isValidEmail(email: string) {
+    try {
+        const emailSchema = z.string().email();
+        emailSchema.parse(email);
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+        return false;
+    }
 }

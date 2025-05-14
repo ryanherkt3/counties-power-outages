@@ -42,3 +42,13 @@ export type SearchData = {
     startdate: string | undefined;
     enddate: string | undefined;
 };
+
+export type NotificationSub = {
+    id: string;
+    location: string | null;
+    lat: number | null;
+    lng: number | null;
+    email: string;
+    datesubscribed: string;
+    outageinfo: string;
+};
