@@ -39,7 +39,7 @@ export default function NotifSubForm() {
                         <div className="text-md">Yes</div>
                     </button>
                     <button
-                        className="flex flex-row gap-2"
+                        className="flex flex-row gap-2 cursor-pointer"
                         onClick={
                             () => {
                                 setIncludeCoords(false);
@@ -178,7 +178,7 @@ export default function NotifSubForm() {
                     </div>
 
                     <button
-                        className="bg-red-600 hover:bg-red-800 text-white rounded-xl w-fit p-3"
+                        className="bg-red-600 hover:bg-red-800 text-white rounded-xl w-fit p-3 cursor-pointer"
                         type="submit"
                     >
                         Subscribe
