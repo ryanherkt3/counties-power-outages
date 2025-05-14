@@ -40,15 +40,11 @@ export default async function NotificationsPage(props: {
             listItems: [
                 {
                     key: 'hnw-step-1',
-                    text: 'Every day, at 12PM NZ time, the system checks if an outage is planned in the area you subscribed to'
+                    text: 'Every day, at 12PM NZ time, the system checks if an outage is planned in the area you subscribed to within the next seven days.'
                 },
                 {
                     key: 'hnw-step-2',
-                    text: 'If one is, you will receive an email with details about the outage - when it is, the start and end times, and how many customers are affected'
-                },
-                {
-                    key: 'hnw-step-3',
-                    text: 'Emails will then be sent three and one days prior to the outage'
+                    text: 'If one is, you will receive an email with details about the outage - when it is, the start and end times, and how many customers are affected. You may also receive future emails if the status of the outage changes.'
                 },
             ],
             note: null,
@@ -59,22 +55,24 @@ export default async function NotificationsPage(props: {
             listItems: [
                 {
                     key: 'sub-step-coordy-1',
-                    text: 'Search for your address on ${mapsLink}'
+                    text: 'Search for your address on ${mapsLink}.'
                 },
                 {
                     key: 'sub-step-coordy-2',
-                    text: 'Right click your address and click the first option to copy the coordinates'
+                    text: 'Right click your address and click the first option to copy the coordinates.'
                 },
                 {
                     key: 'sub-step-coordy-3',
-                    text: 'In the "Subscribe to Outages" form below, ensure the "Yes" option in the question is clicked, and paste the coordinates in the form below with your email address'
+                    text: 'In the "Subscribe to Outages" form below, ensure the "Yes" option in the question is clicked, and paste the coordinates in the form below with your email address.'
                 },
-                {
-                    key: 'sub-step-coordy-4',
-                    text: 'You should then get a confirmation email with details of your notification'
-                }
+                // TODO implement confirmation email, use same template as notif-email
+                // Move both email templates to a new folder called email-templates
+                // {
+                //     key: 'sub-step-coordy-4',
+                //     text: 'You should then get a confirmation email with details of your notification.'
+                // }
             ],
-            note: 'For the latitude, remove the minus sign from the input'
+            note: 'For the latitude, do not include the minus sign in your input.'
         },
         {
             key: 'subscribe-without-coords',
@@ -82,12 +80,12 @@ export default async function NotificationsPage(props: {
             listItems: [
                 {
                     key: 'sub-step-coordn-1',
-                    text: 'In the "Subscribe to Outages" form below, ensure the "No" option in the question is clicked and enter your street address in the "Location" field'
+                    text: 'In the "Subscribe to Outages" form below, ensure the "No" option in the question is clicked and enter your street address in the "Location" field.'
                 },
-                {
-                    key: 'sub-step-coordn-2',
-                    text: 'You should then get a confirmation email with details of your notification'
-                }
+                // {
+                //     key: 'sub-step-coordn-2',
+                //     text: 'You should then get a confirmation email with details of your notification.'
+                // }
             ],
             note: null,
         },
@@ -99,11 +97,11 @@ export default async function NotificationsPage(props: {
             listItems: [
                 {
                     key: 'unsub-step-1',
-                    text: 'In the "Active Notifications" section below, search for any notification subscriptions associated to your email address'
+                    text: 'In the "Active Notifications" section below, search for any notification subscriptions associated to your email address.'
                 },
                 {
                     key: 'unsub-step-2',
-                    text: 'Click the "rubbish bin" icon next to the subscription you want to unsubscribe from'
+                    text: 'Click the "Unsubscribe" button in the subscription you want to unsubscribe from.'
                 }
             ],
             note: null,
