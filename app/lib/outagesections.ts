@@ -67,11 +67,10 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
 /**
  * Get the sections for display either for the active notifications card or the notification email
  *
- * @param {boolean} forNotifsEmail if the card sections are for the notification email
  * @param {OutageData} data info about the outage
  * @returns {Object} card sections
  */
-export function getCardSections(forNotifsEmail: boolean, data: NotificationSub) {
+export function getCardSections(data: NotificationSub) {
     const { lat, lng, datesubscribed, email } = data;
 
     const cardSections = [
@@ -101,16 +100,13 @@ export function getCardSections(forNotifsEmail: boolean, data: NotificationSub) 
             title: 'Date Subscribed',
             value: datesubscribed
         },
-    );
-
-    if (!forNotifsEmail) {
-        cardSections.push({
+        {
             key: 'location-planned-outage',
             icon: 'BoltIcon',
             title: 'Planned Outages in Area',
             value: ''
-        });
-    }
+        }
+    );
 
     return cardSections;
 }

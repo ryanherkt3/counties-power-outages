@@ -13,8 +13,8 @@ import { deleteSubscription } from '../lib/actions';
 // TODO fix plannedOutages to be an array of outages, so when clicked user can go to /outages?outage=<id>
 export default function NotificationCard({ data, plannedOutages }: { data: NotificationSub; plannedOutages: string}) {
     const [showContents, setShowContents] = useState(true);
-    const cardSections = getCardSections(false, data);
-    const outagesArray = plannedOutages.split(',');
+    const cardSections = getCardSections(data);
+    const outagesArray = plannedOutages.length ? plannedOutages.split(',') : [];
 
     return (
         <div className='flex flex-col gap-4 shrink-0 p-4 rounded-lg border border-gray-700' >
@@ -58,11 +58,15 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
                                 <div className="flex flex-col">
                                     {
                                         section.key === 'location-planned-outage' ?
-                                            outagesArray.map((outage) => {
-                                                return (
-                                                    <span key={outage}>{outage}</span>
-                                                );
-                                            }) :
+                                            (
+                                                outagesArray.length > 0 ?
+                                                    outagesArray.map((outage) => {
+                                                        return (
+                                                            <span key={outage}>{outage}</span>
+                                                        );
+                                                    }) :
+                                                    <span>None</span>
+                                            ) :
                                             <span>{section.value}</span>
                                     }
                                 </div>
