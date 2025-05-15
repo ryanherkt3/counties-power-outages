@@ -23,12 +23,6 @@ npm run create-tables
 npm run update-outages
 ```
 
-Then, in `app/lib/utils.ts`, edit the start of the `getActiveOutages()` function as follows:
-```
-// For local development remove the second argument
-const outagesReq = await fetch(process.env.API_URL + '/getoutages'/*, { next: { revalidate: 43200 } }*/);
-```
-
 Finally, start the dev server:
 ```bash
 npm run dev
@@ -39,12 +33,13 @@ And browse to http://localhost:3000, or whatever port NPM assigns in the case wh
 ### Website Features
 
 * Outages page with filters - search for a specific outage by status (Active / Scheduled / Postponed / Cancelled), start and end date, and by the location name.
-* Notification system (WIP 🔧) - subscribe to notifications for outages in your neighbourhood without the need for an account.
+* Notifications system - subscribe to notifications for outages in your neighbourhood without the need for an account.
 ** **Note:** if developing locally, the notification system requires a database to be set up (e.g. on Vercel via [Neon Postgres](https://neon.tech/)) and `.env` variables for this to work. You will also need a [Resend](https://resend.com/) account to be able to send the notification emails, as well as a purchased domain.
 
 ### Future improvements
 
-* Notifications: edit page, unsubscribe page.
+* An automated cron script to update the live outages database and send emails to users.
+* Notifications: a page to edit notifications or unsubscribe from them.
 * Contact form (for bug reports etc).
 * A filter on the outages page for outages per page (configurable to 5 / 10 / 15).
 

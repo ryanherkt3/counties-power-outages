@@ -111,8 +111,7 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
  * @returns {Object} outages
  */
 export async function getActiveOutages() {
-    // For local development remove the second argument
-    const outagesReq = await fetch(process.env.API_URL + '/getoutages', { next: { revalidate: 43200 } });
+    const outagesReq = await fetch(process.env.API_URL + '/getoutages');
 
     const outagesJson = await outagesReq.json();
 
@@ -129,9 +128,6 @@ export async function getActiveOutages() {
         }
     });
 
-    // TODO remove debug logs (see why main site doesn't show all outages)
-    console.log(outages);
-
     outages = outages.filter((outage: { expiredOutage: boolean; }) => {
         return outage.expiredOutage === false;
     }).sort((a: any, b: any) => {
@@ -145,8 +141,6 @@ export async function getActiveOutages() {
         }
         return aTime - bTime;
     });
-
-    console.log(outages);
 
     return outages;
 }
