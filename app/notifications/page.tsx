@@ -25,13 +25,16 @@ export default async function NotificationsPage(props: {
     const subscriptions = await getSubscriptions(query);
     const outages = await getActiveOutages();
 
-    const mapsLink = <a
-        className="visited:text-purple-500 hover:text-blue-500 text-blue-500"
-        href="https://www.google.com/maps/"
-        target="_blank"
-    >
-        Google Maps
-    </a>;
+    const mapsLink = (
+        <span>
+            <a
+                className="visited:text-purple-500 hover:text-blue-500 text-blue-500"
+                href="https://www.google.com/maps/"
+                target="_blank"
+            >
+                Google Maps
+            </a>.</span>
+    );
 
     const notifsInfo = [
         {
@@ -55,7 +58,7 @@ export default async function NotificationsPage(props: {
             listItems: [
                 {
                     key: 'sub-step-coordy-1',
-                    text: 'Search for your address on ${mapsLink}.'
+                    text: 'Search for your address on ${mapsLink}'
                 },
                 {
                     key: 'sub-step-coordy-2',
