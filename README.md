@@ -10,7 +10,7 @@ To clone the local repository and install the Node/NPM packages, run:
 
 ```bash
 npx create-next-app@latest counties-power-outages --use-npm --example "https://github.com/ryanherkt3/counties-power-outages/tree/main"
-npm install --ignore-scripts
+npm install
 ```
 
 ### Local Development

@@ -34,7 +34,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
             params.delete(paramName);
         }
         replace(`${pathname}?${params.toString()}`);
-    }, 450);
+    }, 750);
 
     const inputClasses = 'peer block w-full rounded-lg p-3 pr-9 text-lg';
     const xIconClasses = 'absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 h-7 w-7';
