@@ -1,4 +1,4 @@
-import { OutageData } from './definitions';
+import { NotificationSub, OutageData } from './definitions';
 import { getTimesAndActiveOutage } from './utils';
 
 /**
@@ -62,4 +62,51 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
     );
 
     return outageSections;
-};
+}
+
+/**
+ * Get the sections for display either for the active notifications card or the notification email
+ *
+ * @param {OutageData} data info about the outage
+ * @returns {Object} card sections
+ */
+export function getCardSections(data: NotificationSub) {
+    const { lat, lng, datesubscribed, email } = data;
+
+    const cardSections = [
+        {
+            key: 'email',
+            icon: 'AtSymbolIcon',
+            title: 'Email',
+            value: email
+        }
+    ];
+
+    if (lat && lng) {
+        cardSections.push(
+            {
+                key: 'coordinates',
+                icon: 'MapPinIcon',
+                title: 'Coordinates',
+                value: `${lat}, ${lng}`
+            },
+        );
+    }
+
+    cardSections.push(
+        {
+            key: 'date-subbed',
+            icon: 'CalendarIcon',
+            title: 'Date Subscribed',
+            value: datesubscribed
+        },
+        {
+            key: 'location-planned-outage',
+            icon: 'BoltIcon',
+            title: 'Planned Outages in Area',
+            value: ''
+        }
+    );
+
+    return cardSections;
+}

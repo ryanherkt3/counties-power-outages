@@ -11,7 +11,8 @@ export default function Search({ placeholder }: { placeholder: string }) {
     const pathname = usePathname();
     const { replace } = useRouter();
 
-    const [inputValue, setInputValue] = useState(searchParams.get('query') || '');
+    const paramName = pathname.includes('outages') ? 'query' : 'email';
+    const [inputValue, setInputValue] = useState(searchParams.get(paramName) || '');
 
     const handleSearch = useDebouncedCallback((term, cleared) => {
         // Early return as no need to redirect in this case
@@ -21,15 +22,19 @@ export default function Search({ placeholder }: { placeholder: string }) {
 
         const params = new URLSearchParams(searchParams);
 
-        params.set('page', '1');
+        // No pages on the notifications page
+        if (pathname.includes('outages')) {
+            params.set('page', '1');
+        }
+
         if (term) {
-            params.set('query', term);
+            params.set(paramName, term);
         }
         else {
-            params.delete('query');
+            params.delete(paramName);
         }
         replace(`${pathname}?${params.toString()}`);
-    }, 300);
+    }, 750);
 
     const inputClasses = 'peer block w-full rounded-lg p-3 pr-9 text-lg';
     const xIconClasses = 'absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 h-7 w-7';

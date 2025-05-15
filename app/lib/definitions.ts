@@ -10,12 +10,12 @@ export type OutageData = {
     lat: number;
     lng: number;
     distance: number;
-    hull: Coordinates[];
+    hull: Coordinate[];
     address: string;
     statustext: 'Scheduled' | 'Postponed' | 'Cancelled' | 'Active';
     latestinformation: string;
     originalshutdowndate: string;
-    originalshutdownperiods: ShutdownPeriods;
+    originalshutdownperiods: Array<ShutdownPeriods>;
     expiredOutage: boolean;
     lastmodified: string;
 };
@@ -25,9 +25,9 @@ export type ShutdownPeriods = {
     end: string;
 };
 
-export type Coordinates = {
-    lng: number;
-    lat: number;
+export type Coordinate = {
+    lng: number | null;
+    lat: number | null;
 };
 
 export type OutageTimes = {

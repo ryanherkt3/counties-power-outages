@@ -1,4 +1,3 @@
-// TODO create cron script for this to run automatically
 import { db } from '@vercel/postgres';
 
 async function addOutages(client, outage) {
@@ -77,11 +76,11 @@ async function addOutages(client, outage) {
 
 async function removeOutages(client) {
     // Remove outages from DB
-    // CURRENT_DATE - 1 DAY excludes any outages whose date is today's date (as these outages may not have started yet)
+    // now() - 1 DAY excludes any outages whose date is today's date (as these outages may not have started yet)
     try {
         const removeOutages = await client.sql`
             DELETE FROM outages
-            WHERE shutdowndate::date < (CURRENT_DATE - INTERVAL '1 DAY')
+            WHERE shutdowndate::date < (now() - INTERVAL '1 DAY')
         `;
 
         console.log('Removed expired outages');
@@ -110,7 +109,7 @@ async function main() {
 
     await removeOutages(client);
 
-    await client.end();
+    await client.release();
 }
 
 main().catch((err) => {

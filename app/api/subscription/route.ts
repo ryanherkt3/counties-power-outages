@@ -93,7 +93,7 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
     const body = await request.json();
 
-    if (!body || !body.id || typeof body.id !== 'number') {
+    if (!body || !body.id) {
         return new Response(JSON.stringify({ 'error': 'Invalid arguments' }), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
