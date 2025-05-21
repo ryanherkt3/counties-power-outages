@@ -33,7 +33,7 @@ async function createTables(client) {
                 lat DECIMAL,
                 lng DECIMAL,
                 distance DECIMAL,
-                hull VARCHAR(700),
+                hull VARCHAR(1200),
                 address VARCHAR(400),
                 statustext VARCHAR(400),
                 latestinformation VARCHAR(400),
