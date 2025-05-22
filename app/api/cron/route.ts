@@ -7,6 +7,7 @@ import { db } from '@vercel/postgres';
 import { sendEmailNotification } from '@/app/lib/emails';
 import { NotificationSub, OutageData } from '@/app/lib/definitions';
 import { coordIsInOutageZone } from '@/app/lib/utils';
+import { NextRequest } from 'next/server';
 
 async function getOutages(client: { sql: any; }) {
     // Get all notification subscriptions from DB
@@ -135,7 +136,15 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
 
 // TODO try/catch blocks, or if statements (e.g. if (outagesList.outages)) to ensure we only proceed
 // if the data we want is actually fetched
-export async function GET() {
+export async function GET(request: NextRequest) {
+    const authHeader = request.headers.get('authorization');
+
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        return new Response('Unauthorized', {
+            status: 401,
+        });
+    }
+
     const client = await db.connect();
 
     const outagesList = await getOutages(client);
