@@ -46,6 +46,24 @@ await fetch(process.env.API_URL + '/subscription', {
 });
 ```
 
+### Private endpoints
+
+| Endpoint | Method | Description
+| -------- | ------ | -----------
+| `/cron` | `GET` | Runs the cron job to send emails to users with subscriptions. Should only be invoked via Vercel.
+
+To test this endpoint locally, create another terminal after invoking `npm run dev` and run:
+
+Windows Powershell:
+```
+Invoke-WebRequest -Uri http://localhost:3000/api/cron -Headers @{'Authorization' = 'Bearer <CRON_SECRET>'}
+```
+
+Linux (or any terminal that can send `curl` requests):
+```
+curl -I -H "Authorization: Bearer <CRON_SECRET>" http://localhost:3000/api/cron
+```
+
 ### Future endpoints
 
 | Endpoint | Method | Description | Required request data

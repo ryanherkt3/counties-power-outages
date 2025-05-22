@@ -17,7 +17,7 @@ npm install
 
 Prior to visiting your localhost site, to see the outages list, you will need your own database to store the entries (as Counties Power no longer allows querying their API on production sites). I use Neon Postgres - setup instructions can be found [here](https://neon.tech/docs/get-started-with-neon/connect-neon).
 
-To create the necessary tables and get the outages list, run:
+To create the necessary tables and update the outages list, run:
 ```bash
 npm run create-tables
 npm run update-outages
