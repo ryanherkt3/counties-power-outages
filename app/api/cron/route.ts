@@ -2,11 +2,25 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
 
-// TODO create cron script for this to run automatically
+// TODO add function doc comments
 import { db } from '@vercel/postgres';
 import { sendEmailNotification } from '@/app/lib/emails';
 import { NotificationSub, OutageData } from '@/app/lib/definitions';
 import { coordIsInOutageZone } from '@/app/lib/utils';
+
+async function getOutages(client: { sql: any; }) {
+    // Get all notification subscriptions from DB
+    try {
+        const outages = await client.sql`SELECT * FROM outages`;
+        return {
+            outages
+        };
+    }
+    catch (error) {
+        console.error('Error getting outages:', error);
+        throw error;
+    }
+}
 
 async function getNotifSubs(client: { sql: any; }) {
     // Get all notification subscriptions from DB
@@ -17,13 +31,13 @@ async function getNotifSubs(client: { sql: any; }) {
         };
     }
     catch (error) {
-        console.error('Error removing expired outages:', error);
+        console.error('Error getting subscriptions:', error);
         throw error;
     }
 }
 
 async function updateSubscriptionEmailSent(client: { sql: any; }, outageInfo: string, id: string) {
-    // Add outage to DB
+    // Update the outageInfo for the notification which had an email sent
     try {
         const updateSub = await client.sql`
             UPDATE notifications
@@ -119,12 +133,12 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
     return emailsSent;
 }
 
-async function main() {
-    // TODO when merging the update & email scripts, have a query to
-    // SELECT * FROM outages, in order to not call this API
-    const outagesReq = await fetch('https://outages.ryanherkt.com/api/getoutages');
-    const outagesJson = await outagesReq.json();
-    const outages = outagesJson.planned_outages.filter((outage: OutageData) => {
+// TODO try/catch blocks(?)
+export async function GET() {
+    const client = await db.connect();
+
+    const outagesList = await getOutages(client);
+    const filteredOutages = outagesList.outages.rows.filter((outage: OutageData) => {
         // Remove outages whose scheduled start date is more than seven days away
         const currentDate = new Date();
         const currentTime = currentDate.getTime() / 1000;
@@ -136,20 +150,35 @@ async function main() {
 
     console.log('Fetched outages');
 
-    const client = await db.connect();
-
     const notifSubs = await getNotifSubs(client);
     const subscriptions = notifSubs.subs.rows;
 
     console.log('Fetched subscriptions');
 
-    const emailCount = await trySendEmails(client, outages, subscriptions);
+    const emailCount = await trySendEmails(client, filteredOutages, subscriptions);
 
     console.log(`Emails sent: ${emailCount}`);
 
     client.release();
-}
 
-main().catch((err) => {
-    console.error('An error occurred while attempting to send notification emails:', err);
-});
+    // TODO delete this test code
+    try {
+        const outagesReq = await fetch('https://api.integration.countiesenergy.co.nz/user/v1.0/shutdowns');
+        const outagesJson = await outagesReq.json();
+        const outages = outagesJson.planned_outages;
+
+        console.log(outages);
+
+        return new Response(JSON.stringify({ 'success': true, 'external_api_fetch': true }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+    catch (error) {
+        console.log('Fetching external API resource did not work', error);
+        return new Response(JSON.stringify({ 'success': true, 'external_api_fetch': false }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+}

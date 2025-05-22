@@ -83,8 +83,6 @@ async function removeOutages(client) {
             WHERE shutdowndate::date < (now() - INTERVAL '1 DAY')
         `;
 
-        console.log('Removed expired outages');
-
         return {
             removeOutages
         };
@@ -108,6 +106,8 @@ async function main() {
     console.log('Outages added');
 
     await removeOutages(client);
+
+    console.log('Expired outages removed');
 
     await client.release();
 }

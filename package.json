@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "create-tables": "node -r dotenv/config ./scripts/create-tables.js",
-    "update-outages": "node -r dotenv/config ./scripts/update-outages.js",
-    "send-emails": "npx tsx -r dotenv/config ./scripts/send-emails.ts"
+    "update-outages": "node -r dotenv/config ./scripts/update-outages.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
