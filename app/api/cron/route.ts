@@ -133,12 +133,13 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
     return emailsSent;
 }
 
-// TODO try/catch blocks(?)
+// TODO try/catch blocks, or if statements (e.g. if (outagesList.outages)) to ensure we only proceed
+// if the data we want is actually fetched
 export async function GET() {
     const client = await db.connect();
 
     const outagesList = await getOutages(client);
-    const filteredOutages = outagesList.outages.rows.filter((outage: OutageData) => {
+    const outages = outagesList.outages.rows.filter((outage: OutageData) => {
         // Remove outages whose scheduled start date is more than seven days away
         const currentDate = new Date();
         const currentTime = currentDate.getTime() / 1000;
@@ -155,7 +156,7 @@ export async function GET() {
 
     console.log('Fetched subscriptions');
 
-    const emailCount = await trySendEmails(client, filteredOutages, subscriptions);
+    const emailCount = await trySendEmails(client, outages, subscriptions);
 
     console.log(`Emails sent: ${emailCount}`);
 
