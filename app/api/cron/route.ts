@@ -83,7 +83,11 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
             const locationMatches = subLocation && outageAddress.includes(subLocation);
             const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull, outageCoords);
 
-            const filteredSub = sub.outageinfo ? subInfo.filter((x: OutageData) => {
+            console.log(sub);
+            console.log(sub.outageinfo, !!sub.outageinfo);
+            console.log(typeof subInfo, subInfo);
+
+            const filteredSub = sub.outageinfo.length ? subInfo.filter((x: OutageData) => {
                 return x.id === outage.id;
             })[0] : [];
 
@@ -150,6 +154,9 @@ export async function GET(request: NextRequest) {
     const client = await db.connect();
 
     const outagesList = await getOutages(client);
+
+    console.log(typeof outagesList.outages.rows, outagesList.outages.rows);
+
     const outages = outagesList.outages.rows.filter((outage: OutageData) => {
         // Remove outages whose scheduled start date is more than seven days away
         const currentDate = new Date();
