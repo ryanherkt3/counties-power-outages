@@ -69,7 +69,7 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
 
         // Check sub.outageinfo to see if an email has been sent within the last 7 days, and also if
         // the outage status has change compared to last time - if so send email anyway
-        const subInfo = sub.outageinfo ? JSON.parse(sub.outageinfo) : [];
+        const subInfo = sub.outageinfo !== null ? JSON.parse(sub.outageinfo) : [];
 
         for (const outage of outages) {
             const outageCoords = {
@@ -83,13 +83,9 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
             const locationMatches = subLocation && outageAddress.includes(subLocation);
             const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull, outageCoords);
 
-            console.log(sub);
-            console.log(sub.outageinfo, !!sub.outageinfo);
-            console.log(typeof subInfo, subInfo);
-
-            const filteredSub = sub.outageinfo.length ? subInfo.filter((x: OutageData) => {
+            const filteredSub = Object.keys(subInfo).length > 0 ? subInfo.filter((x: OutageData) => {
                 return x.id === outage.id;
-            })[0] : [];
+            })[0] : {};
 
             let shouldSendEmail = true;
 
@@ -111,7 +107,7 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
 
                     // If we've emailed them before, update the object values; otherwise create a new one and
                     // push it to subInfo
-                    if (filteredSub) {
+                    if (Object.keys(filteredSub).length > 0) {
                         filteredSub.emailSent = emailedTime;
                         filteredSub.status = outage.statustext;
                     }
@@ -154,8 +150,6 @@ export async function GET(request: NextRequest) {
     const client = await db.connect();
 
     const outagesList = await getOutages(client);
-
-    console.log(typeof outagesList.outages.rows, outagesList.outages.rows);
 
     const outages = outagesList.outages.rows.filter((outage: OutageData) => {
         // Remove outages whose scheduled start date is more than seven days away
