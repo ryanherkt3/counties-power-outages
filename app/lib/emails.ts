@@ -7,8 +7,13 @@ export async function sendEmailNotification(notifSub: NotificationSub, outage: O
     console.log('about to send email');
 
     try {
+        console.log('get resend key');
+
         const resend = new Resend(process.env.RESEND_API_KEY);
         const notifSubId = notifSub.id;
+
+        console.log(resend, notifSubId, outage);
+        console.log(outage.shutdownperiods);
 
         const shutdownPeriods = outage.shutdownperiods[0];
         const outageTimes = getTimesAndActiveOutage(shutdownPeriods.start, shutdownPeriods.end);
@@ -33,6 +38,7 @@ export async function sendEmailNotification(notifSub: NotificationSub, outage: O
         return Response.json(data);
     }
     catch (error) {
+        console.log(error);
         return Response.json({ error }, { status: 500 });
     }
 }
