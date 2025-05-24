@@ -1,71 +1,45 @@
 /* eslint-disable max-len */
-import * as React from 'react';
-import { Html, Text, Section, Body, Container, Head } from '@react-email/components';
 import { OutageData } from '../lib/definitions';
-import { CSSProperties } from 'react';
 
-interface NotificationEmailProps {
-    notifSubId: string;
-    outage: OutageData;
-    startTime: string;
-    endTime: string;
-}
+export default function NotificationEmail(
+    {
+        notifSubId,
+        outage,
+        startTime,
+        endTime
+    }:
+    {
+        notifSubId: string;
+        outage: OutageData;
+        startTime: string,
+        endTime: string
+    }
+) {
+    console.log(notifSubId, startTime, endTime);
 
-export const NotificationEmail: React.FC<Readonly<NotificationEmailProps>> = ({
-    notifSubId, outage, startTime, endTime
-}) => (
-    <Html lang="en">
-        <Head />
-        <Body style={main}>
-            <Container style={container}>
-                <Section style={paddedSection}>
-                    <Text style={heading}>Counties Power Outages</Text>
-                    <Text style={paragraph}>There is a upcoming planned power outage which may be in the location you subscribed to notifications for.</Text>
-                </Section>
+    // TODO different email for when the outage status has changed (to Postponed/Cancelled)
+    return (
+        `<div style="background-color: #dbddde: font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif>
+            <div style="margin: 0 auto; background-color: #fff; overflow: hidden;">
+                <div style="padding: 0 12px;">
+                    <div style="color: red; font-size: 20px; line-height: 28px; font-weight: 700;">Counties Power Outages</div>
+                    <div style="font-size: 14px; line-height: 22px;">There is a upcoming planned power outage which may be in the location you subscribed to notifications for.</div>
+                </div>
 
-                <Section style={paddedSection}>
-                    <Text style={paragraph}><b>Outage ID:</b>{' '}{outage.id}</Text>
-                    <Text style={paragraph}><b>Status:</b>{' '}{outage.statustext}</Text>
-                    <Text style={paragraph}><b>Location:</b>{' '}{outage.address}</Text>
-                    <Text style={paragraph}><b>Date:</b>{' '}{outage.shutdowndate}</Text>
-                    <Text style={paragraph}><b>Start Time:</b>{' '}{startTime}</Text>
-                    <Text style={paragraph}><b>End Time:</b>{' '}{endTime}</Text>
-                </Section>
+                <div style="padding: 0 12px;">
+                    <div style="font-size: 14px; line-height: 22px;"><b>Outage ID:</b> ${outage.id}</div>
+                    <div style="font-size: 14px; line-height: 22px;"><b>Status:</b> ${outage.statustext}</div>
+                    <div style="font-size: 14px; line-height: 22px;"><b>Location:</b> ${outage.address}</div>
+                    <div style="font-size: 14px; line-height: 22px;"><b>Date:</b> ${outage.shutdowndate}</div>
+                    <div style="font-size: 14px; line-height: 22px;"><b>Start Time:</b> ${startTime}</div>
+                    <div style="font-size: 14px; line-height: 22px;"><b>End Time:</b> ${endTime}</div>
+                </div>
 
                 {/* TODO add link/functionality to view the outage w/o messing with the search params functionality */}
-                <Section style={paddedSection}>
-                    <Text style={paragraph}>To unsubscribe from these notifications, click <a href={`https://outages.ryanherkt.com/unsubscribe?id=${notifSubId}`}>here</a>.</Text>
-                </Section>
-            </Container>
-        </Body>
-    </Html>
-);
-
-export default NotificationEmail;
-
-const paddedSection: CSSProperties = {
-    padding: '0 12px'
-};
-
-const paragraph: CSSProperties = {
-    fontSize: '14px',
-    lineHeight: '22px'
-};
-
-const heading: CSSProperties = {
-    color: 'red',
-    fontSize: '20px',
-    lineHeight: '28px',
-    fontWeight: '700'
-};
-
-const main: CSSProperties = {
-    backgroundColor: '#dbddde',
-    fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
-};
-
-const container: CSSProperties = {
-    margin: '0 auto',
-    backgroundColor: '#fff',
-    overflow: 'hidden',
-};
+                <div style="padding: 0 12px;">
+                    <div style="font-size: 14px; line-height: 22px;">To unsubscribe from these notifications, click <a href='https://outages.ryanherkt.com/unsubscribe?id=${notifSubId}'}>here</a>.</div>
+                </div>
+            </div>
+        </div>`
+    );
+}

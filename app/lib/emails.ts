@@ -1,8 +1,7 @@
 import { Resend } from 'resend';
-import { NotificationEmail } from '../ui/notif-email';
+import NotificationEmail from '../ui/notif-email';
 import { NotificationSub, OutageData } from './definitions';
 import { getTimesAndActiveOutage } from './utils';
-import { ReactNode } from 'react';
 
 export async function sendEmailNotification(notifSub: NotificationSub, outage: OutageData) {
     try {
@@ -13,23 +12,24 @@ export async function sendEmailNotification(notifSub: NotificationSub, outage: O
         const outageTimes = getTimesAndActiveOutage(shutdownPeriods.start, shutdownPeriods.end);
         const { startTime, endTime } = outageTimes.times;
 
-        await resend.emails.send({
+        console.log(notifSubId, startTime, endTime);
+
+        const { data, error } = await resend.emails.send({
             from: 'Counties Power Outages <notifications@outages.ryanherkt.com>',
             to: notifSub.email,
             subject: `Upcoming Power Outage - ${notifSub.location}`,
-            // eslint-disable-next-line max-len
-            react: (NotificationEmail({notifSubId: notifSubId, outage: outage, startTime: startTime, endTime: endTime}) as ReactNode)
+            html: NotificationEmail({notifSubId: notifSubId, outage: outage, startTime: startTime, endTime: endTime})
         });
-        return {
-            error: null,
-            success: true
-        };
+
+        console.log(data);
+
+        if (error) {
+            return Response.json({ error }, { status: 500 });
+        }
+
+        return Response.json(data);
     }
     catch (error) {
-        console.log(error);
-        return {
-            error: (error as Error).message,
-            success: false
-        };
+        return Response.json({ error }, { status: 500 });
     }
 }
