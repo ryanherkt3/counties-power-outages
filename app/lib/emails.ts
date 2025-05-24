@@ -4,8 +4,11 @@ import { NotificationSub, OutageData } from './definitions';
 
 export async function sendEmailNotification(notifSub: NotificationSub, outage: OutageData) {
     try {
+        console.log(outage);
+        console.log(notifSub);
+
         const resend = new Resend(process.env.RESEND_API_KEY);
-        const notifSubId = notifSub.id.toString();
+        const notifSubId = notifSub.id;
 
         await resend.emails.send({
             from: 'Counties Power Outages <notifications@outages.ryanherkt.com>',

@@ -100,6 +100,7 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
 
             if ((coordsMatch || locationMatches) && shouldSendEmail) {
                 try {
+                    console.log(sub, sub.id);
                     sendEmailNotification(sub, outage);
                     emailsSent++;
 
