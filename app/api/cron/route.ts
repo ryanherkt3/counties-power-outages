@@ -83,14 +83,14 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
             const locationMatches = subLocation && outageAddress.includes(subLocation);
             const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull, outageCoords);
 
-            const filteredSub = subInfo.filter((x: OutageData) => {
+            const filteredSub = sub.outageinfo ? subInfo.filter((x: OutageData) => {
                 return x.id === outage.id;
-            })[0];
+            })[0] : [];
 
             let shouldSendEmail = true;
 
-            if (shouldSendEmail) {
-                if (filteredSub && filteredSub.status.toLowerCase() === outage.statustext.toLowerCase() && filteredSub.emailSent) {
+            if (shouldSendEmail && !!(filteredSub && filteredSub.status)) {
+                if (filteredSub.status.toLowerCase() === outage.statustext.toLowerCase() && filteredSub.emailSent) {
                     const currentDate = new Date();
                     const currentTime = currentDate.getTime() / 1000;
 
@@ -145,6 +145,8 @@ export async function GET(request: NextRequest) {
         });
     }
 
+    // TODO use proxy server to update outages (?)
+
     const client = await db.connect();
 
     const outagesList = await getOutages(client);
@@ -171,24 +173,8 @@ export async function GET(request: NextRequest) {
 
     client.release();
 
-    // TODO delete this test code
-    try {
-        const outagesReq = await fetch('https://api.integration.countiesenergy.co.nz/user/v1.0/shutdowns');
-        const outagesJson = await outagesReq.json();
-        const outages = outagesJson.planned_outages;
-
-        console.log(outages);
-
-        return new Response(JSON.stringify({ 'success': true, 'external_api_fetch': true }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
-    catch (error) {
-        console.log('Fetching external API resource did not work', error);
-        return new Response(JSON.stringify({ 'success': true, 'external_api_fetch': false }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
+    return new Response(JSON.stringify({ 'success': true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+    });
 }
