@@ -17,8 +17,6 @@ export default function NotificationEmail(
         endTime: string
     }
 ) {
-    console.log(notifSubId, startTime, endTime);
-
     // TODO different email for when the outage status has changed (to Postponed/Cancelled)
     return (
         <Html lang="en">

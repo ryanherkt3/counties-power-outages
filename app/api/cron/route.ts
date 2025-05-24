@@ -97,11 +97,8 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
                 }
             }
 
-            console.log((coordsMatch || locationMatches) && shouldSendEmail);
-
             if ((coordsMatch || locationMatches) && shouldSendEmail) {
                 try {
-                    console.log('before send email function called');
                     await sendEmailNotification(sub, outage);
                     emailsSent++;
 
@@ -163,8 +160,6 @@ export async function GET(request: NextRequest) {
         return outageStartDateTime - currentTime <= 86400 * 7;
     });
 
-    console.log(outages[0]);
-
     // Manipulate outage fields (TODO have this and section in /getoutages route be one function)
     for (const outage of outages) {
         outage.hull = outage.hull ? JSON.parse(outage.hull) : [];
@@ -202,8 +197,6 @@ export async function GET(request: NextRequest) {
         delete outage.originalshutdownperiodstart;
         delete outage.originalshutdownperiodstart;
     }
-
-    console.log(outages[0]);
 
     console.log('Fetched outages');
 

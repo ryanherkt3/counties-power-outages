@@ -38,8 +38,8 @@ And browse to http://localhost:3000, or whatever port NPM assigns in the case wh
 
 ### Future improvements
 
-* An automated cron script to update the live outages database and send emails to users.
-* Notifications: a page to edit notifications or unsubscribe from them.
+* Automate updating the live outages database.
+* Notifications: pages to edit and unsubscribe from notifications.
 * Contact form (for bug reports etc).
 * A filter on the outages page for outages per page (configurable to 5 / 10 / 15).
 
