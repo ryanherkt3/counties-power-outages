@@ -4,6 +4,8 @@ import { NotificationSub, OutageData } from './definitions';
 import { getTimesAndActiveOutage } from './utils';
 
 export async function sendEmailNotification(notifSub: NotificationSub, outage: OutageData) {
+    console.log('about to send email');
+
     try {
         const resend = new Resend(process.env.RESEND_API_KEY);
         const notifSubId = notifSub.id;
@@ -18,12 +20,13 @@ export async function sendEmailNotification(notifSub: NotificationSub, outage: O
             from: 'Counties Power Outages <notifications@outages.ryanherkt.com>',
             to: notifSub.email,
             subject: `Upcoming Power Outage - ${notifSub.location}`,
-            html: NotificationEmail({notifSubId: notifSubId, outage: outage, startTime: startTime, endTime: endTime})
+            react: NotificationEmail({notifSubId: notifSubId, outage: outage, startTime: startTime, endTime: endTime}),
         });
 
         console.log(data);
 
         if (error) {
+            console.log(error);
             return Response.json({ error }, { status: 500 });
         }
 

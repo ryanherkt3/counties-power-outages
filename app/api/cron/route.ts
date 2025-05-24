@@ -97,9 +97,12 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
                 }
             }
 
+            console.log((coordsMatch || locationMatches) && shouldSendEmail);
+
             if ((coordsMatch || locationMatches) && shouldSendEmail) {
                 try {
-                    sendEmailNotification(sub, outage);
+                    console.log('before send email function called');
+                    await sendEmailNotification(sub, outage);
                     emailsSent++;
 
                     const emailedTime = Math.round(new Date().getTime() / 1000);
