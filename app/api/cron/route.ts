@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable max-len */
 /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
 
 // TODO add function doc comments
@@ -100,8 +99,7 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
 
             if ((coordsMatch || locationMatches) && shouldSendEmail) {
                 try {
-                    console.log(sub, sub.id);
-                    sendEmailNotification(sub, outage);
+                    await sendEmailNotification(sub, outage);
                     emailsSent++;
 
                     const emailedTime = Math.round(new Date().getTime() / 1000);

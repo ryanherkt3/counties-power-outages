@@ -6,6 +6,9 @@ import { CSSProperties } from 'react';
 import { getTimesAndActiveOutage } from '../lib/utils';
 
 export default function NotificationEmail({ notifSubId, outage }: { notifSubId: string; outage: OutageData }) {
+    console.log(notifSubId);
+    console.log(outage);
+
     const shutdownPeriods = outage.shutdownperiods[0];
     const outageTimes = getTimesAndActiveOutage(shutdownPeriods.start, shutdownPeriods.end);
 

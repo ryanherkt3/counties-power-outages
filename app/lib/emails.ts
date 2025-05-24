@@ -4,9 +4,6 @@ import { NotificationSub, OutageData } from './definitions';
 
 export async function sendEmailNotification(notifSub: NotificationSub, outage: OutageData) {
     try {
-        console.log(outage);
-        console.log(notifSub);
-
         const resend = new Resend(process.env.RESEND_API_KEY);
         const notifSubId = notifSub.id;
 
@@ -14,7 +11,7 @@ export async function sendEmailNotification(notifSub: NotificationSub, outage: O
             from: 'Counties Power Outages <notifications@outages.ryanherkt.com>',
             to: notifSub.email,
             subject: `Upcoming Power Outage - ${notifSub.location}`,
-            react: NotificationEmail({notifSubId, outage})
+            react: NotificationEmail({notifSubId: notifSubId, outage: outage})
         });
         return {
             error: null,
