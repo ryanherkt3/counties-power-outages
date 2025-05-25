@@ -29,6 +29,7 @@ export default function NotificationEmail(
                     </Section>
 
                     <Section style={paddedSection}>
+                        {/* TODO add link/functionality to view the outage w/o messing with the search params functionality */}
                         <Text style={paragraph}><b>Outage ID:</b>{' '}{outage.id}</Text>
                         <Text style={paragraph}><b>Status:</b>{' '}{outage.statustext}</Text>
                         <Text style={paragraph}><b>Location:</b>{' '}{outage.address}</Text>
@@ -37,7 +38,7 @@ export default function NotificationEmail(
                         <Text style={paragraph}><b>End Time:</b>{' '}{endTime}</Text>
                     </Section>
 
-                    {/* TODO add link/functionality to view the outage w/o messing with the search params functionality */}
+                    {/* TODO change this link */}
                     <Section style={paddedSection}>
                         <Text style={paragraph}>To unsubscribe from these notifications, click <a href={`https://outages.ryanherkt.com/unsubscribe?id=${notifSubId}`}>here</a>.</Text>
                     </Section>

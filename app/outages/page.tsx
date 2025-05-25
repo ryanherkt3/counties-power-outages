@@ -45,7 +45,7 @@ export default async function OutagesPage(props: {
     // Early return if there are no outages to report
     if (!filteredOutages.length) {
         return (
-            <main className="flex flex-col px-4 py-6 page-min-height">
+            <div className="flex flex-col px-4 py-6 page-min-height">
                 {searchSection}
                 <div className="flex flex-col gap-12 py-12 my-auto items-center justify-center">
                     <BoltIcon className="w-20 text-red-600" />
@@ -53,7 +53,7 @@ export default async function OutagesPage(props: {
                         Could not find the requested outage, try searching for something else
                     </div>
                 </div>
-            </main>
+            </div>
         );
     }
 

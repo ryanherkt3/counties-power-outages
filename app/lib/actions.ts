@@ -70,6 +70,7 @@ export type State = {
     message?: string | null;
 };
 
+// TODO add support for updating existing subscriptions
 export async function addSubscription(includeCoords: boolean, prevState: State, formData: FormData) {
     const validatedFields = AddSub.safeParse({
         location: formData.get('location'),

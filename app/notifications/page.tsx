@@ -112,7 +112,7 @@ export default async function NotificationsPage(props: {
     ];
 
     return (
-        <main className="flex flex-col gap-8 px-4 py-6 page-min-height">
+        <div className="flex flex-col gap-8 px-4 py-6 page-min-height">
             <div className="flex flex-col gap-4">
                 {
                     notifsInfo.map((item) => {
@@ -151,7 +151,7 @@ export default async function NotificationsPage(props: {
             </div>
 
             <div className="flex flex-col gap-4 relative">
-                <div className="text-xl font-semibold">Active Notifications ({subscriptions.length})</div>
+                <div className="text-xl font-semibold">Active Subscriptions ({subscriptions.length})</div>
                 <Search placeholder="Enter your email address"/>
             </div>
 
@@ -204,7 +204,7 @@ export default async function NotificationsPage(props: {
                 <div className="text-xl font-semibold">Subscribe to Outages</div>
                 <NotifSubForm />
             </div>
-        </main>
+        </div>
     );
 }
 

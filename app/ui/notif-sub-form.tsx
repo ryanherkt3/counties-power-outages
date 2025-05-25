@@ -7,6 +7,7 @@ import { useFormState } from 'react-dom';
 import clsx from 'clsx';
 import { useState } from 'react';
 
+// TODO add support for updating existing subscriptions
 export default function NotifSubForm() {
     const [includeCoords, setIncludeCoords] = useState(true);
 
@@ -18,7 +19,7 @@ export default function NotifSubForm() {
     return (
         <>
             <div className="flex flex-col gap-2">
-                <div className="text-lg font-medium">Would you like to include coordinates in your outage notification?</div>
+                <div className="text-lg font-medium">Would you like to include coordinates in your outage subscription?</div>
                 <div className="flex flex-row gap-6">
                     <button
                         className="flex flex-row gap-2"
