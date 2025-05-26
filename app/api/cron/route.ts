@@ -68,7 +68,7 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
 
         // Check sub.outageinfo to see if an email has been sent within the last 7 days, and also if
         // the outage status has change compared to last time - if so send email anyway
-        const subInfo = sub.outageinfo === 'null' ? [] : JSON.parse(sub.outageinfo);
+        const subInfo = ['null', ''].includes(sub.outageinfo) ? [] : JSON.parse(sub.outageinfo);
 
         for (const outage of outages) {
             const outageCoords = {
