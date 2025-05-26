@@ -75,7 +75,7 @@ export default async function NotificationsPage(props: {
                 //     text: 'You should then get a confirmation email with details of your notification.'
                 // }
             ],
-            note: 'For the latitude, do not include the minus sign in your input.'
+            note: null,
         },
         {
             key: 'subscribe-without-coords',
@@ -110,6 +110,17 @@ export default async function NotificationsPage(props: {
             note: null,
         },
     ];
+
+    // Create empty object as only new subscriptions get created on this page
+    const notifFormValues = {
+        id: '',
+        latitude: null,
+        longtitude: null,
+        location: '',
+        email: '',
+        hasCoordinates: true,
+        datesubscribed: '',
+    };
 
     return (
         <div className="flex flex-col gap-8 px-4 py-6 page-min-height">
@@ -202,7 +213,7 @@ export default async function NotificationsPage(props: {
 
             <div className="flex flex-col gap-4">
                 <div className="text-xl font-semibold">Subscribe to Outages</div>
-                <NotifSubForm />
+                <NotifSubForm values={notifFormValues} onSubPage={false} />
             </div>
         </div>
     );

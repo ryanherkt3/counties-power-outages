@@ -52,3 +52,13 @@ export type NotificationSub = {
     datesubscribed: string;
     outageinfo: string;
 };
+
+export type FormValues = {
+    id: string;
+    location: string;
+    latitude: number | null;
+    longtitude: number | null;
+    email: string;
+    datesubscribed: string;
+    hasCoordinates: boolean;
+};
