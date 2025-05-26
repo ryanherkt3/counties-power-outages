@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
-    "@react-email/components": "^0.0.33",
+    "@react-email/components": "^0.0.41",
     "@react-email/render": "^1.0.5",
     "@tailwindcss/postcss": "^4.1.5",
     "@vercel/postgres": "^0.10.0",
