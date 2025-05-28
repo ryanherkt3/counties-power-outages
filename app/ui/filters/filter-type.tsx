@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import OutageStatus from '../outage/outage-status';
 import clsx from 'clsx';
 import FilterDate from './filter-date';
@@ -34,8 +34,11 @@ export default function FilterType(
 
     const showFilterPicker = () => {
         setHidePicker(!hidePicker);
-        document.querySelector('body')?.classList.toggle('no-scroll', hidePicker);
     };
+
+    useEffect(() => {
+        document.querySelector('body')?.classList.toggle('no-scroll', !hidePicker);
+    }, [hidePicker]);
 
     const getFilterOutcomeDiv = () => {
         if (!filterOutcome) {
@@ -77,14 +80,25 @@ export default function FilterType(
                     }
                 )
             }
-            onClick={showFilterPicker}
+            onClick={ showFilterPicker }
         >
             <div className="font-semibold">{type}</div>
             {
                 getFilterOutcomeDiv()
             }
+            {
+                /* TODO move filter picker to its own component
+                (currently its duplicated three times under each filter) */
+            }
             <div
-                className={`${positionClasses} z-20 bg-[rgba(0,0,0,0.5)] ${hidePicker ? 'hidden' : ''}`}
+                className={
+                    clsx(
+                        `${positionClasses} z-20 bg-[rgba(0,0,0,0.5)]`,
+                        {
+                            'hidden': hidePicker,
+                        }
+                    )
+                }
                 onClick={
                     (e) => {
                         e.stopPropagation();
