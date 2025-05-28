@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     const email = searchParams.get('email'); // api/subscription?email=xx
     const id = searchParams.get('id'); // api/subscription?id=xx
 
+    // TODO protect against SQL injection
     if (id) {
         // Get the notification with the requested ID from DB
         let subscription;
@@ -161,8 +162,9 @@ export async function PUT(request: Request) {
 export async function DELETE(request: Request) {
     const body = await request.json();
 
+    // TODO protect against SQL injection
     if (!body || !body.id) {
-        return new Response(JSON.stringify({ 'error': 'Invalid arguments' }), {
+        return new Response(JSON.stringify({ 'error': 'Invalid arguments', 'success': false }), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });
@@ -176,13 +178,13 @@ export async function DELETE(request: Request) {
     }
     catch (error) {
         console.log(error);
-        return new Response(JSON.stringify({ 'error': 'Server error' }), {
+        return new Response(JSON.stringify({ 'error': 'Server error', 'success': false }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
         });
     }
 
-    return new Response(JSON.stringify({ 'success': 1 }), {
+    return new Response(JSON.stringify({ 'success': true }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
     });

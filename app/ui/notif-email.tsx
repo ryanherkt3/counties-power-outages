@@ -40,7 +40,7 @@ export default function NotificationEmail(
 
                     {/* TODO change this link */}
                     <Section style={paddedSection}>
-                        <Text style={paragraph}>To unsubscribe from these notifications, click <a href={`https://outages.ryanherkt.com/unsubscribe?id=${notifSubId}`}>here</a>.</Text>
+                        <Text style={paragraph}>To unsubscribe from these notifications, click <a href={`https://outages.ryanherkt.com/unsubscribe/${notifSubId}`}>here</a>.</Text>
                     </Section>
                 </Container>
             </Body>
