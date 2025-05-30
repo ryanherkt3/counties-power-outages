@@ -1,29 +1,30 @@
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+'use client';
+
 import LatestInfo from '@/app/ui/latest-info';
 import { getOutageSections } from '@/app/lib/outagesections';
 import OutageStatus from '@/app/ui/outage/outage-status';
-import { OutageData } from '@/app/lib/definitions';
 import CustomIcon from '../custom-icon';
 import clsx from 'clsx';
+import { RootState } from '@/app/state/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { update } from '@/app/state/overlay-view/overlayView';
+import { remove } from '@/app/state/overlay-data/overlayData';
 
-export default function OutageOverlay(
-    {
-        data,
-        hidden,
-        closeCallback
-    }:
-    {
-        data: OutageData;
-        hidden: boolean;
-        closeCallback: Function
-    }
-) {
+export default function OutageOverlay() {
+    const layoutClasses = 'fixed flex flex-col gap-8';
+    const positionScrollClasses = 'top-0 left-0 bottom-0 overflow-y-auto';
+
+    const overlayView = useSelector((state: RootState) => state.overlayView.value);
+    const data = useSelector((state: RootState) => state.overlayData.value);
+    const dispatch = useDispatch();
+
     const { statustext, lat: outageLat, lng: outageLng, address, latestinformation } = data;
 
     const outageSections = getOutageSections(true, false, data);
 
-    const layoutClasses = 'fixed flex flex-col gap-8';
-    const positionScrollClasses = 'top-0 left-0 bottom-0 overflow-y-auto';
+    const canSeeOverlay = overlayView.cardClickShow || overlayView.showOnLoad === 1;
+
+    document.querySelector('body')?.classList.toggle('no-scroll', canSeeOverlay);
 
     return (
         <div
@@ -31,14 +32,21 @@ export default function OutageOverlay(
                 clsx(
                     `${layoutClasses} px-4 py-6 text-center ${positionScrollClasses} w-[100%] h-[100%] z-20 bg-white`,
                     {
-                        'hidden': hidden
+                        'hidden': !canSeeOverlay
                     }
                 )
             }
         >
             <div className="flex flex-row gap-2 justify-between">
                 <div className="text-2xl font-semibold text-black">{address}</div>
-                <button onClick={ closeCallback.bind(null) }>
+                <button onClick={
+                    () => {
+                        const showOnLoadValue = overlayView.showOnLoad === 1 ? 2 : overlayView.showOnLoad;
+
+                        dispatch(update({ cardClickShow: false, showOnLoad: showOnLoadValue }));
+                        dispatch(remove());
+                    }
+                }>
                     <CustomIcon icon={'XMarkIcon'} iconClass={'w-7 cursor-pointer'} />
                 </button>
             </div>
@@ -66,6 +74,7 @@ export default function OutageOverlay(
                 }
             </div>
             {
+                // TODO reset iframe link after closing the overlay then reopening it
                 getOutageIFrame(outageLat, outageLng)
             }
         </div>

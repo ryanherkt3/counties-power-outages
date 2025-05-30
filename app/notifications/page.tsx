@@ -9,7 +9,7 @@ import clsx from 'clsx';
 import { coordIsInOutageZone, getActiveOutages } from '../lib/utils';
 
 export const metadata: Metadata = {
-    title: 'Notifications',
+    title: 'Notifications | Counties Power Outages App',
 };
 
 type SearchParams = Promise<{
@@ -75,7 +75,7 @@ export default async function NotificationsPage(props: {
                 //     text: 'You should then get a confirmation email with details of your notification.'
                 // }
             ],
-            note: 'For the latitude, do not include the minus sign in your input.'
+            note: null,
         },
         {
             key: 'subscribe-without-coords',
@@ -111,8 +111,19 @@ export default async function NotificationsPage(props: {
         },
     ];
 
+    // Create empty object as only new subscriptions get created on this page
+    const notifFormValues = {
+        id: '',
+        latitude: null,
+        longtitude: null,
+        location: '',
+        email: '',
+        hasCoordinates: true,
+        datesubscribed: '',
+    };
+
     return (
-        <main className="flex flex-col gap-8 px-4 py-6 page-min-height">
+        <div className="flex flex-col gap-8 px-4 py-6 page-min-height">
             <div className="flex flex-col gap-4">
                 {
                     notifsInfo.map((item) => {
@@ -151,7 +162,7 @@ export default async function NotificationsPage(props: {
             </div>
 
             <div className="flex flex-col gap-4 relative">
-                <div className="text-xl font-semibold">Active Notifications ({subscriptions.length})</div>
+                <div className="text-xl font-semibold">Active Subscriptions ({subscriptions.length})</div>
                 <Search placeholder="Enter your email address"/>
             </div>
 
@@ -202,9 +213,9 @@ export default async function NotificationsPage(props: {
 
             <div className="flex flex-col gap-4">
                 <div className="text-xl font-semibold">Subscribe to Outages</div>
-                <NotifSubForm />
+                <NotifSubForm values={notifFormValues} onSubPage={false} />
             </div>
-        </main>
+        </div>
     );
 }
 

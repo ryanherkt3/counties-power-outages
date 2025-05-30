@@ -10,6 +10,10 @@ import { getTimesAndActiveOutage } from './utils';
  * @returns {Object} outage section segments
  */
 export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolean, data: OutageData) {
+    if (data.dummyData) {
+        return [];
+    }
+
     const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownperiods[0].start, data.shutdownperiods[0].end);
 
     const shutdownTimes = timesAndActiveOutage.times;

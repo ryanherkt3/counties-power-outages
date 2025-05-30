@@ -18,6 +18,7 @@ export type OutageData = {
     originalshutdownperiods: Array<ShutdownPeriods>;
     expiredOutage: boolean;
     lastmodified: string;
+    dummyData: boolean;
 };
 
 export type ShutdownPeriods = {
@@ -52,3 +53,27 @@ export type NotificationSub = {
     datesubscribed: string;
     outageinfo: string;
 };
+
+export type FormValues = {
+    id: string;
+    location: string;
+    latitude: number | null;
+    longtitude: number | null;
+    email: string;
+    datesubscribed: string;
+    hasCoordinates: boolean;
+};
+
+export type SearchParams = {
+    query: string | undefined,
+    page: string | undefined,
+    status: string | undefined,
+    startdate: string | undefined,
+    enddate: string | undefined,
+    outage: string | undefined
+}
+
+export type OverlayOnView = {
+    cardClickShow: boolean,
+    showOnLoad: number
+}
