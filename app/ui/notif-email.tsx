@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Html, Text, Section, Body, Container, Head } from '@react-email/components';
+import { Html, Text, Section, Body, Container, Head, Link } from '@react-email/components';
 import { OutageData } from '../lib/definitions';
 import { CSSProperties } from 'react';
 
@@ -29,8 +29,9 @@ export default function NotificationEmail(
                     </Section>
 
                     <Section style={paddedSection}>
-                        {/* TODO add link/functionality to view the outage w/o messing with the search params functionality */}
-                        <Text style={paragraph}><b>Outage ID:</b>{' '}{outage.id}</Text>
+                        <Text style={paragraph}>
+                            <b>Outage ID:</b>{' '}<Link href={`https://outages.ryanherkt.com/outages?outage=${outage.id}`}>{outage.id}</Link>
+                        </Text>
                         <Text style={paragraph}><b>Status:</b>{' '}{outage.statustext}</Text>
                         <Text style={paragraph}><b>Location:</b>{' '}{outage.address}</Text>
                         <Text style={paragraph}><b>Date:</b>{' '}{outage.shutdowndate}</Text>

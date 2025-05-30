@@ -4,7 +4,7 @@ import Link from 'next/link';
 import NotifSubForm from '@/app/ui/notif-sub-form';
 
 export const metadata: Metadata = {
-    title: 'Manage Subscription',
+    title: 'Manage Subscription | Counties Power Outages App',
 };
 
 export default async function SubscriptionPage({ params }: { params: Promise<{ id: string } > }) {

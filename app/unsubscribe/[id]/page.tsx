@@ -3,7 +3,7 @@ import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-    title: 'Unsubscribe',
+    title: 'Unsubscribe | Counties Power Outages App',
 };
 
 export default async function UnsubscribePage({ params }: { params: Promise<{ id: string } > }) {

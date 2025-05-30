@@ -9,7 +9,7 @@ import clsx from 'clsx';
 import { coordIsInOutageZone, getActiveOutages } from '../lib/utils';
 
 export const metadata: Metadata = {
-    title: 'Notifications',
+    title: 'Notifications | Counties Power Outages App',
 };
 
 type SearchParams = Promise<{
