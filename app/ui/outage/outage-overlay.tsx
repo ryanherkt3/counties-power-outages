@@ -9,7 +9,7 @@ import { RootState } from '@/app/state/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { update } from '@/app/state/overlay-view/overlayView';
 import { remove } from '@/app/state/overlay-data/overlayData';
-import { ShowOnLoadStates } from '@/app/lib/definitions';
+import { OverlayVisibility } from '@/app/lib/definitions';
 
 export default function OutageOverlay() {
     const layoutClasses = 'fixed flex flex-col gap-8';
@@ -23,9 +23,9 @@ export default function OutageOverlay() {
 
     const outageSections = getOutageSections(true, false, data);
 
-    const canSeeOverlay = overlayView.cardClickShow || overlayView.showOnLoad === ShowOnLoadStates.Open;
+    const canSeeOverlay = overlayView.cardClickShow || overlayView.isVisible === OverlayVisibility.Open;
 
-    document.querySelector('body')?.classList.toggle('no-scroll', canSeeOverlay);
+    // document.querySelector('body')?.classList.toggle('no-scroll', canSeeOverlay);
 
     return (
         <div
@@ -42,10 +42,10 @@ export default function OutageOverlay() {
                 <div className="text-2xl font-semibold text-black">{address}</div>
                 <button onClick={
                     () => {
-                        const showOnLoadValue = overlayView.showOnLoad === ShowOnLoadStates.Open ?
-                            ShowOnLoadStates.Closed : overlayView.showOnLoad;
+                        const showOnLoadValue = overlayView.isVisible === OverlayVisibility.Open ?
+                            OverlayVisibility.Closed : overlayView.isVisible;
 
-                        dispatch(update({ cardClickShow: false, showOnLoad: showOnLoadValue }));
+                        dispatch(update({ cardClickShow: false, isVisible: showOnLoadValue }));
                         dispatch(remove());
                     }
                 }>

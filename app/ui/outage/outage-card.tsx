@@ -33,7 +33,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         onClick={
                             () => {
                                 dispatch(populate(data));
-                                dispatch(update({ cardClickShow: true, showOnLoad: overlayView.showOnLoad }));
+                                dispatch(update({ cardClickShow: true, isVisible: overlayView.isVisible }));
                             }
                         }
                         className="text-2xl font-semibold hover:text-red-400 cursor-pointer"

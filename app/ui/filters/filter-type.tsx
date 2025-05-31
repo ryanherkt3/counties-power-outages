@@ -34,7 +34,7 @@ export default function FilterType(
 
     const showFilterPicker = () => {
         setHidePicker(!hidePicker);
-        document.querySelector('body')?.classList.toggle('no-scroll', hidePicker);
+        // document.querySelector('body')?.classList.toggle('no-scroll', hidePicker);
     };
 
     const getFilterOutcomeDiv = () => {

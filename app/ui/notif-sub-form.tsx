@@ -55,8 +55,6 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
     const [includeCoords, setIncludeCoords] = useState(hasCoordinates);
 
     useEffect(() => {
-        console.log(errors);
-
         if (!includeCoords) {
             clearErrors('latitude');
             clearErrors('longtitude');

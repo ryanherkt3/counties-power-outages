@@ -1,4 +1,4 @@
-import { OverlayOnView, ShowOnLoadStates } from '@/app/lib/definitions';
+import { OverlayOnView, OverlayVisibility } from '@/app/lib/definitions';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface OverlayViewState {
@@ -6,7 +6,7 @@ interface OverlayViewState {
 }
 
 const initialState: OverlayViewState = {
-    value: { cardClickShow: false, showOnLoad: ShowOnLoadStates.NeverShow },
+    value: { cardClickShow: false, isVisible: OverlayVisibility.Hidden },
 };
 
 const overlayViewSlice = createSlice({
