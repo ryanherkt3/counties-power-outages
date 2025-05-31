@@ -9,8 +9,7 @@ import { getOutageSections } from '../../lib/outagesections';
 import OutageStatus from './outage-status';
 import CustomIcon from '../custom-icon';
 import { useDispatch, useSelector } from 'react-redux';
-import { update } from '@/app/state/overlay-view/overlayView';
-import { populate } from '@/app/state/overlay-data/overlayData';
+import { update } from '@/app/state/outage-overlay-view/outageOverlayView';
 import { RootState } from '@/app/state/store';
 
 export default function OutageCard({ data }: { data: OutageData; }) {
@@ -19,7 +18,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
     const [showContents, setShowContents] = useState(true);
     const outageSections = getOutageSections(false, true, data);
 
-    const overlayView = useSelector((state: RootState) => state.overlayView.value);
+    const outageOverlayView = useSelector((state: RootState) => state.outageOverlayView.value);
     const dispatch = useDispatch();
 
     const cardClasses = 'flex md:flex-row md:justify-between gap-2 flex-col text-lg font-normal';
@@ -32,8 +31,9 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         key={id}
                         onClick={
                             () => {
-                                dispatch(populate(data));
-                                dispatch(update({ cardClickShow: true, isVisible: overlayView.isVisible }));
+                                dispatch(
+                                    update({ cardClickShow: true, isVisible: outageOverlayView.isVisible, data: data })
+                                );
                             }
                         }
                         className="text-2xl font-semibold hover:text-red-400 cursor-pointer"

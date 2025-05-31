@@ -1,11 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import overlayViewReducer from './overlay-view/overlayView';
-import overlayDataReducer from './overlay-data/overlayData';
+import outageOverlayViewReducer from './outage-overlay-view/outageOverlayView';
 
 export const store = configureStore({
     reducer: {
-        overlayView: overlayViewReducer,
-        overlayData: overlayDataReducer,
+        outageOverlayView: outageOverlayViewReducer,
     }
 });
 

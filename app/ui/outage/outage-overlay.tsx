@@ -7,23 +7,23 @@ import CustomIcon from '../custom-icon';
 import clsx from 'clsx';
 import { RootState } from '@/app/state/store';
 import { useSelector, useDispatch } from 'react-redux';
-import { update } from '@/app/state/overlay-view/overlayView';
-import { remove } from '@/app/state/overlay-data/overlayData';
+import { resetAfterView } from '@/app/state/outage-overlay-view/outageOverlayView';
 import { OverlayVisibility } from '@/app/lib/definitions';
 
 export default function OutageOverlay() {
     const layoutClasses = 'fixed flex flex-col gap-8';
     const positionScrollClasses = 'top-0 left-0 bottom-0 overflow-y-auto';
 
-    const overlayView = useSelector((state: RootState) => state.overlayView.value);
-    const data = useSelector((state: RootState) => state.overlayData.value);
+    const outageOverlayView = useSelector((state: RootState) => state.outageOverlayView.value);
     const dispatch = useDispatch();
+
+    const { data } = outageOverlayView;
 
     const { statustext, lat: outageLat, lng: outageLng, address, latestinformation } = data;
 
     const outageSections = getOutageSections(true, false, data);
 
-    const canSeeOverlay = overlayView.cardClickShow || overlayView.isVisible === OverlayVisibility.Open;
+    const canSeeOverlay = outageOverlayView.cardClickShow || outageOverlayView.isVisible === OverlayVisibility.Open;
 
     // document.querySelector('body')?.classList.toggle('no-scroll', canSeeOverlay);
 
@@ -42,11 +42,7 @@ export default function OutageOverlay() {
                 <div className="text-2xl font-semibold text-black">{address}</div>
                 <button onClick={
                     () => {
-                        const showOnLoadValue = overlayView.isVisible === OverlayVisibility.Open ?
-                            OverlayVisibility.Closed : overlayView.isVisible;
-
-                        dispatch(update({ cardClickShow: false, isVisible: showOnLoadValue }));
-                        dispatch(remove());
+                        dispatch(resetAfterView());
                     }
                 }>
                     <CustomIcon icon={'XMarkIcon'} iconClass={'w-7 cursor-pointer'} />

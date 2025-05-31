@@ -9,8 +9,7 @@ import { BoltIcon } from '@heroicons/react/24/outline';
 import FilterType from './filters/filter-type';
 import OutageOverlay from './outage/outage-overlay';
 import { useDispatch, useSelector } from 'react-redux';
-import { update } from '@/app/state/overlay-view/overlayView';
-import { populate } from '@/app/state/overlay-data/overlayData';
+import { update } from '@/app/state/outage-overlay-view/outageOverlayView';
 import { OutageData, SearchParams, OverlayVisibility } from '../lib/definitions';
 import { RootState } from '../state/store';
 
@@ -32,19 +31,18 @@ export default function OutagesList({searchParams, outages} : {searchParams: Sea
 
     const searchSection = getSearchSection(startDate, startDateEF, endDateSF, endDate);
 
-    const overlayView = useSelector((state: RootState) => state.overlayView.value);
+    const outageOverlayView = useSelector((state: RootState) => state.outageOverlayView.value);
     const dispatch = useDispatch();
 
     // Show the outage overlay after the page loads if we can do so
-    if (searchParams.outage && overlayView.isVisible === OverlayVisibility.Hidden) {
-        const overlayViewData = outages.filter((outage) => {
+    if (searchParams.outage && outageOverlayView.isVisible === OverlayVisibility.Hidden) {
+        const outageOverlayViewData = outages.filter((outage) => {
             return outage.id === searchParams.outage;
         })[0];
 
         // Dispatch the events to show the outage overlay, otherwise ignore it
-        if (overlayViewData) {
-            dispatch(populate(overlayViewData));
-            dispatch(update({ cardClickShow: false, isVisible: OverlayVisibility.Open }));
+        if (outageOverlayViewData) {
+            dispatch(update({ cardClickShow: false, isVisible: OverlayVisibility.Open, data: outageOverlayViewData }));
         }
     }
 

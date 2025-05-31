@@ -74,9 +74,10 @@ export type SearchParams = {
     outage: string | undefined
 }
 
-export type OverlayOnView = {
+export type OutageOverlayStates = {
     cardClickShow: boolean,
-    isVisible: number
+    isVisible: number,
+    data: OutageData
 }
 
 export enum OverlayVisibility {

@@ -84,7 +84,7 @@ export default function FilterType(
                 getFilterOutcomeDiv()
             }
             <div
-                className={`${positionClasses} z-20 bg-[rgba(0,0,0,0.5)] ${hidePicker ? 'hidden' : ''}`}
+                className={`${positionClasses} bg-[rgba(0,0,0,0.5)] ${hidePicker ? 'hidden' : ''}`}
                 onClick={
                     (e) => {
                         e.stopPropagation();
