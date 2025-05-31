@@ -9,7 +9,6 @@ import { isValidEmail } from '../lib/utils';
 import { updateSubscription } from '../lib/actions';
 import { FormValues } from '../lib/definitions';
 
-// TODO add jsdoc comment for this function
 export default function NotifSubForm({ values, onSubPage }: { values: FormValues, onSubPage: boolean }) {
     const { email, location, latitude, longtitude, hasCoordinates, id } = values;
 

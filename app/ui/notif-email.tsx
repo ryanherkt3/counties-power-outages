@@ -17,7 +17,7 @@ export default function NotificationEmail(
         endTime: string
     }
 ) {
-    // TODO different email for when the outage status has changed (to Postponed/Cancelled)
+    // TODO different email for when the outage status has changed (to Postponed/Cancelled; statusChanged function argument)
     return (
         <Html lang="en">
             <Head />
@@ -39,7 +39,6 @@ export default function NotificationEmail(
                         <Text style={paragraph}><b>End Time:</b>{' '}{endTime}</Text>
                     </Section>
 
-                    {/* TODO change this link */}
                     <Section style={paddedSection}>
                         <Text style={paragraph}>To unsubscribe from these notifications, click <a href={`https://outages.ryanherkt.com/unsubscribe/${notifSubId}`}>here</a>.</Text>
                     </Section>

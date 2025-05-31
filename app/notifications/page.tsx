@@ -93,8 +93,6 @@ export default async function NotificationsPage(props: {
             note: null,
         },
         {
-            // TODO add support for un-subbing via email
-            // By link: /notifications?email={email-address} or create a dedicated page
             key: 'unsubscribe',
             title: 'How to unsubscribe',
             listItems: [

@@ -3,6 +3,13 @@ import NotificationEmail from '../ui/notif-email';
 import { NotificationSub, OutageData } from './definitions';
 import { getTimesAndActiveOutage } from './utils';
 
+/**
+ * Send the email notification using Resend
+ *
+ * @param {NotificationSub} notifSub subscription details
+ * @param {OutageData} outage outage details
+ * @returns {Response}
+ */
 export async function sendEmailNotification(notifSub: NotificationSub, outage: OutageData) {
     try {
         const resend = new Resend(process.env.RESEND_API_KEY);

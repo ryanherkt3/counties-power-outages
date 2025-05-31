@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export type OutageData = {
     id: string;
     projecttype: string;
@@ -76,4 +77,10 @@ export type SearchParams = {
 export type OverlayOnView = {
     cardClickShow: boolean,
     showOnLoad: number
+}
+
+export enum ShowOnLoadStates {
+    NeverShow = 0,
+    Open = 1,
+    Closed = 2,
 }
