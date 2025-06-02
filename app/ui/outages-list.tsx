@@ -52,8 +52,8 @@ export default function OutagesList({searchParams, outages} : {searchParams: Sea
         }
     }
 
+    // Update the set filter values if visiting the outages page with filters set in the URL
     const filterOverlayView = useSelector((state: RootState) => state.filterOverlayView.value);
-
     if (searchParams.startdate !== '' || searchParams.enddate !== '' || searchParams.status !== '') {
         if ((searchParams.startdate && filterOverlayView.filterValues.startdate === '') ||
             (searchParams.enddate && filterOverlayView.filterValues.enddate === '') ||
