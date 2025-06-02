@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export type OutageData = {
     id: string;
     projecttype: string;
@@ -18,6 +19,7 @@ export type OutageData = {
     originalshutdownperiods: Array<ShutdownPeriods>;
     expiredOutage: boolean;
     lastmodified: string;
+    dummyData: boolean;
 };
 
 export type ShutdownPeriods = {
@@ -52,3 +54,51 @@ export type NotificationSub = {
     datesubscribed: string;
     outageinfo: string;
 };
+
+export type FormValues = {
+    id: string;
+    location: string;
+    latitude: number | null;
+    longtitude: number | null;
+    email: string;
+    datesubscribed: string;
+    hasCoordinates: boolean;
+};
+
+export type SearchParams = {
+    query: string | undefined,
+    page: string | undefined,
+    status: string | undefined,
+    startdate: string | undefined,
+    enddate: string | undefined,
+    outage: string | undefined
+}
+
+export type OutageOverlayStates = {
+    cardClickShow: boolean,
+    isVisible: number,
+    data: OutageData
+}
+
+export enum OverlayVisibility {
+    Hidden = 0,
+    Open = 1,
+    Closed = 2,
+}
+
+export type FilterOverlayStates = {
+    isVisible: boolean,
+    data: FilterOverlayData,
+    filterValues: SelectedFilterOverlayValues,
+}
+
+export type FilterOverlayData = {
+    type: 'Status' | 'Start Date' | 'End Date' | 'none',
+    optionalDates: Array<string> | null;
+}
+
+export type SelectedFilterOverlayValues = {
+    status: string | '',
+    startdate: string | '',
+    enddate: string | ''
+}

@@ -9,8 +9,8 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import { getCardSections } from '../lib/outagesections';
 import { deleteSubscription } from '../lib/actions';
+import Link from 'next/link';
 
-// TODO fix plannedOutages to be an array of outages, so when clicked user can go to /outages?outage=<id>
 export default function NotificationCard({ data, plannedOutages }: { data: NotificationSub; plannedOutages: string}) {
     const [showContents, setShowContents] = useState(true);
     const cardSections = getCardSections(data);
@@ -62,7 +62,13 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
                                                 outagesArray.length > 0 ?
                                                     outagesArray.map((outage) => {
                                                         return (
-                                                            <span key={outage}>{outage}</span>
+                                                            <Link
+                                                                key={outage}
+                                                                href={`/outages?outage=${outage}`}
+                                                                className='hover:text-red-400 text-red-600'
+                                                            >
+                                                                {outage}
+                                                            </Link>
                                                         );
                                                     }) :
                                                     <span>None</span>
@@ -87,7 +93,7 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
                 }
                 onClick={
                     () => {
-                        deleteSubscription(data);
+                        deleteSubscription(data.id);
                     }
                 }
             >

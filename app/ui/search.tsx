@@ -14,12 +14,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
     const paramName = pathname.includes('outages') ? 'query' : 'email';
     const [inputValue, setInputValue] = useState(searchParams.get(paramName) || '');
 
-    const handleSearch = useDebouncedCallback((term, cleared) => {
-        // Early return as no need to redirect in this case
-        if (!cleared && !term) {
-            return;
-        }
-
+    const handleSearch = useDebouncedCallback((term) => {
         const params = new URLSearchParams(searchParams);
 
         // No pages on the notifications page
@@ -48,7 +43,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
                 onChange={
                     (e) => {
                         setInputValue(e.target.value);
-                        handleSearch(e.target.value, false);
+                        handleSearch(e.target.value);
                     }
                 }
                 value={inputValue}
@@ -65,7 +60,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
                 onClick={
                     () => {
                         setInputValue('');
-                        handleSearch(null, true);
+                        handleSearch(null);
                     }
                 }
             />

@@ -8,7 +8,9 @@ import { useState } from 'react';
 import { getOutageSections } from '../../lib/outagesections';
 import OutageStatus from './outage-status';
 import CustomIcon from '../custom-icon';
-import OutageOverlay from './outage-overlay';
+import { useDispatch, useSelector } from 'react-redux';
+import { update } from '@/app/state/outage-overlay-view/outageOverlayView';
+import { RootState } from '@/app/state/store';
 
 export default function OutageCard({ data }: { data: OutageData; }) {
     const { id, address, statustext, latestinformation } = data;
@@ -16,11 +18,8 @@ export default function OutageCard({ data }: { data: OutageData; }) {
     const [showContents, setShowContents] = useState(true);
     const outageSections = getOutageSections(false, true, data);
 
-    const [hideOverlay, setHideOverlay] = useState(true);
-    const showOutageOverlay = () => {
-        setHideOverlay(!hideOverlay);
-        document.querySelector('body')?.classList.toggle('no-scroll', hideOverlay);
-    };
+    const outageOverlayView = useSelector((state: RootState) => state.outageOverlayView.value);
+    const dispatch = useDispatch();
 
     const cardClasses = 'flex md:flex-row md:justify-between gap-2 flex-col text-lg font-normal';
 
@@ -32,7 +31,9 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         key={id}
                         onClick={
                             () => {
-                                showOutageOverlay();
+                                dispatch(
+                                    update({ cardClickShow: true, isVisible: outageOverlayView.isVisible, data: data })
+                                );
                             }
                         }
                         className="text-2xl font-semibold hover:text-red-400 cursor-pointer"
@@ -86,7 +87,6 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                     <LatestInfo latestInformation={latestinformation} />
                 </div>
             </div>
-            <OutageOverlay data={data} hidden={hideOverlay} closeCallback={showOutageOverlay} />
         </>
     );
 }

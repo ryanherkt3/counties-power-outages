@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Html, Text, Section, Body, Container, Head } from '@react-email/components';
+import { Html, Text, Section, Body, Container, Head, Link } from '@react-email/components';
 import { OutageData } from '../lib/definitions';
 import { CSSProperties } from 'react';
 
@@ -17,7 +17,7 @@ export default function NotificationEmail(
         endTime: string
     }
 ) {
-    // TODO different email for when the outage status has changed (to Postponed/Cancelled)
+    // TODO different email for when the outage status has changed (to Postponed/Cancelled; statusChanged function argument)
     return (
         <Html lang="en">
             <Head />
@@ -29,7 +29,9 @@ export default function NotificationEmail(
                     </Section>
 
                     <Section style={paddedSection}>
-                        <Text style={paragraph}><b>Outage ID:</b>{' '}{outage.id}</Text>
+                        <Text style={paragraph}>
+                            <b>Outage ID:</b>{' '}<Link href={`https://outages.ryanherkt.com/outages?outage=${outage.id}`}>{outage.id}</Link>
+                        </Text>
                         <Text style={paragraph}><b>Status:</b>{' '}{outage.statustext}</Text>
                         <Text style={paragraph}><b>Location:</b>{' '}{outage.address}</Text>
                         <Text style={paragraph}><b>Date:</b>{' '}{outage.shutdowndate}</Text>
@@ -37,9 +39,8 @@ export default function NotificationEmail(
                         <Text style={paragraph}><b>End Time:</b>{' '}{endTime}</Text>
                     </Section>
 
-                    {/* TODO add link/functionality to view the outage w/o messing with the search params functionality */}
                     <Section style={paddedSection}>
-                        <Text style={paragraph}>To unsubscribe from these notifications, click <a href={`https://outages.ryanherkt.com/unsubscribe?id=${notifSubId}`}>here</a>.</Text>
+                        <Text style={paragraph}>To unsubscribe from these notifications, click <a href={`https://outages.ryanherkt.com/unsubscribe/${notifSubId}`}>here</a>.</Text>
                     </Section>
                 </Container>
             </Body>
