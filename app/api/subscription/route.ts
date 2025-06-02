@@ -131,19 +131,20 @@ export async function PUT(request: Request) {
         });
     }
 
-    const { id, hasCoordinates, location, latitude, longtitude } = body;
+    const { id, hasCoordinates, location, latitude, longtitude, email } = body;
 
     // Update existing outage subscription
     try {
-        let queryString = `UPDATE notifications SET location = ${location}`;
-
         if (hasCoordinates) {
-            queryString += `, lat = ${latitude}, lng = ${longtitude}`;
+            await sql`
+            UPDATE notifications
+            SET email = ${email}, location = ${location}, lat = ${latitude}, lng = ${longtitude}
+            WHERE id = ${id}
+            `;
         }
-
-        queryString += ` WHERE id = ${id}`;
-
-        await sql`${queryString}`;
+        else {
+            await sql`UPDATE notifications SET email = ${email}, location = ${location} WHERE id = ${id}`;
+        }
 
         return new Response(JSON.stringify({ 'success': 1 }), {
             status: 200,
@@ -172,9 +173,11 @@ export async function DELETE(request: Request) {
 
     const { id } = body;
 
+    let result;
+
     // Delete outage subscription from DB
     try {
-        await sql`DELETE FROM notifications WHERE id = ${id}`;
+        result = await sql`DELETE FROM notifications WHERE id = ${id}`;
     }
     catch (error) {
         console.log(error);
@@ -184,7 +187,7 @@ export async function DELETE(request: Request) {
         });
     }
 
-    return new Response(JSON.stringify({ 'success': true }), {
+    return new Response(JSON.stringify({ 'success': result && result.rowCount === 1 }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
     });

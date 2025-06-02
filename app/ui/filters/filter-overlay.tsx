@@ -165,7 +165,7 @@ function getFilterOptions(
         for (const status of statuses) {
             const { text, selectedClass, unselectedClass } = status;
 
-            const isSelected = filterValues.status === text;
+            const isSelected = filterValues.status.toLowerCase() === text.toLowerCase();
             const classToUse = isSelected ? selectedClass : unselectedClass;
 
             if (isSelected) {

@@ -10,8 +10,9 @@ import FilterType from './filters/filter-type';
 import { useDispatch, useSelector } from 'react-redux';
 import OutageOverlay from './outage/outage-overlay';
 import FilterOverlay from './filters/filter-overlay';
-import { update } from '@/app/state/outage-overlay-view/outageOverlayView';
-import { OutageData, SearchParams, OverlayVisibility } from '../lib/definitions';
+import { update as outageOverlayUpdate } from '@/app/state/outage-overlay-view/outageOverlayView';
+import { update as filterOverlayUpdate } from '@/app/state/filter-overlay-view/filterOverlayView';
+import { OutageData, SearchParams, OverlayVisibility, SelectedFilterOverlayValues } from '../lib/definitions';
 import { RootState } from '../state/store';
 
 export default function OutagesList({searchParams, outages} : {searchParams: SearchParams, outages: OutageData[]}) {
@@ -44,8 +45,33 @@ export default function OutagesList({searchParams, outages} : {searchParams: Sea
         // Dispatch the events to show the outage overlay, otherwise ignore it
         if (outageOverlayViewData) {
             dispatch(
-                update(
+                outageOverlayUpdate(
                     { cardClickShow: false, isVisible: OverlayVisibility.Open, data: outageOverlayViewData }
+                )
+            );
+        }
+    }
+
+    const filterOverlayView = useSelector((state: RootState) => state.filterOverlayView.value);
+
+    if (searchParams.startdate !== '' || searchParams.enddate !== '' || searchParams.status !== '') {
+        if ((searchParams.startdate && filterOverlayView.filterValues.startdate === '') ||
+            (searchParams.enddate && filterOverlayView.filterValues.enddate === '') ||
+            (searchParams.status && filterOverlayView.filterValues.status === '')) {
+            const newFilterValues: SelectedFilterOverlayValues = {
+                status: searchParams.status || '',
+                startdate: searchParams.startdate || '',
+                enddate: searchParams.enddate || ''
+            };
+
+            dispatch(
+                filterOverlayUpdate(
+                    {
+                        type: 'none',
+                        isVisible: false,
+                        data: { type: 'none', optionalDates: null },
+                        filterValues: newFilterValues
+                    }
                 )
             );
         }
