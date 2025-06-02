@@ -58,9 +58,11 @@ async function updateSubscriptionEmailSent(client: { sql: any; }, outageInfo: st
 }
 
 async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscriptions: Array<NotificationSub>) {
-    let emailsSent = 0;
+    let totalEmailsSent = 0;
 
     for (const sub of subscriptions) {
+        let emailsSentForSub = 0;
+
         const subCoords = {
             lat: sub.lat,
             lng: sub.lng
@@ -86,7 +88,7 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
                 return x.id === outage.id;
             })[0] : {};
 
-            let shouldSendEmail = true;
+            let shouldSendEmail = coordsMatch || locationMatches;
 
             if (shouldSendEmail && !!(filteredSub && filteredSub.status)) {
                 if (filteredSub.status.toLowerCase() === outage.statustext.toLowerCase() && filteredSub.emailSent) {
@@ -97,16 +99,17 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
                 }
             }
 
-            if ((coordsMatch || locationMatches) && shouldSendEmail) {
+            if (shouldSendEmail) {
                 try {
                     await sendEmailNotification(sub, outage);
-                    emailsSent++;
+                    emailsSentForSub++;
+                    totalEmailsSent++;
 
                     const emailedTime = Math.round(new Date().getTime() / 1000);
 
                     // If we've emailed them before, update the object values; otherwise create a new one and
                     // push it to subInfo
-                    if (Object.keys(filteredSub).length > 0) {
+                    if (!!(filteredSub && filteredSub.status)) {
                         filteredSub.emailSent = emailedTime;
                         filteredSub.status = outage.statustext;
                     }
@@ -119,18 +122,20 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
                     }
                 }
                 catch (error) {
-                    return emailsSent;
+                    return totalEmailsSent;
                 }
             }
         }
 
         try {
-            await updateSubscriptionEmailSent(client, JSON.stringify(subInfo), sub.id);
+            if (emailsSentForSub > 0) {
+                await updateSubscriptionEmailSent(client, JSON.stringify(subInfo), sub.id);
+            }
         }
         catch (error) {}
     }
 
-    return emailsSent;
+    return totalEmailsSent;
 }
 
 // TODO try/catch blocks, or if statements (e.g. if (outagesList.outages)) to ensure we only proceed
