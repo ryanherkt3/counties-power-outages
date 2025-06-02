@@ -85,3 +85,20 @@ export enum OverlayVisibility {
     Open = 1,
     Closed = 2,
 }
+
+export type FilterOverlayStates = {
+    isVisible: boolean,
+    data: FilterOverlayData,
+    filterValues: SelectedFilterOverlayValues,
+}
+
+export type FilterOverlayData = {
+    type: 'Status' | 'Start Date' | 'End Date' | 'none',
+    optionalDates: Array<string> | null;
+}
+
+export type SelectedFilterOverlayValues = {
+    status: string | '',
+    startdate: string | '',
+    enddate: string | ''
+}

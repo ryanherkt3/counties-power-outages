@@ -7,8 +7,9 @@ import { getFilteredDate, getFilteredOutages } from '../lib/utils';
 import CurrentOutages from './outage/current-outages';
 import { BoltIcon } from '@heroicons/react/24/outline';
 import FilterType from './filters/filter-type';
-import OutageOverlay from './outage/outage-overlay';
 import { useDispatch, useSelector } from 'react-redux';
+import OutageOverlay from './outage/outage-overlay';
+import FilterOverlay from './filters/filter-overlay';
 import { update } from '@/app/state/outage-overlay-view/outageOverlayView';
 import { OutageData, SearchParams, OverlayVisibility } from '../lib/definitions';
 import { RootState } from '../state/store';
@@ -42,9 +43,15 @@ export default function OutagesList({searchParams, outages} : {searchParams: Sea
 
         // Dispatch the events to show the outage overlay, otherwise ignore it
         if (outageOverlayViewData) {
-            dispatch(update({ cardClickShow: false, isVisible: OverlayVisibility.Open, data: outageOverlayViewData }));
+            dispatch(
+                update(
+                    { cardClickShow: false, isVisible: OverlayVisibility.Open, data: outageOverlayViewData }
+                )
+            );
         }
     }
+
+    // TODO if filterOverlayData.isVisible is true, dispatch update event to turn it false again(?)
 
     // Early return if there are no outages to report
     if (!filteredOutages.length) {
@@ -57,6 +64,7 @@ export default function OutagesList({searchParams, outages} : {searchParams: Sea
                         Could not find the requested outage, try searching for something else
                     </div>
                 </div>
+                <FilterOverlay />
             </div>
         );
     }
@@ -83,6 +91,7 @@ export default function OutagesList({searchParams, outages} : {searchParams: Sea
                 currentPageIsLast={currentPage === totalPages}
             />
             <OutageOverlay />
+            <FilterOverlay />
             <Pagination totalPages={totalPages} />
         </div>
     );
