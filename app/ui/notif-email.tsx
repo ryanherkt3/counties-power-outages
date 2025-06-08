@@ -8,16 +8,21 @@ export default function NotificationEmail(
         notifSubId,
         outage,
         startTime,
-        endTime
+        endTime,
+        oldStatus
     }:
     {
         notifSubId: string;
         outage: OutageData;
         startTime: string,
-        endTime: string
+        endTime: string,
+        oldStatus: string
     }
 ) {
-    // TODO different email for when the outage status has changed (to Postponed/Cancelled; statusChanged function argument)
+    const mainBodyText = oldStatus ?
+        'There has been a status change for an upcoming planned power outage which may be in the location you subscribed to notifications for.' :
+        'There is an upcoming planned power outage which may be in the location you subscribed to notifications for.';
+
     return (
         <Html lang="en">
             <Head />
@@ -25,14 +30,16 @@ export default function NotificationEmail(
                 <Container style={container}>
                     <Section style={paddedSection}>
                         <Text style={heading}>Counties Power Outages</Text>
-                        <Text style={paragraph}>There is a upcoming planned power outage which may be in the location you subscribed to notifications for.</Text>
+                        <Text style={paragraph}>{mainBodyText}</Text>
                     </Section>
 
                     <Section style={paddedSection}>
                         <Text style={paragraph}>
                             <b>Outage ID:</b>{' '}<Link href={`https://outages.ryanherkt.com/outages?outage=${outage.id}`}>{outage.id}</Link>
                         </Text>
+                        {/* TODO use OutageStatus components here */}
                         <Text style={paragraph}><b>Status:</b>{' '}{outage.statustext}</Text>
+                        { oldStatus ? <Text style={paragraph}><b>Old Status:</b>{' '}{oldStatus}</Text> : null }
                         <Text style={paragraph}><b>Location:</b>{' '}{outage.address}</Text>
                         <Text style={paragraph}><b>Date:</b>{' '}{outage.shutdowndate}</Text>
                         <Text style={paragraph}><b>Start Time:</b>{' '}{startTime}</Text>

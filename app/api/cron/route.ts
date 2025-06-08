@@ -121,7 +121,9 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
 
             if (shouldSendEmail) {
                 try {
-                    await sendEmailNotification(sub, outage);
+                    const oldStatus = outageStatusChanged ? filteredSub.status : '';
+                    await sendEmailNotification(sub, outage, oldStatus);
+
                     emailsSentForSub++;
                     totalEmailsSent++;
 
