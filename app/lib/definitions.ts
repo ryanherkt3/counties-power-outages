@@ -55,6 +55,12 @@ export type NotificationSub = {
     outageinfo: string;
 };
 
+export type NotifOutageInfo = {
+    id: string;
+    emailSent: number;
+    status: string;
+};
+
 export type FormValues = {
     id: string;
     location: string;

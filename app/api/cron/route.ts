@@ -1,10 +1,11 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
 
 // TODO add function doc comments
 import { db } from '@vercel/postgres';
 import { sendEmailNotification } from '@/app/lib/emails';
-import { NotificationSub, OutageData } from '@/app/lib/definitions';
+import { NotificationSub, NotifOutageInfo, OutageData } from '@/app/lib/definitions';
 import { coordIsInOutageZone } from '@/app/lib/utils';
 import { NextRequest } from 'next/server';
 
@@ -36,8 +37,9 @@ async function getNotifSubs(client: { sql: any; }) {
     }
 }
 
-async function updateSubscriptionEmailSent(client: { sql: any; }, outageInfo: string, id: string) {
-    // Update the outageInfo for the notification which had an email sent
+async function updateSubInfo(client: { sql: any; }, outageInfo: string, id: string) {
+    // Update the outageInfo for the notification which had an email sent,
+    // or which had no emails sent for a specific ID within the last 14 days
     try {
         const updateSub = await client.sql`
             UPDATE notifications
@@ -70,7 +72,23 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
 
         // Check sub.outageinfo to see if an email has been sent within the last 7 days, and also if
         // the outage status has change compared to last time - if so send email anyway
-        const subInfo = ['null', ''].includes(sub.outageinfo) ? [] : JSON.parse(sub.outageinfo);
+        let subInfo = ['null', ''].includes(sub.outageinfo) ? [] : JSON.parse(sub.outageinfo);
+
+        // Check if any objects in outageInfo have email timestamps that are at least 14 days old
+        const oldEmailAlerts = Object.keys(subInfo).length > 0 && subInfo.filter((x: NotifOutageInfo) => {
+            const currentDate = new Date();
+            const currentTime = currentDate.getTime() / 1000;
+
+            return currentTime - x.emailSent >= 86400 * 14;
+        }).length > 0;
+
+        // If oldEmailAlerts is true, update subInfo by removing objects in it whose email timestamps are at least 14 days old
+        subInfo = oldEmailAlerts && subInfo.filter((x: NotifOutageInfo) => {
+            const currentDate = new Date();
+            const currentTime = currentDate.getTime() / 1000;
+
+            return currentTime - x.emailSent < 86400 * 14;
+        });
 
         for (const outage of outages) {
             const outageCoords = {
@@ -84,14 +102,16 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
             const locationMatches = subLocation && outageAddress.includes(subLocation);
             const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull, outageCoords);
 
-            const filteredSub = Object.keys(subInfo).length > 0 ? subInfo.filter((x: OutageData) => {
+            const filteredSub = Object.keys(subInfo).length > 0 ? subInfo.filter((x: NotifOutageInfo) => {
                 return x.id === outage.id;
             })[0] : {};
 
+            const outageStatusChanged = filteredSub && filteredSub.status &&
+                filteredSub.status.toLowerCase() !== outage.statustext.toLowerCase();
             let shouldSendEmail = coordsMatch || locationMatches;
 
             if (shouldSendEmail && !!(filteredSub && filteredSub.status)) {
-                if (filteredSub.status.toLowerCase() === outage.statustext.toLowerCase() && filteredSub.emailSent) {
+                if (!outageStatusChanged && filteredSub.emailSent) {
                     const currentDate = new Date();
                     const currentTime = currentDate.getTime() / 1000;
 
@@ -128,8 +148,8 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
         }
 
         try {
-            if (emailsSentForSub > 0) {
-                await updateSubscriptionEmailSent(client, JSON.stringify(subInfo), sub.id);
+            if (emailsSentForSub > 0 || oldEmailAlerts) {
+                await updateSubInfo(client, JSON.stringify(subInfo), sub.id);
             }
         }
         catch (error) {}
@@ -138,8 +158,6 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
     return totalEmailsSent;
 }
 
-// TODO try/catch blocks, or if statements (e.g. if (outagesList.outages)) to ensure we only proceed
-// if the data we want is actually fetched
 export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
 
@@ -154,6 +172,22 @@ export async function GET(request: NextRequest) {
     const client = await db.connect();
 
     const outagesList = await getOutages(client);
+
+    // Early return if no outages have been reported
+    if (outagesList.outages.rowCount === 0) {
+        client.release();
+
+        return new Response(
+            JSON.stringify(
+                {
+                    'success': true,
+                    'note': 'No outages exist! Please run the update script, or check any actually exist on the Counties Power website'
+                }
+            ), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+    }
 
     const outages = outagesList.outages.rows.filter((outage: OutageData) => {
         // Remove outages whose scheduled start date is more than seven days away
@@ -207,6 +241,16 @@ export async function GET(request: NextRequest) {
 
     const notifSubs = await getNotifSubs(client);
     const subscriptions = notifSubs.subs.rows;
+
+    // Early return if there are no active subscriptions
+    if (notifSubs.subs.rowCount === 0) {
+        client.release();
+
+        return new Response(JSON.stringify({ 'success': true }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 
     console.log('Fetched subscriptions');
 
