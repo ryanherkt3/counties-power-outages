@@ -1,5 +1,5 @@
 import { NotificationSub } from '@/app/lib/definitions';
-import { isValidEmail } from '@/app/lib/utils';
+import { isValidEmail, isValidPayloadArgument } from '@/app/lib/utils';
 import { sql } from '@vercel/postgres';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -8,8 +8,14 @@ export async function GET(request: NextRequest) {
     const email = searchParams.get('email'); // api/subscription?email=xx
     const id = searchParams.get('id'); // api/subscription?id=xx
 
-    // TODO protect against SQL injection
     if (id) {
+        if (!isValidPayloadArgument(id, 'id')) {
+            return new NextResponse(JSON.stringify({ 'error': 'Invalid arguments', 'sub': [] }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
         // Get the notification with the requested ID from DB
         let subscription;
         try {
@@ -17,7 +23,7 @@ export async function GET(request: NextRequest) {
         }
         catch (error) {
             console.log(error);
-            return new NextResponse(JSON.stringify({ 'error': 'Server error', 'rows': [] }), {
+            return new NextResponse(JSON.stringify({ 'error': 'Server error', 'sub': [] }), {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -72,19 +78,22 @@ export async function GET(request: NextRequest) {
 export async function POST(request: Request) {
     const body = await request.json();
 
-    // TODO protect against SQL injection (location, date subbed, email)
-    if (!body || !body.location || !body.datesubscribed || !body.email || !isValidEmail(body.email)
-        || typeof body.hasCoordinates !== 'boolean') {
-        return new Response(JSON.stringify({ 'error': 'Invalid arguments' }), {
+    const invalidArguments = !body || typeof body.hasCoordinates !== 'boolean' || !isValidEmail(body.email)
+        || (body.location && !isValidPayloadArgument(body.location, 'location'))
+        || !isValidPayloadArgument(body.latitude, 'coordinate')
+        || !isValidPayloadArgument(body.longtitude, 'coordinate')
+        || !isValidPayloadArgument(body.datesubscribed, 'date-subscribed');
+
+    if (invalidArguments) {
+        return new Response(JSON.stringify({ 'error': 'Invalid arguments', 'success': false }), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });
     }
 
-    // TODO check for valid location, date subscribed, lat, lng
     const { hasCoordinates, location, latitude, longtitude, email, datesubscribed } = body;
 
-    // Generate a random 16 character string for the subscription ID - TODO test this works
+    // Generate a random 16 character string for the subscription ID
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let idString = '';
     for (let i = 0; i < 16; i++) {
@@ -108,13 +117,13 @@ export async function POST(request: Request) {
     }
     catch (error) {
         console.log(error);
-        return new Response(JSON.stringify({ 'error': 'Server error' }), {
+        return new Response(JSON.stringify({ 'error': 'Server error', 'success': false }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
         });
     }
 
-    return new Response(JSON.stringify({ 'success': 1 }), {
+    return new Response(JSON.stringify({ 'success': true }), {
         status: 201,
         headers: { 'Content-Type': 'application/json' }
     });
@@ -123,9 +132,12 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
     const body = await request.json();
 
-    // TODO protect against SQL injection (location) and add typeof checks / use zod checks (lat, lng)
-    if (!body || !body.id || typeof body.hasCoordinates !== 'boolean') {
-        return new Response(JSON.stringify({ 'error': 'Invalid arguments' }), {
+    const invalidArguments = !body || !isValidPayloadArgument(body.id, 'id') || typeof body.hasCoordinates !== 'boolean'
+        || !isValidPayloadArgument(body.latitude, 'coordinate')
+        || !isValidPayloadArgument(body.longtitude, 'coordinate');
+
+    if (invalidArguments) {
+        return new Response(JSON.stringify({ 'error': 'Invalid arguments', 'success': false }), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });
@@ -146,14 +158,14 @@ export async function PUT(request: Request) {
             await sql`UPDATE notifications SET email = ${email}, location = ${location} WHERE id = ${id}`;
         }
 
-        return new Response(JSON.stringify({ 'success': 1 }), {
+        return new Response(JSON.stringify({ 'success': true }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
         });
     }
     catch (error) {
         console.log(error);
-        return new Response(JSON.stringify({ 'error': 'Server error' }), {
+        return new Response(JSON.stringify({ 'error': 'Server error', 'success': false }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
         });
@@ -163,8 +175,7 @@ export async function PUT(request: Request) {
 export async function DELETE(request: Request) {
     const body = await request.json();
 
-    // TODO protect against SQL injection
-    if (!body || !body.id) {
+    if (!body || !isValidPayloadArgument(body.id, 'id')) {
         return new Response(JSON.stringify({ 'error': 'Invalid arguments', 'success': false }), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
