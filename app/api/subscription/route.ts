@@ -1,4 +1,5 @@
 import { NotificationSub } from '@/app/lib/definitions';
+import { sendConfirmationEmail } from '@/app/lib/emails';
 import { isValidEmail, isValidPayloadArgument } from '@/app/lib/utils';
 import { sql } from '@vercel/postgres';
 import { NextRequest, NextResponse } from 'next/server';
@@ -80,8 +81,8 @@ export async function POST(request: Request) {
 
     const invalidArguments = !body || typeof body.hasCoordinates !== 'boolean' || !isValidEmail(body.email)
         || (body.location && !isValidPayloadArgument(body.location, 'location'))
-        || !isValidPayloadArgument(body.latitude, 'coordinate')
-        || !isValidPayloadArgument(body.longtitude, 'coordinate')
+        || (body.hasCoordinates && !isValidPayloadArgument(body.latitude, 'coordinate'))
+        || (body.hasCoordinates && !isValidPayloadArgument(body.longtitude, 'coordinate'))
         || !isValidPayloadArgument(body.datesubscribed, 'date-subscribed');
 
     if (invalidArguments) {
@@ -114,6 +115,23 @@ export async function POST(request: Request) {
             VALUES (${idString}, ${location}, ${email}, ${datesubscribed})
             `;
         }
+
+        const subData: NotificationSub = {
+            id: idString,
+            location: location,
+            lat: latitude,
+            lng: longtitude,
+            email: email,
+            datesubscribed: datesubscribed,
+            outageinfo: ''
+        };
+
+        await sendConfirmationEmail(subData);
+
+        return new Response(JSON.stringify({ 'success': true }), {
+            status: 201,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
     catch (error) {
         console.log(error);
@@ -122,19 +140,14 @@ export async function POST(request: Request) {
             headers: { 'Content-Type': 'application/json' }
         });
     }
-
-    return new Response(JSON.stringify({ 'success': true }), {
-        status: 201,
-        headers: { 'Content-Type': 'application/json' }
-    });
 }
 
 export async function PUT(request: Request) {
     const body = await request.json();
 
     const invalidArguments = !body || !isValidPayloadArgument(body.id, 'id') || typeof body.hasCoordinates !== 'boolean'
-        || !isValidPayloadArgument(body.latitude, 'coordinate')
-        || !isValidPayloadArgument(body.longtitude, 'coordinate');
+        || (body.hasCoordinates && !isValidPayloadArgument(body.latitude, 'coordinate'))
+        || (body.hasCoordinates && !isValidPayloadArgument(body.longtitude, 'coordinate'));
 
     if (invalidArguments) {
         return new Response(JSON.stringify({ 'error': 'Invalid arguments', 'success': false }), {

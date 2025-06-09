@@ -321,7 +321,7 @@ export function isValidPayloadArgument(data: string | number, dataField: string)
         return false;
     }
 
-    const regExp = /[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/g;
+    const regExp = /[-’`~!#*$@_%+=.^&(){}[\]|;”<>?\\]/g;
     const dataHasInvalidChars = regExp.test(data.toString());
 
     const isEmptyString = typeof data === 'string' && data.length === 0;
