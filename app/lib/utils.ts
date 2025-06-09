@@ -237,9 +237,9 @@ export function generatePagination(currentPage: number, totalPages: number) {
 /**
  * Check if the coordinates given are inside a given polygon, or match where the outage is happening
  *
- * @param point the coordinates of the subscription
- * @param polygon
- * @param outageCoords the coordinates of where the outage is happening
+ * @param {Coordinate} point the coordinates of the subscription
+ * @param {Array<Coordinate>} polygon
+ * @param {Coordinate} outageCoords the coordinates of where the outage is happening
  * @returns {Boolean}
  */
 export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], outageCoords: Coordinate) {
@@ -294,7 +294,7 @@ export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], ou
 /**
  * Check an email address is valid using Zod
  *
- * @param email
+ * @param {string} email
  * @returns {Boolean}
  */
 export function isValidEmail(email: string) {

@@ -4,16 +4,6 @@
 import { revalidatePath } from 'next/cache';
 import { FormValues } from './definitions';
 
-export type State = {
-    errors?: {
-        location?: string[];
-        lat?: string[];
-        lng?: string[];
-        email?: string[];
-    };
-    message?: string | null;
-};
-
 /**
  * Update information related to the subscription. Called after submitting the subscription form.
  *
