@@ -185,7 +185,7 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
                                         },
                                         max: {
                                             value: -37,
-                                            message: 'Enter a value less than or equal to -37.99999'
+                                            message: 'Enter a value less than or equal to -37'
                                         },
                                         validate: {
                                             checkForValue: () => {

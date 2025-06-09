@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import CustomIcon from './ui/custom-icon';
-
 import content from './content.json';
 
 export const metadata: Metadata = {
