@@ -308,3 +308,48 @@ export function isValidEmail(email: string) {
         return false;
     }
 }
+
+/**
+ * Check if data from a payload to be sent to the backend is valid (i.e. correct format & type)
+ *
+ * @param {string} data the data to validate
+ * @param {string} dataField the type of data field (an id, location, coordinate)
+ * @returns {boolean}
+ */
+export function isValidPayloadArgument(data: string | number, dataField: string) {
+    if (typeof data  === 'undefined') {
+        return false;
+    }
+
+    const regExp = /[-’`~!#*$@_%+=.^&(){}[\]|;”<>?\\]/g;
+    const dataHasInvalidChars = regExp.test(data.toString());
+
+    const isEmptyString = typeof data === 'string' && data.length === 0;
+
+    // Data is invalid if it contains a blacklisted character or is empty
+    if (dataHasInvalidChars || isEmptyString) {
+        return false;
+    }
+
+    if (dataField === 'id' && typeof data === 'string') {
+        return data.length === 16 && !data.includes(' ');
+    }
+    if (dataField === 'location' && typeof data === 'string') {
+        return data.length <= 255;
+    }
+    if (dataField === 'coordinate' && typeof data === 'number') {
+        const validLatitude = data >= -37.99999 && data <= -37;
+        const validLongtitude = data >= 174 && data <= 175.99999;
+
+        return validLatitude || validLongtitude;
+    }
+    if (dataField === 'date-subscribed' && typeof data === 'string') {
+        // Valid date example: 28/06/2024, 11:57:05 am
+        const dateRegExp = /[0-9]{1,2}\/[0-9]{1,2}\/20[0-9]{2}, [0-9]{1,2}:[0-9]{2}:[0-9]{2} (am|pm)/g;
+        const dateFormatIsValid = dateRegExp.test(data.toString());
+        return data.length <= 255 && dateFormatIsValid;
+    }
+
+    // Data is invalid if it is not one of the above field types
+    return false;
+}

@@ -68,12 +68,10 @@ export default async function NotificationsPage(props: {
                     key: 'sub-step-coordy-3',
                     text: 'In the "Subscribe to Outages" form below, ensure the "Yes" option in the question is clicked, and paste the coordinates in the form below with your email address.'
                 },
-                // TODO implement confirmation email, use same template as notif-email
-                // Move both email templates to a new folder called email-templates
-                // {
-                //     key: 'sub-step-coordy-4',
-                //     text: 'You should then get a confirmation email with details of your notification.'
-                // }
+                {
+                    key: 'sub-step-coordy-4',
+                    text: 'You should then get a confirmation email with details of your notification.'
+                }
             ],
             note: null,
         },
@@ -85,10 +83,10 @@ export default async function NotificationsPage(props: {
                     key: 'sub-step-coordn-1',
                     text: 'In the "Subscribe to Outages" form below, ensure the "No" option in the question is clicked and enter your street address in the "Location" field.'
                 },
-                // {
-                //     key: 'sub-step-coordn-2',
-                //     text: 'You should then get a confirmation email with details of your notification.'
-                // }
+                {
+                    key: 'sub-step-coordn-2',
+                    text: 'You should then get a confirmation email with details of your notification.'
+                }
             ],
             note: null,
         },
