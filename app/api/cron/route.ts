@@ -9,8 +9,13 @@ import { NotificationSub, NotifOutageInfo, OutageData } from '@/app/lib/definiti
 import { coordIsInOutageZone } from '@/app/lib/utils';
 import { NextRequest } from 'next/server';
 
+/**
+ * Get all outages from database.
+ *
+ * @param client
+ * @returns {Object}
+ */
 async function getOutages(client: { sql: any; }) {
-    // Get all notification subscriptions from DB
     try {
         const outages = await client.sql`SELECT * FROM outages`;
         return {
@@ -23,8 +28,13 @@ async function getOutages(client: { sql: any; }) {
     }
 }
 
+/**
+ * Get all notification subscriptions from database.
+ *
+ * @param client
+ * @returns {Object}
+ */
 async function getNotifSubs(client: { sql: any; }) {
-    // Get all notification subscriptions from DB
     try {
         const subs = await client.sql`SELECT * FROM notifications`;
         return {
@@ -37,9 +47,16 @@ async function getNotifSubs(client: { sql: any; }) {
     }
 }
 
+/**
+ * Update the outageInfo for the notification which had an email sent,
+ * or which had no emails sent for a specific ID within the last 14 days
+ *
+ * @param client
+ * @param {string} outageInfo
+ * @param {string} id
+ * @returns {Object}
+ */
 async function updateSubInfo(client: { sql: any; }, outageInfo: string, id: string) {
-    // Update the outageInfo for the notification which had an email sent,
-    // or which had no emails sent for a specific ID within the last 14 days
     try {
         const updateSub = await client.sql`
             UPDATE notifications
@@ -59,6 +76,14 @@ async function updateSubInfo(client: { sql: any; }, outageInfo: string, id: stri
     }
 }
 
+/**
+ * Attempt to send notification emails to users if required.
+ *
+ * @param client
+ * @param {Array<any>} outages
+ * @param {Array<NotificationSub>} subscriptions
+ * @returns {Object}
+ */
 async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscriptions: Array<NotificationSub>) {
     let totalEmailsSent = 0;
 
