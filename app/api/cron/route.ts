@@ -108,12 +108,14 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
         }).length > 0;
 
         // If oldEmailAlerts is true, update subInfo by removing objects in it whose email timestamps are at least 14 days old
-        subInfo = oldEmailAlerts && subInfo.filter((x: NotifOutageInfo) => {
-            const currentDate = new Date();
-            const currentTime = currentDate.getTime() / 1000;
+        if (oldEmailAlerts) {
+            subInfo = subInfo.filter((x: NotifOutageInfo) => {
+                const currentDate = new Date();
+                const currentTime = currentDate.getTime() / 1000;
 
-            return currentTime - x.emailSent < 86400 * 14;
-        });
+                return currentTime - x.emailSent < 86400 * 14;
+            });
+        }
 
         for (const outage of outages) {
             const outageCoords = {
