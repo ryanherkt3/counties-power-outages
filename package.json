@@ -21,17 +21,17 @@
     "next": "^15.3.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-email": "^4.0.15",
+    "react-email": "^4.0.16",
     "react-hook-form": "^7.56.4",
     "react-redux": "^9.2.0",
-    "resend": "^4.1.2",
+    "resend": "^4.5.2",
     "ts-node": "^10.9.2",
-    "use-debounce": "^10.0.4",
-    "zod": "^3.25.46"
+    "use-debounce": "^10.0.5",
+    "zod": "^3.25.56"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
-    "@types/node": "^22.15.29",
+    "@types/node": "^22.15.30",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^16.5.0",
