@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 'use client';
 
 import Link from 'next/link';
@@ -6,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import SkeletonNavBar from './skeletons/skeleton-nav-bar';
 
 export default function Navigation() {
     const pathname = usePathname();
@@ -65,13 +63,6 @@ export default function Navigation() {
         }
     ];
 
-    // Show a temporary skeleton nav while figuring out if the device is a mobile one or not
-    // TODO implement more robust fix for nav links showing on mobile when they shouldn't (due to tailwind 4 updates)
-    // Revert back to tailwind 3?
-    if (!isMobileScreenSet) {
-        return <SkeletonNavBar />;
-    }
-
     return (
         <div className="flex sticky top-0 h-20 p-4 items-center justify-between border-b border-gray-400 bg-white z-10">
             <div>
@@ -91,9 +82,8 @@ export default function Navigation() {
             </div>
             <div className={
                 clsx(
-                    'md:flex md:flex-row md:gap-3',
+                    'md:flex md:flex-row md:gap-3 max-md:hidden',
                     {
-                        'hidden': !mobileNavOpen && isMobileScreen,
                         'absolute-nav': mobileNavOpen && isMobileScreen,
                     }
                 )
@@ -122,28 +112,14 @@ export default function Navigation() {
                     })
                 }
             </div>
-            {
-                getNavIcon(isMobileScreen, mobileNavOpen, toggleMobileNavOpen)
-            }
+            <div className='md:hidden'>
+                {
+                    (mobileNavOpen ?
+                        <XMarkIcon className="cursor-pointer w-8" onClick={toggleMobileNavOpen.bind(null)} /> :
+                        <Bars3Icon className="cursor-pointer w-8" onClick={toggleMobileNavOpen.bind(null)} />
+                    )
+                }
+            </div>
         </div>
     );
-}
-
-/**
- * Get the icon to show on the mobile nav bar
- *
- * @param {boolean} isMobileScreen if the user is on a mobile device
- * @param {boolean} mobileNavOpen if the mobile nav menu is open or not
- * @param {Function} toggleMobileNavOpen the callback for when the icon is clicked
- * @returns React component (or nothing if not on a mobile device)
- */
-function getNavIcon(isMobileScreen: boolean, mobileNavOpen: boolean, toggleMobileNavOpen: Function) {
-    if (isMobileScreen) {
-        if (mobileNavOpen) {
-            return <XMarkIcon className="cursor-pointer w-8" onClick={toggleMobileNavOpen.bind(null)} />;
-        }
-        return <Bars3Icon className="cursor-pointer w-8" onClick={toggleMobileNavOpen.bind(null)} />;
-    }
-
-    return null;
 }

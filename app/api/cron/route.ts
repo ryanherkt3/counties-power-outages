@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
 
-// TODO add function doc comments
 import { db } from '@vercel/postgres';
 import { sendEmailNotification } from '@/app/lib/emails';
 import { NotificationSub, NotifOutageInfo, OutageData } from '@/app/lib/definitions';
