@@ -22,7 +22,7 @@ export default function RootLayout({ children, }: {children: React.ReactNode;}) 
                     <footer className={`${inter.className} ${footerClasses} bg-white border-gray-400`}>
                         <div>&copy; Ryan Herkt {currentYear}</div>
                         <a className="visited:text-purple-500 hover:text-blue-500 text-blue-500"
-                            href="https://github.com/ryanherkt3/counties-power-outages/"
+                            href="https://github.com/ryanherkt3/"
                             target="_blank">
                             <span>Github</span>
                         </a>
