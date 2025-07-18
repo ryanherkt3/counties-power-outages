@@ -237,6 +237,7 @@ export function generatePagination(currentPage: number, totalPages: number) {
 /**
  * Check if the coordinates given are inside a given polygon, or match where the outage is happening
  *
+ * @source https://www.geeksforgeeks.org/dsa/how-to-check-if-a-given-point-lies-inside-a-polygon/
  * @param {Coordinate} point the coordinates of the subscription
  * @param {Array<Coordinate>} polygon
  * @param {Coordinate} outageCoords the coordinates of where the outage is happening
@@ -266,25 +267,31 @@ export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], ou
         return false;
     }
 
+    // Loop through each edge in the polygon
     for (let i = 1; i <= num_vertices; i++) {
         p2 = polygon[i % num_vertices];
 
-        if (isInZone || !p1.lat || !p1.lng || !p2.lat || !p2.lng) {
-            break;
-        }
+        // Only check if both points have a latitude and longtitude
+        if (p1.lat && p1.lng && p2.lat && p2.lng) {
+            // Check if the point is above the minimum y coordinate of the edge
+            if (lng > Math.min(p1.lng, p2.lng)) {
+                // Check if the point is below the maximum y coordinate of the edge
+                if (lng <= Math.max(p1.lng, p2.lng)) {
+                    // Check if the point is to the left of the maximum x coordinate of the edge
+                    if (lat <= Math.max(p1.lat, p2.lat)) {
+                        // Calculate the x-intersection of the line connecting the point to the edge
+                        const x_intersection = ((lng - p1.lng) * (p2.lat - p1.lat)) / (p2.lng - p1.lng) + p1.lat;
 
-        if (lng > Math.min(p1.lng, p2.lng)) {
-            if (lng <= Math.max(p1.lng, p2.lng)) {
-                if (lat <= Math.max(p1.lat, p2.lat)) {
-                    const x_intersection = ((lng - p1.lng) * (p2.lat - p1.lat)) / (p2.lng - p1.lng) + p1.lat;
-
-                    if (p1.lat === p2.lat || lat <= x_intersection) {
-                        isInZone = !isInZone;
+                        // Check if the point is on the same line as the edge or to the left of the x-intersection
+                        if (p1.lat === p2.lat || lat <= x_intersection) {
+                            isInZone = !isInZone;
+                        }
                     }
                 }
             }
         }
 
+        // Store the current point as the first point for the next iteration
         p1 = p2;
     }
 

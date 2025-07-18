@@ -96,7 +96,7 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
 
         // Check sub.outageinfo to see if an email has been sent within the last 7 days, and also if
         // the outage status has change compared to last time - if so send email anyway
-        let subInfo = ['null', ''].includes(sub.outageinfo) ? [] : JSON.parse(sub.outageinfo);
+        let subInfo = ['null', null, ''].includes(sub.outageinfo) ? [] : JSON.parse(sub.outageinfo);
 
         // Check if any objects in outageInfo have email timestamps that are at least 14 days old
         const oldEmailAlerts = Object.keys(subInfo).length > 0 && subInfo.filter((x: NotifOutageInfo) => {
