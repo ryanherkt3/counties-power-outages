@@ -13,10 +13,15 @@ import { z } from 'zod';
  */
 export function isOutageActive(dateStr: string, startHour: number, startMinute: number) {
     const outageStartDate = new Date(dateStr);
+
+    console.log(outageStartDate);
+
     outageStartDate.setHours(startHour);
     outageStartDate.setMinutes(startMinute);
 
     const currentDate = new Date();
+
+    console.log(currentDate);
 
     return currentDate.getTime() >= outageStartDate.getTime();
 }
