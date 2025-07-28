@@ -106,6 +106,8 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
         };
     }
 
+    console.log(`is outage active: ${isOutageActive(startTime, parseInt(startHour), parseInt(startMinute))}`);
+
     return {
         activeOutage: isOutageActive(startTime, parseInt(startHour), parseInt(startMinute)),
         expiredOutage: false,
@@ -134,7 +136,10 @@ export async function getActiveOutages() {
         const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
         outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
+        console.log(timesAndIsActiveOutage);
+
         if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
+            console.log(outage.statustext);
             outage.statustext = 'Active';
         }
     });
