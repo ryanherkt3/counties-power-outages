@@ -17,7 +17,9 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
     const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
 
     const timeZoneOffset = Math.abs(outageStartDate.getTimezoneOffset());
-    const hoursToAdd = (parseInt(timeZoneDifference) * 60) - timeZoneOffset;
+    const hoursToAdd = parseInt(timeZoneDifference) - (timeZoneOffset / 60);
+
+    console.log(`time zone offset ${timeZoneOffset}, hours to add ${hoursToAdd}`);
 
     if (hoursToAdd > 0) {
         outageStartDate.setHours(startHour + hoursToAdd);
@@ -45,7 +47,7 @@ export function isOutageExpired(dateStr: string, startHour: number, endHour: num
     const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
 
     const timeZoneOffset = Math.abs(outageEndDate.getTimezoneOffset());
-    const hoursToAdd = (parseInt(timeZoneDifference) * 60) - timeZoneOffset;
+    const hoursToAdd = parseInt(timeZoneDifference) - (timeZoneOffset / 60);
 
     console.log(`time zone offset ${timeZoneOffset}, hours to add ${hoursToAdd}`);
 
