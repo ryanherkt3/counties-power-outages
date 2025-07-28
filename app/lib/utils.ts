@@ -12,19 +12,22 @@ import { z } from 'zod';
  * @returns {Boolean}
  */
 export function isOutageActive(dateStr: string, startHour: number, startMinute: number) {
-    console.log(dateStr);
-
     const outageStartDate = new Date(dateStr);
 
-    outageStartDate.setHours(startHour);
+    const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
+
+    const timeZoneOffset = Math.abs(outageStartDate.getTimezoneOffset());
+    const hoursToAdd = (parseInt(timeZoneDifference) * 60) - timeZoneOffset;
+
+    if (hoursToAdd > 0) {
+        outageStartDate.setHours(startHour + hoursToAdd);
+    }
     outageStartDate.setMinutes(startMinute);
 
     const currentDate = new Date();
 
     console.log(`current date: ${currentDate}`);
     console.log(`outage start date: ${outageStartDate}`);
-    console.log(`current date offset: ${currentDate.getTimezoneOffset()}`);
-    console.log(`outage start date offset: ${outageStartDate.getTimezoneOffset()}`);
 
     console.log(
         `current date ts: ${currentDate.getTime()}, outage date ts: ${outageStartDate.getTime()}`,
@@ -46,7 +49,15 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
  */
 export function isOutageExpired(dateStr: string, startHour: number, endHour: number, endMinute: number) {
     const outageEndDate = new Date(dateStr);
-    outageEndDate.setHours(endHour);
+
+    const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
+
+    const timeZoneOffset = Math.abs(outageEndDate.getTimezoneOffset());
+    const hoursToAdd = (parseInt(timeZoneDifference) * 60) - timeZoneOffset;
+
+    if (hoursToAdd > 0) {
+        outageEndDate.setHours(endHour + hoursToAdd);
+    }
     outageEndDate.setMinutes(endMinute);
 
     // Set end date to next day if start hour is greater than the end hour,
