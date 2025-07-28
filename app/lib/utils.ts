@@ -23,6 +23,8 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
 
     console.log(`current date: ${currentDate}`);
     console.log(`outage start date: ${outageStartDate}`);
+    console.log(`current date offset: ${currentDate.getTimezoneOffset()}`);
+    console.log(`outage start date offset: ${outageStartDate.getTimezoneOffset()}`);
 
     console.log(
         `current date ts: ${currentDate.getTime()}, outage date ts: ${outageStartDate.getTime()}`,
@@ -106,8 +108,6 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
         };
     }
 
-    console.log(`is outage active: ${isOutageActive(startTime, parseInt(startHour), parseInt(startMinute))}`);
-
     return {
         activeOutage: isOutageActive(startTime, parseInt(startHour), parseInt(startMinute)),
         expiredOutage: false,
@@ -136,10 +136,7 @@ export async function getActiveOutages() {
         const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
         outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
-        console.log(timesAndIsActiveOutage);
-
         if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
-            console.log(outage.statustext);
             outage.statustext = 'Active';
         }
     });
