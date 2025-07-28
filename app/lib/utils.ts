@@ -12,16 +12,22 @@ import { z } from 'zod';
  * @returns {Boolean}
  */
 export function isOutageActive(dateStr: string, startHour: number, startMinute: number) {
-    const outageStartDate = new Date(dateStr);
+    console.log(dateStr);
 
-    console.log(outageStartDate);
+    const outageStartDate = new Date(dateStr);
 
     outageStartDate.setHours(startHour);
     outageStartDate.setMinutes(startMinute);
 
     const currentDate = new Date();
 
-    console.log(currentDate);
+    console.log(`current date: ${currentDate}`);
+    console.log(`outage start date: ${outageStartDate}`);
+
+    console.log(
+        `current date ts: ${currentDate.getTime()}, outage date ts: ${outageStartDate.getTime()}`,
+        currentDate.getTime() >= outageStartDate.getTime()
+    );
 
     return currentDate.getTime() >= outageStartDate.getTime();
 }
