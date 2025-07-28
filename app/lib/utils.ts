@@ -13,7 +13,15 @@ import { z } from 'zod';
  */
 export function isOutageActive(dateStr: string, startHour: number, startMinute: number) {
     const outageStartDate = new Date(dateStr);
-    outageStartDate.setHours(startHour);
+
+    const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
+
+    const timeZoneOffset = Math.abs(outageStartDate.getTimezoneOffset());
+    const hoursToAdd = parseInt(timeZoneDifference) - (timeZoneOffset / 60);
+
+    if (hoursToAdd > 0) {
+        outageStartDate.setHours(startHour + hoursToAdd);
+    }
     outageStartDate.setMinutes(startMinute);
 
     const currentDate = new Date();
@@ -33,7 +41,15 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
  */
 export function isOutageExpired(dateStr: string, startHour: number, endHour: number, endMinute: number) {
     const outageEndDate = new Date(dateStr);
-    outageEndDate.setHours(endHour);
+
+    const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
+
+    const timeZoneOffset = Math.abs(outageEndDate.getTimezoneOffset());
+    const hoursToAdd = parseInt(timeZoneDifference) - (timeZoneOffset / 60);
+
+    if (hoursToAdd > 0) {
+        outageEndDate.setHours(endHour + hoursToAdd);
+    }
     outageEndDate.setMinutes(endMinute);
 
     // Set end date to next day if start hour is greater than the end hour,
