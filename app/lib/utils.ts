@@ -139,6 +139,46 @@ export async function getActiveOutages() {
         const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
         outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
+        // Debug logs
+        if (outage.shutdowndate === '14/8/2025') {
+            const startTimeString = shutdownperiods.start.split('T')[1].split('+')[0];
+            const endTimeString = shutdownperiods.end.split('T')[1].split('+')[0];
+
+            const startHour = startTimeString.split(':')[0];
+            const endHour = endTimeString.split(':')[0];
+            const endMinute = endTimeString.split(':')[1];
+
+            console.log(
+                outage.address, shutdownperiods.end, parseInt(startHour), parseInt(endHour), parseInt(endMinute)
+            );
+
+            const outageEndDate = new Date(shutdownperiods.end);
+
+            const timeZoneDifference = shutdownperiods.end.split('+')[1].split(':')[0];
+
+            const timeZoneOffset = Math.abs(outageEndDate.getTimezoneOffset());
+            const hoursToAdd = parseInt(timeZoneDifference) - (timeZoneOffset / 60);
+
+            console.log(timeZoneDifference, timeZoneOffset, hoursToAdd);
+
+            if (hoursToAdd > 0) {
+                outageEndDate.setHours(parseInt(endHour) + hoursToAdd);
+            }
+            outageEndDate.setMinutes(parseInt(endMinute));
+
+            // Set end date to next day if start hour is greater than the end hour,
+            // and the end hour is the next morning
+            if (parseInt(startHour) >= 12 && parseInt(endHour) < 12) {
+                outageEndDate.setDate(outageEndDate.getDate() + 1);
+            }
+
+            const currentDate = new Date();
+
+            console.log(
+                outageEndDate.getDate(), currentDate.getDate(), currentDate.getTime() >= outageEndDate.getTime()
+            );
+        }
+
         if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
             outage.statustext = 'Active';
         }
