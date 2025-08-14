@@ -25,6 +25,9 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
     outageStartDate.setMinutes(startMinute);
 
     const currentDate = new Date();
+    if (hoursToAdd > 0) {
+        currentDate.setHours(currentDate.getHours() + hoursToAdd);
+    }
 
     return currentDate.getTime() >= outageStartDate.getTime();
 }
@@ -53,6 +56,9 @@ export function isOutageExpired(dateStr: string, startHour: number, endHour: num
     outageEndDate.setMinutes(endMinute);
 
     const currentDate = new Date();
+    if (hoursToAdd > 0) {
+        currentDate.setHours(currentDate.getHours() + hoursToAdd);
+    }
 
     return currentDate.getTime() >= outageEndDate.getTime();
 }
@@ -158,13 +164,10 @@ export async function getActiveOutages() {
             }
             outageEndDate.setMinutes(parseInt(endMinute));
 
-            // Set end date to next day if start hour is greater than the end hour,
-            // and the end hour is the next morning
-            // if (parseInt(startHour) >= 12 && parseInt(endHour) < 12) {
-            //     outageEndDate.setDate(outageEndDate.getDate() + 1);
-            // }
-
             const currentDate = new Date();
+            if (hoursToAdd > 0) {
+                currentDate.setHours(currentDate.getHours() + hoursToAdd);
+            }
 
             console.log(
                 outageEndDate.getDate(), currentDate.getDate(), currentDate.getTime(), outageEndDate.getTime(),
