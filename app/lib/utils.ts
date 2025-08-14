@@ -42,7 +42,7 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
  * @param {number} endMinute e.g. 45
  * @returns {boolean}
  */
-export function isOutageExpired(dateStr: string, startHour: number, endHour: number, endMinute: number) {
+export function isOutageExpired(dateStr: string, endHour: number, endMinute: number) {
     const outageEndDate = new Date(dateStr);
 
     const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
@@ -100,7 +100,7 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
     const endMinute = endTimeString.split(':')[1];
 
     // If the outage has passed, do not show it
-    if (isOutageExpired(endTime, parseInt(startHour), parseInt(endHour), parseInt(endMinute))) {
+    if (isOutageExpired(endTime, parseInt(endHour), parseInt(endMinute))) {
         return {
             activeOutage: false,
             expiredOutage: true,
