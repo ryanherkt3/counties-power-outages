@@ -25,6 +25,9 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
     outageStartDate.setMinutes(startMinute);
 
     const currentDate = new Date();
+    if (hoursToAdd > 0) {
+        currentDate.setHours(currentDate.getHours() + hoursToAdd);
+    }
 
     return currentDate.getTime() >= outageStartDate.getTime();
 }
@@ -39,7 +42,7 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
  * @param {number} endMinute e.g. 45
  * @returns {boolean}
  */
-export function isOutageExpired(dateStr: string, startHour: number, endHour: number, endMinute: number) {
+export function isOutageExpired(dateStr: string, endHour: number, endMinute: number) {
     const outageEndDate = new Date(dateStr);
 
     const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
@@ -52,13 +55,10 @@ export function isOutageExpired(dateStr: string, startHour: number, endHour: num
     }
     outageEndDate.setMinutes(endMinute);
 
-    // Set end date to next day if start hour is greater than the end hour,
-    // and the end hour is the next morning
-    if (startHour >= 12 && endHour < 12) {
-        outageEndDate.setDate(outageEndDate.getDate() + 1);
-    }
-
     const currentDate = new Date();
+    if (hoursToAdd > 0) {
+        currentDate.setHours(currentDate.getHours() + hoursToAdd);
+    }
 
     return currentDate.getTime() >= outageEndDate.getTime();
 }
@@ -100,7 +100,7 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
     const endMinute = endTimeString.split(':')[1];
 
     // If the outage has passed, do not show it
-    if (isOutageExpired(startTime, parseInt(startHour), parseInt(endHour), parseInt(endMinute))) {
+    if (isOutageExpired(endTime, parseInt(endHour), parseInt(endMinute))) {
         return {
             activeOutage: false,
             expiredOutage: true,
@@ -144,6 +144,7 @@ export async function getActiveOutages() {
         }
     });
 
+    // TODO send API req to delete any/all expired outages (?)
     outages = outages.filter((outage: { expiredOutage: boolean; }) => {
         return outage.expiredOutage === false;
     }).sort((a: any, b: any) => {
