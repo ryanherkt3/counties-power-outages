@@ -100,7 +100,7 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
     const endMinute = endTimeString.split(':')[1];
 
     // If the outage has passed, do not show it
-    if (isOutageExpired(startTime, parseInt(startHour), parseInt(endHour), parseInt(endMinute))) {
+    if (isOutageExpired(endTime, parseInt(startHour), parseInt(endHour), parseInt(endMinute))) {
         return {
             activeOutage: false,
             expiredOutage: true,
