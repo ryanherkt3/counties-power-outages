@@ -52,12 +52,6 @@ export function isOutageExpired(dateStr: string, startHour: number, endHour: num
     }
     outageEndDate.setMinutes(endMinute);
 
-    // Set end date to next day if start hour is greater than the end hour,
-    // and the end hour is the next morning
-    if (startHour >= 12 && endHour < 12) {
-        outageEndDate.setDate(outageEndDate.getDate() + 1);
-    }
-
     const currentDate = new Date();
 
     return currentDate.getTime() >= outageEndDate.getTime();
@@ -148,9 +142,7 @@ export async function getActiveOutages() {
             const endHour = endTimeString.split(':')[0];
             const endMinute = endTimeString.split(':')[1];
 
-            console.log(
-                outage.address, shutdownperiods.end, parseInt(startHour), parseInt(endHour), parseInt(endMinute)
-            );
+            console.log(outage.address, shutdownperiods.end, parseInt(startHour), parseInt(endHour));
 
             const outageEndDate = new Date(shutdownperiods.end);
 
@@ -168,14 +160,15 @@ export async function getActiveOutages() {
 
             // Set end date to next day if start hour is greater than the end hour,
             // and the end hour is the next morning
-            if (parseInt(startHour) >= 12 && parseInt(endHour) < 12) {
-                outageEndDate.setDate(outageEndDate.getDate() + 1);
-            }
+            // if (parseInt(startHour) >= 12 && parseInt(endHour) < 12) {
+            //     outageEndDate.setDate(outageEndDate.getDate() + 1);
+            // }
 
             const currentDate = new Date();
 
             console.log(
-                outageEndDate.getDate(), currentDate.getDate(), currentDate.getTime() >= outageEndDate.getTime()
+                outageEndDate.getDate(), currentDate.getDate(), currentDate.getTime(), outageEndDate.getTime(),
+                currentDate.getTime() >= outageEndDate.getTime()
             );
         }
 
