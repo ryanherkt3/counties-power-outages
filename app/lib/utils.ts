@@ -139,47 +139,12 @@ export async function getActiveOutages() {
         const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
         outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
-        // Debug logs
-        if (outage.shutdowndate === '14/8/2025') {
-            const startTimeString = shutdownperiods.start.split('T')[1].split('+')[0];
-            const endTimeString = shutdownperiods.end.split('T')[1].split('+')[0];
-
-            const startHour = startTimeString.split(':')[0];
-            const endHour = endTimeString.split(':')[0];
-            const endMinute = endTimeString.split(':')[1];
-
-            console.log(outage.address, shutdownperiods.end, parseInt(startHour), parseInt(endHour));
-
-            const outageEndDate = new Date(shutdownperiods.end);
-
-            const timeZoneDifference = shutdownperiods.end.split('+')[1].split(':')[0];
-
-            const timeZoneOffset = Math.abs(outageEndDate.getTimezoneOffset());
-            const hoursToAdd = parseInt(timeZoneDifference) - (timeZoneOffset / 60);
-
-            console.log(timeZoneDifference, timeZoneOffset, hoursToAdd);
-
-            if (hoursToAdd > 0) {
-                outageEndDate.setHours(parseInt(endHour) + hoursToAdd);
-            }
-            outageEndDate.setMinutes(parseInt(endMinute));
-
-            const currentDate = new Date();
-            if (hoursToAdd > 0) {
-                currentDate.setHours(currentDate.getHours() + hoursToAdd);
-            }
-
-            console.log(
-                outageEndDate.getDate(), currentDate.getDate(), currentDate.getTime(), outageEndDate.getTime(),
-                currentDate.getTime() >= outageEndDate.getTime()
-            );
-        }
-
         if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
             outage.statustext = 'Active';
         }
     });
 
+    // TODO send API req to delete any/all expired outages (?)
     outages = outages.filter((outage: { expiredOutage: boolean; }) => {
         return outage.expiredOutage === false;
     }).sort((a: any, b: any) => {
