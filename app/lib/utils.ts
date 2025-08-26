@@ -12,6 +12,7 @@ import { z } from 'zod';
  * @returns {Boolean}
  */
 export function isOutageActive(dateStr: string, startHour: number, startMinute: number, showLogs: boolean) {
+    // Date from the API (in NZ time)
     const outageStartDate = new Date(dateStr);
 
     const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
@@ -19,11 +20,12 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
     const timeZoneOffset = Math.abs(outageStartDate.getTimezoneOffset());
     const hoursToAdd = parseInt(timeZoneDifference) - (timeZoneOffset / 60);
 
-    if (hoursToAdd > 0) {
-        outageStartDate.setHours(startHour + hoursToAdd);
-    }
+    // if (hoursToAdd > 0) {
+    //     outageStartDate.setHours(startHour + hoursToAdd);
+    // }
     outageStartDate.setMinutes(startMinute);
 
+    // Date from the server
     const currentDate = new Date();
     if (hoursToAdd > 0) {
         currentDate.setHours(currentDate.getHours() + hoursToAdd);
@@ -47,6 +49,7 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
  * @returns {boolean}
  */
 export function isOutageExpired(dateStr: string, endHour: number, endMinute: number, showLogs: boolean) {
+    // Date from the API (in NZ time)
     const outageEndDate = new Date(dateStr);
 
     const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
@@ -54,11 +57,12 @@ export function isOutageExpired(dateStr: string, endHour: number, endMinute: num
     const timeZoneOffset = Math.abs(outageEndDate.getTimezoneOffset());
     const hoursToAdd = parseInt(timeZoneDifference) - (timeZoneOffset / 60);
 
-    if (hoursToAdd > 0) {
-        outageEndDate.setHours(endHour + hoursToAdd);
-    }
+    // if (hoursToAdd > 0) {
+    //     outageEndDate.setHours(endHour + hoursToAdd);
+    // }
     outageEndDate.setMinutes(endMinute);
 
+    // Date from the server
     const currentDate = new Date();
     if (hoursToAdd > 0) {
         currentDate.setHours(currentDate.getHours() + hoursToAdd);
