@@ -14,7 +14,6 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
         return [];
     }
 
-    // eslint-disable-next-line max-len
     const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownperiods[0].start, data.shutdownperiods[0].end);
 
     const shutdownTimes = timesAndActiveOutage.times;
