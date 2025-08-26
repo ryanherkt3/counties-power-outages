@@ -11,7 +11,7 @@ import { z } from 'zod';
  * @param {number} startMinute
  * @returns {Boolean}
  */
-export function isOutageActive(dateStr: string, startHour: number, startMinute: number) {
+export function isOutageActive(dateStr: string, startHour: number, startMinute: number, showLogs: boolean) {
     const outageStartDate = new Date(dateStr);
 
     const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
@@ -29,6 +29,10 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
         currentDate.setHours(currentDate.getHours() + hoursToAdd);
     }
 
+    if (showLogs) {
+        console.log(timeZoneDifference, timeZoneOffset, hoursToAdd, currentDate, outageStartDate);
+    }
+
     return currentDate.getTime() >= outageStartDate.getTime();
 }
 
@@ -42,7 +46,7 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
  * @param {number} endMinute e.g. 45
  * @returns {boolean}
  */
-export function isOutageExpired(dateStr: string, endHour: number, endMinute: number) {
+export function isOutageExpired(dateStr: string, endHour: number, endMinute: number, showLogs: boolean) {
     const outageEndDate = new Date(dateStr);
 
     const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
@@ -58,6 +62,10 @@ export function isOutageExpired(dateStr: string, endHour: number, endMinute: num
     const currentDate = new Date();
     if (hoursToAdd > 0) {
         currentDate.setHours(currentDate.getHours() + hoursToAdd);
+    }
+
+    if (showLogs) {
+        console.log(timeZoneDifference, timeZoneOffset, hoursToAdd, currentDate, outageEndDate);
     }
 
     return currentDate.getTime() >= outageEndDate.getTime();
@@ -89,7 +97,7 @@ export function getTimeStrings(splitTime: Array<string>) {
  * @param {string} endTime string representation of the shutdown end date e.g. 2025-01-13T00:00:00+13:00
  * @returns {Object} the outage's start and end times, if it is active, if it is expired
  */
-export function getTimesAndActiveOutage(startTime: string, endTime: string) {
+export function getTimesAndActiveOutage(startTime: string, endTime: string, showLogs: boolean) {
     const startTimeString = startTime.split('T')[1].split('+')[0];
     const endTimeString = endTime.split('T')[1].split('+')[0];
 
@@ -100,7 +108,7 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
     const endMinute = endTimeString.split(':')[1];
 
     // If the outage has passed, do not show it
-    if (isOutageExpired(endTime, parseInt(endHour), parseInt(endMinute))) {
+    if (isOutageExpired(endTime, parseInt(endHour), parseInt(endMinute), showLogs)) {
         return {
             activeOutage: false,
             expiredOutage: true,
@@ -112,7 +120,7 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
     }
 
     return {
-        activeOutage: isOutageActive(startTime, parseInt(startHour), parseInt(startMinute)),
+        activeOutage: isOutageActive(startTime, parseInt(startHour), parseInt(startMinute), showLogs),
         expiredOutage: false,
         times: {
             startTime: getTimeStrings(startTimeString.split(':')),
@@ -136,7 +144,14 @@ export async function getActiveOutages() {
     outages.map((outage: OutageData) => {
         const shutdownperiods = outage.shutdownperiods[0];
 
-        const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
+        const addressList = [
+            'Manukau Heads Rd, Hamilton Rd, Awhitu Central Rd, Kemp Rd, Awhitu Central',
+            'Paerata Road, Lochview Drive, Adams Drive, Pukekohe',
+            'Premila Drive, Ludlow Place, Green lane, Jackson Place, Overend Court, Judith Anne Drive, Pukekohe',
+        ];
+        const showLogs = addressList.includes(outage.address);
+
+        const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end, showLogs);
         outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
         if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
@@ -145,7 +160,7 @@ export async function getActiveOutages() {
     });
 
     // TODO send API req to delete any/all expired outages (?)
-    outages = outages.filter((outage: { expiredOutage: boolean; }) => {
+    outages = outages.filter((outage: OutageData) => {
         return outage.expiredOutage === false;
     }).sort((a: any, b: any) => {
         const aTime = new Date(a.shutdowndatetime).getTime() / 1000;
