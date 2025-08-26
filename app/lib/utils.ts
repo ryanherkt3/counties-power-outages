@@ -3,39 +3,43 @@ import { Coordinate, OutageData } from './definitions';
 import { z } from 'zod';
 
 /**
+ * Helper function to get the server date for outage time comparison checks
+ *
+ * @param {Date} date
+ * @param {string} dateStr
+ * @returns {Date}
+ */
+function getDateForTimeChecks(date: Date, dateStr: string) {
+    const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
+    const timeZoneOffset = Math.abs(date.getTimezoneOffset());
+    const hoursToAdd = parseInt(timeZoneDifference) - (timeZoneOffset / 60);
+
+    // Date from the server
+    const timeChecksDate = new Date();
+    if (hoursToAdd > 0) {
+        timeChecksDate.setHours(timeChecksDate.getHours() + hoursToAdd);
+    }
+
+    return timeChecksDate;
+}
+
+/**
  * Return if an outage is active or not by checking if the current time is greater than
  * the outage's start time
  *
  * @param {string} dateStr
- * @param {number} startHour
  * @param {number} startMinute
  * @returns {Boolean}
  */
-export function isOutageActive(dateStr: string, startHour: number, startMinute: number, showLogs: boolean) {
+export function isOutageActive(dateStr: string, startMinute: number) {
     // Date from the API (in NZ time)
     const outageStartDate = new Date(dateStr);
-
-    const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
-
-    const timeZoneOffset = Math.abs(outageStartDate.getTimezoneOffset());
-    const hoursToAdd = parseInt(timeZoneDifference) - (timeZoneOffset / 60);
-
-    // if (hoursToAdd > 0) {
-    //     outageStartDate.setHours(startHour + hoursToAdd);
-    // }
     outageStartDate.setMinutes(startMinute);
 
     // Date from the server
-    const currentDate = new Date();
-    if (hoursToAdd > 0) {
-        currentDate.setHours(currentDate.getHours() + hoursToAdd);
-    }
+    const serverDate = getDateForTimeChecks(outageStartDate, dateStr);
 
-    if (showLogs) {
-        console.log(timeZoneDifference, timeZoneOffset, hoursToAdd, currentDate, outageStartDate);
-    }
-
-    return currentDate.getTime() >= outageStartDate.getTime();
+    return serverDate.getTime() >= outageStartDate.getTime();
 }
 
 /**
@@ -43,36 +47,18 @@ export function isOutageActive(dateStr: string, startHour: number, startMinute: 
  * the outage's end time
  *
  * @param {string} dateStr string representation of the shutdown date e.g. 2025-01-13T00:00:00+13:00
- * @param {number} startHour 0 (12 AM) to 23 (11 PM) e.g. 9
- * @param {number} endHour 0 (12 AM) to 23 (11 PM) e.g. 15
- * @param {number} endMinute e.g. 45
+ * @param {number} endMinute
  * @returns {boolean}
  */
-export function isOutageExpired(dateStr: string, endHour: number, endMinute: number, showLogs: boolean) {
+export function isOutageExpired(dateStr: string, endMinute: number) {
     // Date from the API (in NZ time)
     const outageEndDate = new Date(dateStr);
-
-    const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
-
-    const timeZoneOffset = Math.abs(outageEndDate.getTimezoneOffset());
-    const hoursToAdd = parseInt(timeZoneDifference) - (timeZoneOffset / 60);
-
-    // if (hoursToAdd > 0) {
-    //     outageEndDate.setHours(endHour + hoursToAdd);
-    // }
     outageEndDate.setMinutes(endMinute);
 
     // Date from the server
-    const currentDate = new Date();
-    if (hoursToAdd > 0) {
-        currentDate.setHours(currentDate.getHours() + hoursToAdd);
-    }
+    const serverDate = getDateForTimeChecks(outageEndDate, dateStr);
 
-    if (showLogs) {
-        console.log(timeZoneDifference, timeZoneOffset, hoursToAdd, currentDate, outageEndDate);
-    }
-
-    return currentDate.getTime() >= outageEndDate.getTime();
+    return serverDate.getTime() >= outageEndDate.getTime();
 }
 
 /**
@@ -101,18 +87,16 @@ export function getTimeStrings(splitTime: Array<string>) {
  * @param {string} endTime string representation of the shutdown end date e.g. 2025-01-13T00:00:00+13:00
  * @returns {Object} the outage's start and end times, if it is active, if it is expired
  */
-export function getTimesAndActiveOutage(startTime: string, endTime: string, showLogs: boolean) {
+export function getTimesAndActiveOutage(startTime: string, endTime: string) {
     const startTimeString = startTime.split('T')[1].split('+')[0];
     const endTimeString = endTime.split('T')[1].split('+')[0];
 
-    // Get start hour and check if outage is accurate
-    const startHour = startTimeString.split(':')[0];
+    // Get start and end minute for outage active/expired checks
     const startMinute = startTimeString.split(':')[1];
-    const endHour = endTimeString.split(':')[0];
     const endMinute = endTimeString.split(':')[1];
 
     // If the outage has passed, do not show it
-    if (isOutageExpired(endTime, parseInt(endHour), parseInt(endMinute), showLogs)) {
+    if (isOutageExpired(endTime, parseInt(endMinute))) {
         return {
             activeOutage: false,
             expiredOutage: true,
@@ -124,7 +108,7 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string, show
     }
 
     return {
-        activeOutage: isOutageActive(startTime, parseInt(startHour), parseInt(startMinute), showLogs),
+        activeOutage: isOutageActive(startTime, parseInt(startMinute)),
         expiredOutage: false,
         times: {
             startTime: getTimeStrings(startTimeString.split(':')),
@@ -148,14 +132,7 @@ export async function getActiveOutages() {
     outages.map((outage: OutageData) => {
         const shutdownperiods = outage.shutdownperiods[0];
 
-        const addressList = [
-            'Manukau Heads Rd, Hamilton Rd, Awhitu Central Rd, Kemp Rd, Awhitu Central',
-            'Paerata Road, Lochview Drive, Adams Drive, Pukekohe',
-            'Premila Drive, Ludlow Place, Green lane, Jackson Place, Overend Court, Judith Anne Drive, Pukekohe',
-        ];
-        const showLogs = addressList.includes(outage.address);
-
-        const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end, showLogs);
+        const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
         outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
         if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
