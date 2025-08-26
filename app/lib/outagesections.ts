@@ -14,7 +14,8 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
         return [];
     }
 
-    const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownperiods[0].start, data.shutdownperiods[0].end);
+    // eslint-disable-next-line max-len
+    const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownperiods[0].start, data.shutdownperiods[0].end, false);
 
     const shutdownTimes = timesAndActiveOutage.times;
     const outageIsPostponed = data.statustext === 'Postponed';
