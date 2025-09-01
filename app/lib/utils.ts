@@ -1,64 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Coordinate, OutageData } from './definitions';
 import { z } from 'zod';
-
-/**
- * Helper function to get the server date for outage time comparison checks
- *
- * @param {Date} date
- * @param {string} dateStr
- * @returns {Date}
- */
-function getDateForTimeChecks(date: Date, dateStr: string) {
-    const timeZoneDifference = dateStr.split('+')[1].split(':')[0];
-    const timeZoneOffset = Math.abs(date.getTimezoneOffset());
-    const hoursToAdd = parseInt(timeZoneDifference) - (timeZoneOffset / 60);
-
-    // Date from the server
-    const timeChecksDate = new Date();
-    if (hoursToAdd > 0) {
-        timeChecksDate.setHours(timeChecksDate.getHours() + hoursToAdd);
-    }
-
-    return timeChecksDate;
-}
+import moment from 'moment-timezone';
 
 /**
  * Return if an outage is active or not by checking if the current time is greater than
  * the outage's start time
  *
  * @param {string} dateStr
- * @param {number} startMinute
  * @returns {Boolean}
  */
-export function isOutageActive(dateStr: string, startMinute: number) {
-    // Date from the API (in NZ time)
-    const outageStartDate = new Date(dateStr);
-    outageStartDate.setMinutes(startMinute);
+export function isOutageActive(dateStr: string) {
+    const outageTime = moment.tz(dateStr, 'Pacific/Auckland').unix();
+    const serverTime = moment.tz(new Date().toISOString(), 'Pacific/Auckland').unix();
 
-    // Date from the server
-    const serverDate = getDateForTimeChecks(outageStartDate, dateStr);
-
-    return serverDate.getTime() >= outageStartDate.getTime();
+    return serverTime >= outageTime;
 }
 
 /**
  * Return whether the outage has expired or not by checking if the current time is greater than
  * the outage's end time
  *
- * @param {string} dateStr string representation of the shutdown date e.g. 2025-01-13T00:00:00+13:00
- * @param {number} endMinute
+ * @param {string} dateStr
  * @returns {boolean}
  */
-export function isOutageExpired(dateStr: string, endMinute: number) {
-    // Date from the API (in NZ time)
-    const outageEndDate = new Date(dateStr);
-    outageEndDate.setMinutes(endMinute);
+export function isOutageExpired(dateStr: string) {
+    const outageTime = moment.tz(dateStr, 'Pacific/Auckland').unix();
+    const serverTime = moment.tz(new Date().toISOString(), 'Pacific/Auckland').unix();
 
-    // Date from the server
-    const serverDate = getDateForTimeChecks(outageEndDate, dateStr);
-
-    return serverDate.getTime() >= outageEndDate.getTime();
+    return serverTime >= outageTime;
 }
 
 /**
@@ -91,12 +61,8 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
     const startTimeString = startTime.split('T')[1].split('+')[0];
     const endTimeString = endTime.split('T')[1].split('+')[0];
 
-    // Get start and end minute for outage active/expired checks
-    const startMinute = startTimeString.split(':')[1];
-    const endMinute = endTimeString.split(':')[1];
-
     // If the outage has passed, do not show it
-    if (isOutageExpired(endTime, parseInt(endMinute))) {
+    if (isOutageExpired(endTime)) {
         return {
             activeOutage: false,
             expiredOutage: true,
@@ -108,7 +74,7 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
     }
 
     return {
-        activeOutage: isOutageActive(startTime, parseInt(startMinute)),
+        activeOutage: isOutageActive(startTime),
         expiredOutage: false,
         times: {
             startTime: getTimeStrings(startTimeString.split(':')),
