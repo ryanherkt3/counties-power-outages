@@ -30,7 +30,7 @@ export async function sendEmailNotification(notifSub: NotificationSub, outage: O
         };
 
         const { data, error } = await resend.emails.send({
-            from: 'Counties Power Outages <notifications@outages.ryanherkt.com>',
+            from: 'Ryan Herkt <ryanherkt@gmail.com>',
             to: notifSub.email,
             subject: `Upcoming Power Outage - ${notifSub.location}`,
             react: NotificationEmail(notifEmailPayload),
@@ -60,7 +60,7 @@ export async function sendConfirmationEmail(subData: NotificationSub) {
         const resend = new Resend(process.env.RESEND_API_KEY);
 
         const { data, error } = await resend.emails.send({
-            from: 'Counties Power Outages <notifications@outages.ryanherkt.com>',
+            from: 'Ryan Herkt <ryanherkt@gmail.com>',
             to: subData.email,
             subject: 'Confirmation of Notification Subscription',
             react: ConfirmationEmail({subData}),
