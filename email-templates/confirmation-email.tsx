@@ -1,4 +1,3 @@
-
 import { Html, Text, Section, Body, Container, Head } from '@react-email/components';
 import { NotificationSub } from '../lib/definitions';
 import { CSSProperties } from 'react';
