@@ -9,6 +9,7 @@ import { RootState } from '@/state/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { resetAfterView } from '@/state/outage-overlay-view/outageOverlayView';
 import { useEffect, useState } from 'react';
+import { update } from '@/state/no-scroll/noScroll';
 
 export default function OutageOverlay() {
     const layoutClasses = 'fixed flex flex-col gap-8';
@@ -25,10 +26,12 @@ export default function OutageOverlay() {
 
     const canSeeOverlay = outageOverlayView.cardClickShow || outageOverlayView.isVisible === 'Open';
 
-    // document.querySelector('body')?.classList.toggle('no-scroll', canSeeOverlay);
 
     const [embedLink, setEmbedLink] = useState<string | null>(null);
     useEffect(() => {
+        // Set the no-scroll class for the document body as appropriate
+        dispatch(update(outageOverlayView.data.address));
+
         if (outageOverlayView.data.address) {
             const { lat: outageLat, lng: outageLng } = outageOverlayView.data;
             setEmbedLink(`https://maps.google.com/maps?q=${outageLat},${outageLng}&hl=en&z=16&output=embed`);
