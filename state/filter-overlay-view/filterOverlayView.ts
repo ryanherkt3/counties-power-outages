@@ -1,4 +1,4 @@
-import { FilterOverlayData, FilterOverlayStates, SelectedFilterOverlayValues } from '@/app/lib/definitions';
+import { FilterOverlayData, FilterOverlayStates, SelectedFilterOverlayValues } from '@/lib/definitions';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface FilterOverlayViewState {

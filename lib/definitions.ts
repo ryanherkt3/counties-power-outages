@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 export type OutageData = {
     id: string;
     projecttype: string;
@@ -37,14 +36,6 @@ export type OutageTimes = {
     endTime: string;
 };
 
-export type SearchData = {
-    page: string | undefined;
-    query: string | undefined;
-    status: string | undefined;
-    startdate: string | undefined;
-    enddate: string | undefined;
-};
-
 export type NotificationSub = {
     id: string;
     location: string | null;
@@ -61,36 +52,40 @@ export type NotifOutageInfo = {
     status: string;
 };
 
-export type FormValues = {
+export type FormFields = {
     id: string;
+    email: string;
     location: string;
     latitude: number | null;
     longtitude: number | null;
-    email: string;
+};
+
+export type FormValues = FormFields & {
     datesubscribed: string;
     hasCoordinates: boolean;
 };
 
-export type SearchParams = {
-    query: string | undefined,
-    page: string | undefined,
-    status: string | undefined,
-    startdate: string | undefined,
-    enddate: string | undefined,
+export type SearchData = {
+    page: string | undefined;
+    query: string | undefined;
+    status: string | undefined;
+    startdate: string | undefined;
+    enddate: string | undefined;
+};
+
+export type SearchParams = SearchData & {
     outage: string | undefined
 }
 
+export type PromiseSearchParams = Promise<SearchParams>
+
 export type OutageOverlayStates = {
     cardClickShow: boolean,
-    isVisible: number,
+    isVisible: OverlayVisibility,
     data: OutageData
 }
 
-export enum OverlayVisibility {
-    Hidden = 0,
-    Open = 1,
-    Closed = 2,
-}
+export type OverlayVisibility = 'Hidden' | 'Open' | 'Closed';
 
 export type FilterOverlayStates = {
     isVisible: boolean,

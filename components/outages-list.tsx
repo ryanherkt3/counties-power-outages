@@ -10,15 +10,25 @@ import FilterType from './filters/filter-type';
 import { useDispatch, useSelector } from 'react-redux';
 import OutageOverlay from './outage/outage-overlay';
 import FilterOverlay from './filters/filter-overlay';
-import { update as outageOverlayUpdate } from '@/app/state/outage-overlay-view/outageOverlayView';
-import { update as filterOverlayUpdate } from '@/app/state/filter-overlay-view/filterOverlayView';
-import { OutageData, SearchParams, OverlayVisibility, SelectedFilterOverlayValues } from '../lib/definitions';
+import { update as outageOverlayUpdate } from '@/state/outage-overlay-view/outageOverlayView';
+import { update as filterOverlayUpdate } from '@/state/filter-overlay-view/filterOverlayView';
+import { OutageData, SearchParams, SelectedFilterOverlayValues } from '../lib/definitions';
 import { RootState } from '../state/store';
+import { useEffect } from 'react';
 
-export default function OutagesList({searchParams, outages} : {searchParams: SearchParams, outages: OutageData[]}) {
+export default function OutagesList(
+    {
+        searchParams,
+        outages
+    } :
+    {
+        searchParams: SearchParams,
+        outages: OutageData[]
+    }
+) {
     const currentPage = Number(searchParams.page) || 1;
 
-    const filteredNotSearchedOutages = getFilteredOutages(outages, {});
+    const filteredNotSearchedOutages = getFilteredOutages(outages, null);
     const filteredOutages = getFilteredOutages(outages, searchParams);
 
     // Pagination values
@@ -37,7 +47,7 @@ export default function OutagesList({searchParams, outages} : {searchParams: Sea
     const dispatch = useDispatch();
 
     // Show the outage overlay after the page loads if we can do so
-    if (searchParams.outage && outageOverlayView.isVisible === OverlayVisibility.Hidden) {
+    if (searchParams.outage && outageOverlayView.isVisible === 'Hidden') {
         const outageOverlayViewData = outages.filter((outage) => {
             return outage.id === searchParams.outage;
         })[0];
@@ -46,7 +56,7 @@ export default function OutagesList({searchParams, outages} : {searchParams: Sea
         if (outageOverlayViewData) {
             dispatch(
                 outageOverlayUpdate(
-                    { cardClickShow: false, isVisible: OverlayVisibility.Open, data: outageOverlayViewData }
+                    { cardClickShow: false, isVisible: 'Open', data: outageOverlayViewData }
                 )
             );
         }
@@ -54,30 +64,31 @@ export default function OutagesList({searchParams, outages} : {searchParams: Sea
 
     // Update the set filter values if visiting the outages page with filters set in the URL
     const filterOverlayView = useSelector((state: RootState) => state.filterOverlayView.value);
-    if (searchParams.startdate !== '' || searchParams.enddate !== '' || searchParams.status !== '') {
-        if ((searchParams.startdate && filterOverlayView.filterValues.startdate === '') ||
-            (searchParams.enddate && filterOverlayView.filterValues.enddate === '') ||
-            (searchParams.status && filterOverlayView.filterValues.status === '')) {
-            const newFilterValues: SelectedFilterOverlayValues = {
-                status: searchParams.status || '',
-                startdate: searchParams.startdate || '',
-                enddate: searchParams.enddate || ''
-            };
+    useEffect(() => {
+        if (searchParams.startdate !== '' || searchParams.enddate !== '' || searchParams.status !== '') {
+            if ((searchParams.startdate && filterOverlayView.filterValues.startdate === '') ||
+                (searchParams.enddate && filterOverlayView.filterValues.enddate === '') ||
+                (searchParams.status && filterOverlayView.filterValues.status === '')) {
+                const newFilterValues: SelectedFilterOverlayValues = {
+                    status: searchParams.status || '',
+                    startdate: searchParams.startdate || '',
+                    enddate: searchParams.enddate || ''
+                };
 
-            dispatch(
-                filterOverlayUpdate(
-                    {
-                        type: 'none',
-                        isVisible: false,
-                        data: { type: 'none', optionalDates: null },
-                        filterValues: newFilterValues
-                    }
-                )
-            );
+                dispatch(
+                    filterOverlayUpdate(
+                        {
+                            type: 'none',
+                            isVisible: false,
+                            data: { type: 'none', optionalDates: null },
+                            filterValues: newFilterValues
+                        }
+                    )
+                );
+            }
         }
-    }
+    }, [searchParams, filterOverlayView]);
 
-    // TODO if filterOverlayData.isVisible is true, dispatch update event to turn it false again(?)
 
     // Early return if there are no outages to report
     if (!filteredOutages.length) {

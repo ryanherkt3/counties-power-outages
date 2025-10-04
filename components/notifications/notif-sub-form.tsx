@@ -1,19 +1,20 @@
-/* eslint-disable max-len */
 'use client';
 
 import { AtSymbolIcon, BookmarkIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
-import { isValidEmail } from '../lib/utils';
-import { updateSubscription } from '../lib/actions';
-import { FormValues } from '../lib/definitions';
+import { isValidEmail } from '../../lib/utils';
+import { updateSubscription } from '../../lib/actions';
+import { FormFields, FormValues } from '../../lib/definitions';
+import content from '../../app/content.json';
 
 export default function NotifSubForm({ values, onSubPage }: { values: FormValues, onSubPage: boolean }) {
     const { email, location, latitude, longtitude, hasCoordinates, id } = values;
 
     const { register, handleSubmit, control, setError, clearErrors, getValues, reset } = useForm({
         defaultValues: {
+            id: id,
             email: email,
             location: location,
             latitude: latitude,
@@ -26,27 +27,22 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
         name: ['email', 'location', 'latitude', 'longtitude'],
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const onSubmit = (data: any) => {
+    const onSubmit = (data: FormFields) => {
         if (onSubPage && !Object.keys(dirtyFields).length) {
             setError('root.unchanged', { type: 'custom', message: 'custom message' });
         }
         else {
             clearErrors();
 
-            if (onSubPage) {
-                data = {...data, id: id};
-            }
-
             updateSubscription(includeCoords, onSubPage, data);
 
-            const resetPayload = onSubPage ?
-                {
-                    email: data.email,
-                    location: data.location,
-                    latitude: includeCoords ? data.latitude : '',
-                    longtitude: includeCoords ? data.longtitude : '',
-                } : {};
+            const resetPayload = {
+                id: data.id,
+                email: data.email,
+                location: data.location,
+                latitude: onSubPage ? (includeCoords ? data.latitude : null) : null,
+                longtitude: onSubPage ? (includeCoords ? data.longtitude : null) : null,
+            };
 
             reset(resetPayload);
         }
@@ -66,7 +62,9 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
     return (
         <>
             <div className="flex flex-col gap-2">
-                <div className="text-lg font-medium">Would you like to include coordinates in your outage subscription?</div>
+                <div className="text-lg font-medium">
+                    Would you like to include coordinates in your outage subscription?
+                </div>
                 <div className="flex flex-row gap-6">
                     <button
                         className="flex flex-row gap-2 cursor-pointer"
@@ -152,7 +150,7 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
                                     {...register('location', {
                                         required: 'Enter a location'
                                     })}
-                                    placeholder="Enter the location / area where you would like to be notified for (e.g. Smith Street)"
+                                    placeholder={content['notif-sub-form-location-placeholder']}
                                     className={`${inputClasses} pl-10`}
                                 />
                             </div>
@@ -280,8 +278,8 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
                                         <p className='mt-2 text-md font-semibold text-red-600'>
                                             {
                                                 onSubPage && !Object.keys(dirtyFields).length ?
-                                                    'Please ensure at least one field has been changed before submitting' :
-                                                    'Fix the form errors'
+                                                    content['notif-sub-form-one-field-change'] :
+                                                    content['notif-sub-form-fix-errors']
                                             }
                                         </p>
                                     ) :

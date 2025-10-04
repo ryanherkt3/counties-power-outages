@@ -1,6 +1,6 @@
-import { NotificationSub } from '@/app/lib/definitions';
-import { sendConfirmationEmail } from '@/app/lib/emails';
-import { isValidEmail, isValidPayloadArgument } from '@/app/lib/utils';
+import { NotificationSub } from '@/lib/definitions';
+import { sendConfirmationEmail } from '@/lib/emails';
+import { isValidEmail, isValidPayloadArgument } from '@/lib/utils';
 import { sql } from '@vercel/postgres';
 import { NextRequest, NextResponse } from 'next/server';
 

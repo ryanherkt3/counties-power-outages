@@ -1,14 +1,15 @@
 'use client';
 
-import LatestInfo from '@/app/ui/latest-info';
-import { getOutageSections } from '@/app/lib/outagesections';
-import OutageStatus from '@/app/ui/outage/outage-status';
+import LatestInfo from '@/components/latest-info';
+import { getOutageSections } from '@/lib/outagesections';
+import OutageStatus from '@/components/outage/outage-status';
 import CustomIcon from '../custom-icon';
 import clsx from 'clsx';
-import { RootState } from '@/app/state/store';
+import { RootState } from '@/state/store';
 import { useSelector, useDispatch } from 'react-redux';
-import { resetAfterView } from '@/app/state/outage-overlay-view/outageOverlayView';
-import { OverlayVisibility } from '@/app/lib/definitions';
+import { resetAfterView } from '@/state/outage-overlay-view/outageOverlayView';
+import { useEffect, useState } from 'react';
+import { update } from '@/state/no-scroll/noScroll';
 
 export default function OutageOverlay() {
     const layoutClasses = 'fixed flex flex-col gap-8';
@@ -19,13 +20,26 @@ export default function OutageOverlay() {
 
     const { data } = outageOverlayView;
 
-    const { statustext, lat: outageLat, lng: outageLng, address, latestinformation } = data;
+    const { statustext, address, latestinformation } = data;
 
     const outageSections = getOutageSections(true, false, data);
 
-    const canSeeOverlay = outageOverlayView.cardClickShow || outageOverlayView.isVisible === OverlayVisibility.Open;
+    const canSeeOverlay = outageOverlayView.cardClickShow || outageOverlayView.isVisible === 'Open';
 
-    // document.querySelector('body')?.classList.toggle('no-scroll', canSeeOverlay);
+
+    const [embedLink, setEmbedLink] = useState<string | null>(null);
+    useEffect(() => {
+        // Set the no-scroll class for the document body as appropriate
+        dispatch(update(outageOverlayView.data.address));
+
+        if (outageOverlayView.data.address) {
+            const { lat: outageLat, lng: outageLng } = outageOverlayView.data;
+            setEmbedLink(`https://maps.google.com/maps?q=${outageLat},${outageLng}&hl=en&z=16&output=embed`);
+        }
+        else {
+            setEmbedLink(null);
+        }
+    }, [outageOverlayView]);
 
     return (
         <div
@@ -72,28 +86,10 @@ export default function OutageOverlay() {
                 }
             </div>
             {
-                // TODO reset iframe link after closing the overlay then reopening it
-                getOutageIFrame(outageLat, outageLng)
+                embedLink ?
+                    <iframe className="self-center map-size" src={embedLink} width="80%" loading="lazy"></iframe> :
+                    null
             }
         </div>
     );
-}
-
-/**
- * Get the iframe of the map showing roughly where the outage is happening
- *
- * @param {number} lat the latitude
- * @param {number} lng the longtitude
- * @returns HTML object (or nothing if coordinates are not provided)
- */
-function getOutageIFrame(lat: number, lng: number) {
-    if (lat && lng) {
-        const embedLink = `https://maps.google.com/maps?q=${lat.toString()},${lng.toString()}&hl=en&z=16&output=embed`;
-
-        return (
-            <iframe className="self-center map-size" src={embedLink} width="80%" loading="lazy"></iframe>
-        );
-    }
-
-    return null;
 }

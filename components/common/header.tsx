@@ -5,9 +5,12 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useDispatch } from 'react-redux';
+import { update } from '@/state/no-scroll/noScroll';
 
-export default function Navigation() {
+export default function Header() {
     const pathname = usePathname();
+    const dispatch = useDispatch();
 
     // States for the mobile nav menu
     const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -16,7 +19,7 @@ export default function Navigation() {
 
     const toggleMobileNavOpen = () => {
         setMobileNavOpen(!mobileNavOpen);
-        // document.querySelector('body')?.classList.toggle('no-scroll', !mobileNavOpen);
+        dispatch(update(!mobileNavOpen));
     };
 
     // Reset the state of mobileNavOpen when going to another page
@@ -24,7 +27,6 @@ export default function Navigation() {
         if (mobileNavOpen) {
             setTimeout(() => {
                 setMobileNavOpen(false);
-                // document.querySelector('body')?.classList.remove('no-scroll');
             }, 300);
         }
     };
@@ -35,7 +37,7 @@ export default function Navigation() {
             setIsMobileScreen(window.innerWidth <= 768);
             if (window.innerWidth > 768 && mobileNavOpen) {
                 setMobileNavOpen(false);
-                // document.querySelector('body')?.classList.remove('no-scroll');
+                dispatch(update(false));
             }
         };
 
@@ -64,7 +66,9 @@ export default function Navigation() {
     ];
 
     return (
-        <div className="flex sticky top-0 h-20 p-4 items-center justify-between border-b border-gray-400 bg-white z-10">
+        <header
+            className="flex sticky top-0 h-20 p-4 items-center justify-between border-b border-gray-400 bg-white z-10"
+        >
             <div>
                 <Link
                     href="/"
@@ -120,6 +124,6 @@ export default function Navigation() {
                     )
                 }
             </div>
-        </div>
+        </header>
     );
 }

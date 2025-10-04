@@ -1,10 +1,9 @@
-/* eslint-disable max-len */
 'use client';
 
 import { useSearchParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { update } from '@/app/state/filter-overlay-view/filterOverlayView';
-import { RootState } from '@/app/state/store';
+import { update } from '@/state/filter-overlay-view/filterOverlayView';
+import { RootState } from '@/state/store';
 
 export default function FilterType(
     {
@@ -26,9 +25,12 @@ export default function FilterType(
         param = param.charAt(0).toUpperCase() + param.slice(1);
     }
 
+    const btnCSS = 'flex flex-row items-center gap-2 p-3 bg-red-600 hover:bg-red-800 ' +
+        'text-white rounded-xl cursor-pointer';
+
     return (
         <div
-            className='flex flex-row items-center gap-2 p-3 bg-red-600 hover:bg-red-800 text-white rounded-xl cursor-pointer'
+            className={btnCSS}
             onClick={
                 () => {
                     dispatch(

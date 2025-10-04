@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Coordinate, OutageData } from './definitions';
+import { Coordinate, OutageData, SearchParams } from './definitions';
 import { z } from 'zod';
 import moment from 'moment-timezone';
+import { QueryResultRow } from '@vercel/postgres';
 
 /**
  * Return if an outage is active or not by checking if the current time is greater than
@@ -106,10 +106,9 @@ export async function getActiveOutages() {
         }
     });
 
-    // TODO send API req to delete any/all expired outages (?)
     outages = outages.filter((outage: OutageData) => {
         return outage.expiredOutage === false;
-    }).sort((a: any, b: any) => {
+    }).sort((a: OutageData, b: OutageData) => {
         const aTime = new Date(a.shutdowndatetime).getTime() / 1000;
         const bTime = new Date(b.shutdowndatetime).getTime() / 1000;
         const aStartTime = new Date(a.shutdownperiods[0].start).getTime() / 1000;
@@ -143,13 +142,18 @@ export function getFilteredDate(date: string) {
  * @param {any} searchParams address / status / start date / end date
  * @returns {Array<OutageData>} new filtered list of outages
  */
-export function getFilteredOutages(outages: Array<OutageData>, searchParams: any) {
+export function getFilteredOutages(outages: Array<OutageData>, searchParams: SearchParams | null) {
+    // Return original list if no search parameters
+    if (searchParams === null) {
+        return outages;
+    }
+
     const address = searchParams.query;
     const outageStatus = searchParams.status;
     const startDate = searchParams.startdate;
     const endDate = searchParams.enddate;
 
-    // Return original list if no search parameters
+    // Return original list search parameters are empty
     if (!address && !outageStatus && !startDate && !endDate) {
         return outages;
     }
@@ -175,6 +179,53 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: any
     });
 
     return filteredOutages;
+}
+
+/**
+ * Manipulate variables within the outages object to be suitable for client-side consumption
+ *
+ * @param {Array<QueryResultRow>} outages from the database
+ * @returns {Array<QueryResultRow>} the manipulated list of outages
+ */
+export function getManipulatedOutages(outages: Array<QueryResultRow>) {
+    outages.map((outage) => {
+        outage.hull = outage.hull ? JSON.parse(outage.hull) : [];
+
+        // Convert shutdowndate to a string
+        const year = outage.shutdowndate.getFullYear();
+        const month = outage.shutdowndate.getMonth() + 1;
+        const day = outage.shutdowndate.getDate();
+        outage.shutdowndate = `${day}/${month}/${year}`;
+
+        // Convert originalshutdowndate to a string
+        if (outage.originalshutdowndate) {
+            const year = outage.originalshutdowndate.getFullYear();
+            const month = outage.originalshutdowndate.getMonth() + 1;
+            const day = outage.originalshutdowndate.getDate();
+            outage.originalshutdowndate = `${day}/${month}/${year}`;
+        }
+
+        outage.shutdownperiods = [
+            {
+                start: outage.shutdownperiodstart,
+                end: outage.shutdownperiodend,
+            }
+        ];
+
+        outage.originalshutdownperiods = [
+            {
+                start: outage.originalshutdownperiodstart,
+                end: outage.originalshutdownperiodstart,
+            }
+        ];
+
+        delete outage.shutdownperiodstart;
+        delete outage.shutdownperiodend;
+        delete outage.originalshutdownperiodstart;
+        delete outage.originalshutdownperiodstart;
+    });
+
+    return outages;
 }
 
 /**

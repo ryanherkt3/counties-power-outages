@@ -1,12 +1,9 @@
-/* eslint-disable max-len */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
-
-import { db } from '@vercel/postgres';
-import { sendEmailNotification } from '@/app/lib/emails';
-import { NotificationSub, NotifOutageInfo, OutageData } from '@/app/lib/definitions';
-import { coordIsInOutageZone } from '@/app/lib/utils';
+import { db, QueryResultRow, VercelPoolClient } from '@vercel/postgres';
+import { sendEmailNotification } from '@/lib/emails';
+import { NotificationSub, NotifOutageInfo, OutageData } from '@/lib/definitions';
+import { coordIsInOutageZone, getManipulatedOutages } from '@/lib/utils';
 import { NextRequest } from 'next/server';
+import content from './../../content.json';
 
 /**
  * Get all outages from database.
@@ -14,7 +11,7 @@ import { NextRequest } from 'next/server';
  * @param client
  * @returns {Object}
  */
-async function getOutages(client: { sql: any; }) {
+async function getOutages(client: VercelPoolClient) {
     try {
         const outages = await client.sql`SELECT * FROM outages`;
         return {
@@ -33,7 +30,7 @@ async function getOutages(client: { sql: any; }) {
  * @param client
  * @returns {Object}
  */
-async function getNotifSubs(client: { sql: any; }) {
+async function getNotifSubs(client: VercelPoolClient) {
     try {
         const subs = await client.sql`SELECT * FROM notifications`;
         return {
@@ -55,7 +52,7 @@ async function getNotifSubs(client: { sql: any; }) {
  * @param {string} id
  * @returns {Object}
  */
-async function updateSubInfo(client: { sql: any; }, outageInfo: string, id: string) {
+async function updateSubInfo(client: VercelPoolClient, outageInfo: string, id: string) {
     try {
         const updateSub = await client.sql`
             UPDATE notifications
@@ -79,11 +76,15 @@ async function updateSubInfo(client: { sql: any; }, outageInfo: string, id: stri
  * Attempt to send notification emails to users if required.
  *
  * @param client
- * @param {Array<any>} outages
- * @param {Array<NotificationSub>} subscriptions
+ * @param {Array<QueryResultRow>} outages
+ * @param {Array<QueryResultRow>} subscriptions
  * @returns {Object}
  */
-async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscriptions: Array<NotificationSub>) {
+async function trySendEmails(
+    client: VercelPoolClient,
+    outages: Array<QueryResultRow>,
+    subscriptions: Array<QueryResultRow>
+) {
     let totalEmailsSent = 0;
 
     for (const sub of subscriptions) {
@@ -106,7 +107,8 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
             return currentTime - x.emailSent >= 86400 * 14;
         }).length > 0;
 
-        // If oldEmailAlerts is true, update subInfo by removing objects in it whose email timestamps are at least 14 days old
+        // If oldEmailAlerts is true, update subInfo by removing objects in it whose
+        // email timestamps are at least 14 days old
         if (oldEmailAlerts) {
             subInfo = subInfo.filter((x: NotifOutageInfo) => {
                 const currentDate = new Date();
@@ -148,7 +150,7 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
             if (shouldSendEmail) {
                 try {
                     const oldStatus = outageStatusChanged ? filteredSub.status : '';
-                    await sendEmailNotification(sub, outage, oldStatus);
+                    await sendEmailNotification(sub as NotificationSub, outage as OutageData, oldStatus);
 
                     emailsSentForSub++;
                     totalEmailsSent++;
@@ -157,7 +159,7 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
 
                     // If we've emailed them before, update the object values; otherwise create a new one and
                     // push it to subInfo
-                    if (!!(filteredSub && filteredSub.status)) {
+                    if (filteredSub && filteredSub.status) {
                         filteredSub.emailSent = emailedTime;
                         filteredSub.status = outage.statustext;
                     }
@@ -170,6 +172,7 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
                     }
                 }
                 catch (error) {
+                    console.log(error);
                     return totalEmailsSent;
                 }
             }
@@ -180,7 +183,9 @@ async function trySendEmails(client: { sql: any; }, outages: Array<any>, subscri
                 await updateSubInfo(client, JSON.stringify(subInfo), sub.id);
             }
         }
-        catch (error) {}
+        catch (error) {
+            console.log(error);
+        }
     }
 
     return totalEmailsSent;
@@ -209,7 +214,7 @@ export async function GET(request: NextRequest) {
             JSON.stringify(
                 {
                     'success': true,
-                    'note': 'No outages exist! Please run the update script, or check any actually exist on the Counties Power website'
+                    'note': content['cron-no-outages'],
                 }
             ), {
                 status: 200,
@@ -217,53 +222,17 @@ export async function GET(request: NextRequest) {
             });
     }
 
-    const outages = outagesList.outages.rows.filter((outage: OutageData) => {
+    const outages = getManipulatedOutages(
+        outagesList.outages.rows.filter((outage) => {
         // Remove outages whose scheduled start date is more than seven days away
-        const currentDate = new Date();
-        const currentTime = currentDate.getTime() / 1000;
+            const currentDate = new Date();
+            const currentTime = currentDate.getTime() / 1000;
 
-        const outageStartDateTime = new Date(outage.shutdowndatetime).getTime() / 1000;
+            const outageStartDateTime = new Date(outage.shutdowndatetime).getTime() / 1000;
 
-        return outageStartDateTime - currentTime <= 86400 * 7;
-    });
-
-    // Manipulate outage fields (TODO have this and section in /getoutages route be one function)
-    for (const outage of outages) {
-        outage.hull = outage.hull ? JSON.parse(outage.hull) : [];
-
-        // Convert shutdowndate to a string
-        const year = outage.shutdowndate.getFullYear();
-        const month = outage.shutdowndate.getMonth() + 1;
-        const day = outage.shutdowndate.getDate();
-        outage.shutdowndate = `${day}/${month}/${year}`;
-
-        // Convert originalshutdowndate to a string
-        if (outage.originalshutdowndate) {
-            const year = outage.originalshutdowndate.getFullYear();
-            const month = outage.originalshutdowndate.getMonth() + 1;
-            const day = outage.originalshutdowndate.getDate();
-            outage.originalshutdowndate = `${day}/${month}/${year}`;
-        }
-
-        outage.shutdownperiods = [
-            {
-                start: outage.shutdownperiodstart,
-                end: outage.shutdownperiodend,
-            }
-        ];
-
-        outage.originalshutdownperiods = [
-            {
-                start: outage.originalshutdownperiodstart,
-                end: outage.originalshutdownperiodstart,
-            }
-        ];
-
-        delete outage.shutdownperiodstart;
-        delete outage.shutdownperiodend;
-        delete outage.originalshutdownperiodstart;
-        delete outage.originalshutdownperiodstart;
-    }
+            return outageStartDateTime - currentTime <= 86400 * 7;
+        })
+    );
 
     console.log('Fetched outages');
 

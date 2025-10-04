@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { BoltSlashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import NotifSubForm from '@/app/ui/notif-sub-form';
+import NotifSubForm from '@/components/notifications/notif-sub-form';
 
 export const metadata: Metadata = {
     title: 'Manage Subscription | Counties Power Outages App',

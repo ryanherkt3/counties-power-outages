@@ -1,20 +1,32 @@
-/* eslint-disable max-len */
 'use client';
 
 import {
     AtSymbolIcon, BoltIcon, CalendarIcon, MapPinIcon, MinusIcon, PlusIcon, TrashIcon
 } from '@heroicons/react/24/outline';
-import { NotificationSub } from '../lib/definitions';
+import { NotificationSub } from '../../lib/definitions';
 import { useState } from 'react';
 import clsx from 'clsx';
-import { getCardSections } from '../lib/outagesections';
-import { deleteSubscription } from '../lib/actions';
+import { getCardSections } from '../../lib/outagesections';
+import { deleteSubscription } from '../../lib/actions';
 import Link from 'next/link';
 
-export default function NotificationCard({ data, plannedOutages }: { data: NotificationSub; plannedOutages: string}) {
+export default function NotificationCard(
+    {
+        data,
+        plannedOutages,
+        removeSubCb
+    } :
+    {
+        data: NotificationSub;
+        plannedOutages: string;
+        removeSubCb: Function;
+    }
+) {
     const [showContents, setShowContents] = useState(true);
     const cardSections = getCardSections(data);
     const outagesArray = plannedOutages.length ? plannedOutages.split(',') : [];
+
+    const unsubCSS = 'flex flex-row gap-2 bg-red-600 hover:bg-red-800 text-white rounded-xl w-fit p-3 cursor-pointer';
 
     return (
         <div className='flex flex-col gap-4 shrink-0 p-4 rounded-lg border border-gray-700' >
@@ -85,7 +97,7 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
             <button
                 className={
                     clsx(
-                        'flex flex-row gap-2 bg-red-600 hover:bg-red-800 text-white rounded-xl w-fit p-3 cursor-pointer',
+                        unsubCSS,
                         {
                             'mt-4': showContents
                         }
@@ -93,6 +105,7 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
                 }
                 onClick={
                     () => {
+                        removeSubCb();
                         deleteSubscription(data.id);
                     }
                 }

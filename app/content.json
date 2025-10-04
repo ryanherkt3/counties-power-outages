@@ -5,5 +5,27 @@
     "intro-4": "So, I decided to build an app that solve both these problems by creating an easy to navigate page showing the planned outages, and a page where it is possible to subscribe to email alerts for notifications in your area.",
     "outages": "View a full list of planned outages from Counties Power on our Outages page. To make your user experience as smooth as possible, we show five outages per page and have built comprehensive searching tools to allow you to find outages of interest. The search functionality allows outages to be filtered by outage status (Scheduled, Postponed, Cancelled; and a special Active status not offered by Counties Power), outage start date (and outage end date if you want to search in a specific date range), and by whatever is entered in the search box - for example a street name.",
     "individual-outage": "View an individual outage after hovering on its title on our Outages page, and get a comprehensive breakdown of the specific outage as well as an embedded map showing the approximate location of where the outage is happening.",
-    "notifications": "Subscribe to email alerts on our Notifications page and get notified when outages are happening in your area! No account is required! You can also check for existing subscriptions on this page, and unsubscribe to any if you wish. Subscribing to email alerts for specific outages via the outages page may also be possible in the future."
+    "notifications": "Subscribe to email alerts on our Notifications page and get notified when outages are happening in your area! No account is required! You can also check for existing subscriptions on this page, and unsubscribe to any if you wish. Subscribing to email alerts for specific outages via the outages page may also be possible in the future.",
+
+    "how-notifs-work-1": "Every day, at 12PM NZ time, the system checks if an outage is planned in the area you subscribed to within the next seven days.",
+    "how-notifs-work-2": "If one is, you will receive an email with details about the outage - when it is, the start and end times, and how many customers are affected. You may also receive future emails if the status of the outage changes.",
+    "subscribe-with-coords-1": "Search for your address on $mapsLink",
+    "subscribe-with-coords-2": "Right click your address and click the first option to copy the coordinates.",
+    "subscribe-with-coords-3": "In the \"Subscribe to Outages\" form below, ensure the \"No\" option in the question is clicked and enter your street address in the \"Location\" field.",
+    "subscribe-with-coords-4": "You should then get a confirmation email with details of your notification.",
+    "subscribe-without-coords-1": "In the \"Subscribe to Outages\" form below, ensure the \"No\" option in the question is clicked and enter your street address in the \"Location\" field.",
+    "subscribe-without-coords-2": "You should then get a confirmation email with details of your notification.",
+    "unsubscribe-1": "In the \"Active Notifications\" section below, search for any notification subscriptions associated to your email address.",
+    "unsubscribe-2": "Click the \"Unsubscribe\" button in the subscription you want to unsubscribe from.",
+
+    "notif-sub-form-location-placeholder": "Enter the location / area where you would like to be notified for (e.g. Smith Street)",
+    "notif-sub-form-one-field-change": "Please ensure at least one field has been changed before submitting",
+    "notif-sub-form-fix-errors": "Fix the form errors",
+
+    "cron-no-outages": "No outages exist! Please run the update script, or check any actually exist on the Counties Power website",
+
+    "notif-email-new": "There has been a status change for an upcoming planned power outage which may be in the location you subscribed to notifications for.",
+    "notif-email-changed": "There is an upcoming planned power outage which may be in the location you subscribed to notifications for.",
+
+    "sub-confirm-email-unsub": "If this subscription was made in error, or you no longer wish to receive notifications, you can unsubscribe $unsubLink."
 }
