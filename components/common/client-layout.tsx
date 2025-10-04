@@ -10,7 +10,7 @@ import clsx from 'clsx';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export default function ClientLayout({ items }: {items: ReactNode;}) {
+export default function ClientLayout({ items }: { items: ReactNode; }) {
     const blockScrolling = useSelector((state: RootState) => state.noScroll.value);
 
     return (

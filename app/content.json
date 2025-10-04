@@ -9,7 +9,7 @@
 
     "how-notifs-work-1": "Every day, at 12PM NZ time, the system checks if an outage is planned in the area you subscribed to within the next seven days.",
     "how-notifs-work-2": "If one is, you will receive an email with details about the outage - when it is, the start and end times, and how many customers are affected. You may also receive future emails if the status of the outage changes.",
-    "subscribe-with-coords-1": "Search for your address on ${mapsLink}",
+    "subscribe-with-coords-1": "Search for your address on $mapsLink",
     "subscribe-with-coords-2": "Right click your address and click the first option to copy the coordinates.",
     "subscribe-with-coords-3": "In the \"Subscribe to Outages\" form below, ensure the \"No\" option in the question is clicked and enter your street address in the \"Location\" field.",
     "subscribe-with-coords-4": "You should then get a confirmation email with details of your notification.",

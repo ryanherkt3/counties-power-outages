@@ -127,10 +127,10 @@ export default async function NotificationsPage(props: { searchParams: SearchPar
                                 <ol type="1" className="list-decimal list-inside">
                                     {
                                         item.listItems.map((listItem) => {
-                                            if (listItem.content.includes('${mapsLink}')) {
+                                            if (listItem.content.includes('$mapsLink')) {
                                                 return (
                                                     <li key={listItem.key}>
-                                                        {listItem.content.replace('${mapsLink}', '')} {mapsLink}
+                                                        {listItem.content.replace('$mapsLink', '')} {mapsLink}
                                                     </li>
                                                 );
                                             }

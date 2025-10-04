@@ -1,4 +1,3 @@
-
 import { Html, Text, Section, Body, Container, Head, Link } from '@react-email/components';
 import { OutageData } from '../lib/definitions';
 import { CSSProperties } from 'react';
