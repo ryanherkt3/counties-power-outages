@@ -35,7 +35,7 @@ export default function NotifSubs(
                 <div className="text-xl font-semibold">Active Subscriptions ({totalSubs})</div>
                 <Search placeholder="Enter your email address"/>
             </div>
-            
+
             <div
                 className={
                     clsx(
