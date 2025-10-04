@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -14,23 +13,15 @@ import { FormValues } from './definitions';
 export async function updateSubscription(includeCoords: boolean, isExistingSub: boolean, formData: FormValues) {
     const { location, email, id, latitude, longtitude } = formData;
 
-    const payload: any = {
+    const payload: FormValues = {
         location: location,
         email: email,
-        hasCoordinates: includeCoords
+        hasCoordinates: includeCoords,
+        latitude: includeCoords ? latitude : null,
+        longtitude: includeCoords ? longtitude : null,
+        id: isExistingSub ? id : '',
+        datesubscribed: isExistingSub ? '' : new Date().toLocaleString(),
     };
-
-    if (includeCoords) {
-        payload.latitude = latitude;
-        payload.longtitude = longtitude;
-    }
-
-    if (isExistingSub) {
-        payload.id = id;
-    }
-    else {
-        payload.datesubscribed = new Date().toLocaleString();
-    }
 
     await fetch(process.env.API_URL + '/subscription', {
         method: isExistingSub ? 'PUT' : 'POST',

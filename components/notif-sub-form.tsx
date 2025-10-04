@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 'use client';
 
 import { AtSymbolIcon, BookmarkIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
@@ -26,7 +25,6 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
         name: ['email', 'location', 'latitude', 'longtitude'],
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onSubmit = (data: any) => {
         if (onSubPage && !Object.keys(dirtyFields).length) {
             setError('root.unchanged', { type: 'custom', message: 'custom message' });

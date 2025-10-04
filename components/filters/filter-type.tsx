@@ -1,4 +1,4 @@
-/* eslint-disable max-len */
+
 'use client';
 
 import { useSearchParams } from 'next/navigation';
@@ -26,9 +26,12 @@ export default function FilterType(
         param = param.charAt(0).toUpperCase() + param.slice(1);
     }
 
+    const btnCSS = 'flex flex-row items-center gap-2 p-3 bg-red-600 hover:bg-red-800 ' +
+        'text-white rounded-xl cursor-pointer';
+
     return (
         <div
-            className='flex flex-row items-center gap-2 p-3 bg-red-600 hover:bg-red-800 text-white rounded-xl cursor-pointer'
+            className={btnCSS}
             onClick={
                 () => {
                     dispatch(

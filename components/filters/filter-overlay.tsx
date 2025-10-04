@@ -1,4 +1,4 @@
-/* eslint-disable max-len */
+
 'use client';
 
 import { RootState } from '@/state/store';
@@ -86,7 +86,9 @@ export default function FilterOverlay() {
                                         () => {
                                             const newFilterValues: SelectedFilterOverlayValues = {
                                                 status: type === 'Status' ? (propText || '') : filterValues.status,
-                                                startdate: type === 'Start Date' ? (propText || '') : filterValues.startdate,
+                                                startdate: type === 'Start Date' ?
+                                                    (propText || '') :
+                                                    filterValues.startdate,
                                                 enddate: type === 'End Date' ? (propText || '') : filterValues.enddate
                                             };
 

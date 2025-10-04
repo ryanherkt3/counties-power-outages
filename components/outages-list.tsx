@@ -12,13 +12,22 @@ import OutageOverlay from './outage/outage-overlay';
 import FilterOverlay from './filters/filter-overlay';
 import { update as outageOverlayUpdate } from '@/state/outage-overlay-view/outageOverlayView';
 import { update as filterOverlayUpdate } from '@/state/filter-overlay-view/filterOverlayView';
-import { OutageData, SearchParams, OverlayVisibility, SelectedFilterOverlayValues } from '../lib/definitions';
+import { OutageData, SearchParams, SelectedFilterOverlayValues } from '../lib/definitions';
 import { RootState } from '../state/store';
 
-export default function OutagesList({searchParams, outages} : {searchParams: SearchParams, outages: OutageData[]}) {
+export default function OutagesList(
+    {
+        searchParams,
+        outages
+    } :
+    {
+        searchParams: SearchParams,
+        outages: OutageData[]
+    }
+) {
     const currentPage = Number(searchParams.page) || 1;
 
-    const filteredNotSearchedOutages = getFilteredOutages(outages, {});
+    const filteredNotSearchedOutages = getFilteredOutages(outages, null);
     const filteredOutages = getFilteredOutages(outages, searchParams);
 
     // Pagination values
@@ -37,7 +46,7 @@ export default function OutagesList({searchParams, outages} : {searchParams: Sea
     const dispatch = useDispatch();
 
     // Show the outage overlay after the page loads if we can do so
-    if (searchParams.outage && outageOverlayView.isVisible === OverlayVisibility.Hidden) {
+    if (searchParams.outage && outageOverlayView.isVisible === 'Hidden') {
         const outageOverlayViewData = outages.filter((outage) => {
             return outage.id === searchParams.outage;
         })[0];
@@ -46,7 +55,7 @@ export default function OutagesList({searchParams, outages} : {searchParams: Sea
         if (outageOverlayViewData) {
             dispatch(
                 outageOverlayUpdate(
-                    { cardClickShow: false, isVisible: OverlayVisibility.Open, data: outageOverlayViewData }
+                    { cardClickShow: false, isVisible: 'Open', data: outageOverlayViewData }
                 )
             );
         }

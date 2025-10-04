@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 'use client';
 
 import clsx from 'clsx';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { ReadonlyURLSearchParams, usePathname, useSearchParams } from 'next/navigation';
 import React from 'react';
 import Link from 'next/link';
 import { generatePagination } from '../../lib/utils';
@@ -14,28 +13,22 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
     const searchParams = useSearchParams();
     const currentPage = Number(searchParams.get('page')) || 1;
 
-    const createPageURL = (pageNumber: number | string) => {
-        const params = new URLSearchParams(searchParams);
-        params.set('page', pageNumber.toString());
-        return `${pathname}?${params.toString()}`;
-    };
-
     const paginationNumber = generatePagination(currentPage, totalPages);
 
     return (
         <div className='pagination flex flex-row gap-4 justify-center items-center mt-auto'>
             <PageArrow
-                href={createPageURL(currentPage - 1)}
+                href={createPageURL(currentPage - 1, searchParams, pathname)}
                 direction="left"
                 isDisabled={currentPage <= 1}
             />
             {
                 paginationNumber.map((pageNumber) => {
-                    return getPaginationItem(pageNumber, currentPage, createPageURL);
+                    return getPaginationItem(pageNumber, currentPage, searchParams, pathname);
                 })
             }
             <PageArrow
-                href={createPageURL(currentPage + 1)}
+                href={createPageURL(currentPage + 1, searchParams, pathname)}
                 direction="right"
                 isDisabled={currentPage >= totalPages}
             />
@@ -44,14 +37,34 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
 }
 
 /**
+ * Create a page URL for a search
+ *
+ * @param {number | string} pageNumber
+ * @param {ReadonlyURLSearchParams} searchParams
+ * @param {string} pathname
+ * @returns {string}
+ */
+function createPageURL(pageNumber: number | string, searchParams: ReadonlyURLSearchParams, pathname: string) {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', pageNumber.toString());
+    return `${pathname}?${params.toString()}`;
+}
+
+/**
  * Get a pagination item
  *
  * @param {number | string} pageNumber
  * @param {number} currentPage
- * @param {Function} createPageURL
+ * @param {ReadonlyURLSearchParams} searchParams
+ * @param {string} pathname
  * @returns HTML/React object
  */
-function getPaginationItem(pageNumber: number | string, currentPage: number, createPageURL: Function) {
+function getPaginationItem(
+    pageNumber: number | string,
+    currentPage: number,
+    searchParams: ReadonlyURLSearchParams,
+    pathname: string
+) {
     if (pageNumber === '...') {
         return (
             <div key="more-pages" className='text-sm font-medium rounded-full p-3'>
@@ -64,7 +77,7 @@ function getPaginationItem(pageNumber: number | string, currentPage: number, cre
 
     return (
         <Link
-            href={createPageURL(pageNumber)}
+            href={createPageURL(pageNumber, searchParams, pathname)}
             key={pageNumber}
             className={
                 clsx(

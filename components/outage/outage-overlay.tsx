@@ -8,7 +8,6 @@ import clsx from 'clsx';
 import { RootState } from '@/state/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { resetAfterView } from '@/state/outage-overlay-view/outageOverlayView';
-import { OverlayVisibility } from '@/lib/definitions';
 
 export default function OutageOverlay() {
     const layoutClasses = 'fixed flex flex-col gap-8';
@@ -23,7 +22,7 @@ export default function OutageOverlay() {
 
     const outageSections = getOutageSections(true, false, data);
 
-    const canSeeOverlay = outageOverlayView.cardClickShow || outageOverlayView.isVisible === OverlayVisibility.Open;
+    const canSeeOverlay = outageOverlayView.cardClickShow || outageOverlayView.isVisible === 'Open';
 
     // document.querySelector('body')?.classList.toggle('no-scroll', canSeeOverlay);
 

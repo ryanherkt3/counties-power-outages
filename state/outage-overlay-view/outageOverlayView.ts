@@ -1,4 +1,4 @@
-import { OutageData, OutageOverlayStates, OverlayVisibility } from '@/lib/definitions';
+import { OutageData, OutageOverlayStates } from '@/lib/definitions';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface OutageOverlayViewState {
@@ -38,7 +38,7 @@ const defaultDataValue: OutageData = {
 };
 
 const initialState: OutageOverlayViewState = {
-    value: { cardClickShow: false, isVisible: OverlayVisibility.Hidden, data: defaultDataValue },
+    value: { cardClickShow: false, isVisible: 'Hidden', data: defaultDataValue },
 };
 
 const outageOverlayViewSlice = createSlice({
@@ -49,7 +49,7 @@ const outageOverlayViewSlice = createSlice({
             state.value = action.payload;
         },
         resetAfterView: (state) => {
-            state.value = { cardClickShow: false, isVisible: OverlayVisibility.Closed, data: defaultDataValue };
+            state.value = { cardClickShow: false, isVisible: 'Closed', data: defaultDataValue };
         }
     }
 });

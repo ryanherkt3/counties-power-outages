@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 export type OutageData = {
     id: string;
     projecttype: string;
@@ -80,17 +79,15 @@ export type SearchParams = {
     outage: string | undefined
 }
 
+export type PromiseSearchParams = Promise<SearchParams>
+
 export type OutageOverlayStates = {
     cardClickShow: boolean,
-    isVisible: number,
+    isVisible: OverlayVisibility,
     data: OutageData
 }
 
-export enum OverlayVisibility {
-    Hidden = 0,
-    Open = 1,
-    Closed = 2,
-}
+export type OverlayVisibility = 'Hidden' | 'Open' | 'Closed';
 
 export type FilterOverlayStates = {
     isVisible: boolean,

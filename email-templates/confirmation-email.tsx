@@ -1,10 +1,13 @@
-/* eslint-disable max-len */
+
 import { Html, Text, Section, Body, Container, Head } from '@react-email/components';
 import { NotificationSub } from '../lib/definitions';
 import { CSSProperties } from 'react';
+import content from '../app/content.json';
 
 export default function ConfirmationEmail({ subData } : { subData: NotificationSub; }) {
     const { id, location, datesubscribed } = subData;
+
+    const unsubLink = <a href={`https://outages.ryanherkt.com/unsubscribe/${id}`}>here</a>;
 
     return (
         <Html lang="en">
@@ -13,7 +16,9 @@ export default function ConfirmationEmail({ subData } : { subData: NotificationS
                 <Container style={container}>
                     <Section style={paddedSection}>
                         <Text style={heading}>Counties Power Outages</Text>
-                        <Text style={paragraph}>Here are the details for the outage notification you just subscribed to:</Text>
+                        <Text style={paragraph}>
+                            Here are the details for the outage notification you just subscribed to:
+                        </Text>
                     </Section>
 
                     <Section style={paddedSection}>
@@ -22,7 +27,9 @@ export default function ConfirmationEmail({ subData } : { subData: NotificationS
                     </Section>
 
                     <Section style={paddedSection}>
-                        <Text style={paragraph}>If this subscription was made in error, or you no longer wish to receive notifications, you can unsubscribe <a href={`https://outages.ryanherkt.com/unsubscribe/${id}`}>here</a>.</Text>
+                        <Text style={paragraph}>
+                            { content['sub-confirm-email-unsub'].replace('${unsubLink}', '') } { unsubLink }
+                        </Text>
                     </Section>
                 </Container>
             </Body>
@@ -48,7 +55,8 @@ const heading: CSSProperties = {
 
 const main: CSSProperties = {
     backgroundColor: '#dbddde',
-    fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
+    fontFamily:
+        '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
 };
 
 const container: CSSProperties = {

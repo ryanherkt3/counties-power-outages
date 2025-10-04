@@ -1,7 +1,8 @@
-/* eslint-disable max-len */
+
 import { Html, Text, Section, Body, Container, Head, Link } from '@react-email/components';
 import { OutageData } from '../lib/definitions';
 import { CSSProperties } from 'react';
+import content from '../app/content.json';
 
 export default function NotificationEmail(
     {
@@ -19,9 +20,9 @@ export default function NotificationEmail(
         oldStatus: string
     }
 ) {
-    const mainBodyText = oldStatus ?
-        'There has been a status change for an upcoming planned power outage which may be in the location you subscribed to notifications for.' :
-        'There is an upcoming planned power outage which may be in the location you subscribed to notifications for.';
+    const mainBodyText = oldStatus ? content['notif-email-new'] : content['notif-email-changed'];
+
+    const unsubLink = `https://outages.ryanherkt.com/unsubscribe/${notifSubId}`;
 
     return (
         <Html lang="en">
@@ -35,7 +36,8 @@ export default function NotificationEmail(
 
                     <Section style={paddedSection}>
                         <Text style={paragraph}>
-                            <b>Outage ID:</b>{' '}<Link href={`https://outages.ryanherkt.com/outages?outage=${outage.id}`}>{outage.id}</Link>
+                            <b>Outage ID:</b>{' '}
+                            <Link href={`https://outages.ryanherkt.com/outages?outage=${outage.id}`}>{outage.id}</Link>
                         </Text>
                         {/* TODO use OutageStatus components here */}
                         <Text style={paragraph}><b>Status:</b>{' '}{outage.statustext}</Text>
@@ -47,7 +49,8 @@ export default function NotificationEmail(
                     </Section>
 
                     <Section style={paddedSection}>
-                        <Text style={paragraph}>To unsubscribe from these notifications, click <a href={`https://outages.ryanherkt.com/unsubscribe/${notifSubId}`}>here</a>.</Text>
+                        <Text style={paragraph}>
+                            To unsubscribe from these notifications, click <a href={unsubLink}>here</a>.</Text>
                     </Section>
                 </Container>
             </Body>
@@ -73,7 +76,8 @@ const heading: CSSProperties = {
 
 const main: CSSProperties = {
     backgroundColor: '#dbddde',
-    fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
+    fontFamily:
+        '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
 };
 
 const container: CSSProperties = {

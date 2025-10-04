@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Coordinate, OutageData } from './definitions';
+import { Coordinate, OutageData, SearchParams } from './definitions';
 import { z } from 'zod';
 import moment from 'moment-timezone';
 
@@ -109,7 +108,7 @@ export async function getActiveOutages() {
     // TODO send API req to delete any/all expired outages (?)
     outages = outages.filter((outage: OutageData) => {
         return outage.expiredOutage === false;
-    }).sort((a: any, b: any) => {
+    }).sort((a: OutageData, b: OutageData) => {
         const aTime = new Date(a.shutdowndatetime).getTime() / 1000;
         const bTime = new Date(b.shutdowndatetime).getTime() / 1000;
         const aStartTime = new Date(a.shutdownperiods[0].start).getTime() / 1000;
@@ -143,13 +142,18 @@ export function getFilteredDate(date: string) {
  * @param {any} searchParams address / status / start date / end date
  * @returns {Array<OutageData>} new filtered list of outages
  */
-export function getFilteredOutages(outages: Array<OutageData>, searchParams: any) {
+export function getFilteredOutages(outages: Array<OutageData>, searchParams: SearchParams | null) {
+    // Return original list if no search parameters
+    if (searchParams === null) {
+        return outages;
+    }
+
     const address = searchParams.query;
     const outageStatus = searchParams.status;
     const startDate = searchParams.startdate;
     const endDate = searchParams.enddate;
 
-    // Return original list if no search parameters
+    // Return original list search parameters are empty
     if (!address && !outageStatus && !startDate && !endDate) {
         return outages;
     }
