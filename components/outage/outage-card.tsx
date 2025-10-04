@@ -9,8 +9,8 @@ import { getOutageSections } from '../../lib/outagesections';
 import OutageStatus from './outage-status';
 import CustomIcon from '../custom-icon';
 import { useDispatch, useSelector } from 'react-redux';
-import { update } from '@/app/state/outage-overlay-view/outageOverlayView';
-import { RootState } from '@/app/state/store';
+import { update } from '@/state/outage-overlay-view/outageOverlayView';
+import { RootState } from '@/state/store';
 
 export default function OutageCard({ data }: { data: OutageData; }) {
     const { id, address, statustext, latestinformation } = data;

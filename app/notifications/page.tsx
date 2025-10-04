@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import Search from '../ui/search';
-import NotifSubForm from '../ui/notif-sub-form';
+import Search from '../../components/search';
+import NotifSubForm from '../../components/notif-sub-form';
 import { Metadata } from 'next';
-import { getSubscriptions } from '../lib/actions';
-import { NotificationSub, OutageData } from '../lib/definitions';
-import NotificationCard from '../ui/notif-sub-card';
+import { getSubscriptions } from '../../lib/actions';
+import { NotificationSub, OutageData } from '../../lib/definitions';
+import NotificationCard from '../../components/notif-sub-card';
 import clsx from 'clsx';
-import { coordIsInOutageZone, getActiveOutages } from '../lib/utils';
+import { coordIsInOutageZone, getActiveOutages } from '../../lib/utils';
 
 export const metadata: Metadata = {
     title: 'Notifications | Counties Power Outages App',

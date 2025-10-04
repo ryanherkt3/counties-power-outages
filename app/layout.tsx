@@ -2,9 +2,9 @@
 
 import { Inter } from 'next/font/google';
 import './globals.css';
-import Navigation from './ui/navigation';
+import Navigation from '../components/navigation';
 import { Provider } from 'react-redux';
-import { store } from './state/store';
+import { store } from '../state/store';
 
 const inter = Inter({ subsets: ['latin'] });
 

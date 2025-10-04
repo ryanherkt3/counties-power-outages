@@ -1,4 +1,4 @@
-import { OutageData, OutageOverlayStates, OverlayVisibility } from '@/app/lib/definitions';
+import { OutageData, OutageOverlayStates, OverlayVisibility } from '@/lib/definitions';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface OutageOverlayViewState {

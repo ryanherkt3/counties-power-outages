@@ -1,17 +1,17 @@
 /* eslint-disable max-len */
 'use client';
 
-import { RootState } from '@/app/state/store';
+import { RootState } from '@/state/store';
 import { useSelector, useDispatch } from 'react-redux';
 import CustomIcon from '../custom-icon';
 import FilterDate from './filter-date';
 import OutageStatus from '../outage/outage-status';
 import { JSX } from 'react';
 import clsx from 'clsx';
-import { defaultDataValue, update } from '@/app/state/filter-overlay-view/filterOverlayView';
+import { defaultDataValue, update } from '@/state/filter-overlay-view/filterOverlayView';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
-import { SelectedFilterOverlayValues } from '@/app/lib/definitions';
+import { SelectedFilterOverlayValues } from '@/lib/definitions';
 
 export default function FilterOverlay() {
     const filterOverlayView = useSelector((state: RootState) => state.filterOverlayView.value);

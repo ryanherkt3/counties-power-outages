@@ -1,6 +1,6 @@
-import { getActiveOutages } from '../lib/utils';
+import { getActiveOutages } from '../../lib/utils';
 import { Metadata } from 'next';
-import OutagesList from '../ui/outages-list';
+import OutagesList from '../../components/outages-list';
 
 export const metadata: Metadata = {
     title: 'Outages List | Counties Power Outages App',

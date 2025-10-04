@@ -10,8 +10,8 @@ import FilterType from './filters/filter-type';
 import { useDispatch, useSelector } from 'react-redux';
 import OutageOverlay from './outage/outage-overlay';
 import FilterOverlay from './filters/filter-overlay';
-import { update as outageOverlayUpdate } from '@/app/state/outage-overlay-view/outageOverlayView';
-import { update as filterOverlayUpdate } from '@/app/state/filter-overlay-view/filterOverlayView';
+import { update as outageOverlayUpdate } from '@/state/outage-overlay-view/outageOverlayView';
+import { update as filterOverlayUpdate } from '@/state/filter-overlay-view/filterOverlayView';
 import { OutageData, SearchParams, OverlayVisibility, SelectedFilterOverlayValues } from '../lib/definitions';
 import { RootState } from '../state/store';
 

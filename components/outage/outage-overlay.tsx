@@ -1,14 +1,14 @@
 'use client';
 
-import LatestInfo from '@/app/ui/latest-info';
-import { getOutageSections } from '@/app/lib/outagesections';
-import OutageStatus from '@/app/ui/outage/outage-status';
+import LatestInfo from '@/components/latest-info';
+import { getOutageSections } from '@/lib/outagesections';
+import OutageStatus from '@/components/outage/outage-status';
 import CustomIcon from '../custom-icon';
 import clsx from 'clsx';
-import { RootState } from '@/app/state/store';
+import { RootState } from '@/state/store';
 import { useSelector, useDispatch } from 'react-redux';
-import { resetAfterView } from '@/app/state/outage-overlay-view/outageOverlayView';
-import { OverlayVisibility } from '@/app/lib/definitions';
+import { resetAfterView } from '@/state/outage-overlay-view/outageOverlayView';
+import { OverlayVisibility } from '@/lib/definitions';
 
 export default function OutageOverlay() {
     const layoutClasses = 'fixed flex flex-col gap-8';

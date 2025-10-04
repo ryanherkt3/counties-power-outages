@@ -3,8 +3,8 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { update } from '@/app/state/filter-overlay-view/filterOverlayView';
-import { RootState } from '@/app/state/store';
+import { update } from '@/state/filter-overlay-view/filterOverlayView';
+import { RootState } from '@/state/store';
 
 export default function FilterType(
     {

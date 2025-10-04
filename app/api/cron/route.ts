@@ -3,9 +3,9 @@
 /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
 
 import { db } from '@vercel/postgres';
-import { sendEmailNotification } from '@/app/lib/emails';
-import { NotificationSub, NotifOutageInfo, OutageData } from '@/app/lib/definitions';
-import { coordIsInOutageZone } from '@/app/lib/utils';
+import { sendEmailNotification } from '@/lib/emails';
+import { NotificationSub, NotifOutageInfo, OutageData } from '@/lib/definitions';
+import { coordIsInOutageZone } from '@/lib/utils';
 import { NextRequest } from 'next/server';
 
 /**
