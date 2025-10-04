@@ -1,16 +1,16 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { FormValues } from './definitions';
+import { FormFields, FormValues } from './definitions';
 
 /**
  * Update information related to the subscription. Called after submitting the subscription form.
  *
  * @param {boolean} includeCoords flag for whether co-ordinates are included or not
  * @param {boolean} isExistingSub flag for if the subscription already exists or not
- * @param {FormValues} formData user-submitted form values
+ * @param {FormFields} formData user-submitted form values
  */
-export async function updateSubscription(includeCoords: boolean, isExistingSub: boolean, formData: FormValues) {
+export async function updateSubscription(includeCoords: boolean, isExistingSub: boolean, formData: FormFields) {
     const { location, email, id, latitude, longtitude } = formData;
 
     const payload: FormValues = {

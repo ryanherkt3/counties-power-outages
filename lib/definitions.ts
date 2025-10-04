@@ -36,14 +36,6 @@ export type OutageTimes = {
     endTime: string;
 };
 
-export type SearchData = {
-    page: string | undefined;
-    query: string | undefined;
-    status: string | undefined;
-    startdate: string | undefined;
-    enddate: string | undefined;
-};
-
 export type NotificationSub = {
     id: string;
     location: string | null;
@@ -60,22 +52,28 @@ export type NotifOutageInfo = {
     status: string;
 };
 
-export type FormValues = {
+export type FormFields = {
     id: string;
+    email: string;
     location: string;
     latitude: number | null;
     longtitude: number | null;
-    email: string;
+};
+
+export type FormValues = FormFields & {
     datesubscribed: string;
     hasCoordinates: boolean;
 };
 
-export type SearchParams = {
-    query: string | undefined,
-    page: string | undefined,
-    status: string | undefined,
-    startdate: string | undefined,
-    enddate: string | undefined,
+export type SearchData = {
+    page: string | undefined;
+    query: string | undefined;
+    status: string | undefined;
+    startdate: string | undefined;
+    enddate: string | undefined;
+};
+
+export type SearchParams = SearchData & {
     outage: string | undefined
 }
 

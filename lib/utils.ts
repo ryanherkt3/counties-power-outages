@@ -105,7 +105,6 @@ export async function getActiveOutages() {
         }
     });
 
-    // TODO send API req to delete any/all expired outages (?)
     outages = outages.filter((outage: OutageData) => {
         return outage.expiredOutage === false;
     }).sort((a: OutageData, b: OutageData) => {

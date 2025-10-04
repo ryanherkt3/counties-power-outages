@@ -18,6 +18,10 @@
     "unsubscribe-1": "In the \"Active Notifications\" section below, search for any notification subscriptions associated to your email address.",
     "unsubscribe-2": "Click the \"Unsubscribe\" button in the subscription you want to unsubscribe from.",
 
+    "notif-sub-form-location-placeholder": "Enter the location / area where you would like to be notified for (e.g. Smith Street)",
+    "notif-sub-form-one-field-change": "Please ensure at least one field has been changed before submitting",
+    "notif-sub-form-fix-errors": "Fix the form errors",
+
     "cron-no-outages": "No outages exist! Please run the update script, or check any actually exist on the Counties Power website",
 
     "notif-email-new": "There has been a status change for an upcoming planned power outage which may be in the location you subscribed to notifications for.",
