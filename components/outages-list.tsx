@@ -86,8 +86,6 @@ export default function OutagesList(
         }
     }
 
-    // TODO if filterOverlayData.isVisible is true, dispatch update event to turn it false again(?)
-
     // Early return if there are no outages to report
     if (!filteredOutages.length) {
         return (

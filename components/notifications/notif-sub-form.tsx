@@ -4,10 +4,10 @@ import { AtSymbolIcon, BookmarkIcon, MinusIcon, PlusIcon } from '@heroicons/reac
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
-import { isValidEmail } from '../lib/utils';
-import { updateSubscription } from '../lib/actions';
-import { FormFields, FormValues } from '../lib/definitions';
-import content from '../app/content.json';
+import { isValidEmail } from '../../lib/utils';
+import { updateSubscription } from '../../lib/actions';
+import { FormFields, FormValues } from '../../lib/definitions';
+import content from '../../app/content.json';
 
 export default function NotifSubForm({ values, onSubPage }: { values: FormValues, onSubPage: boolean }) {
     const { email, location, latitude, longtitude, hasCoordinates, id } = values;

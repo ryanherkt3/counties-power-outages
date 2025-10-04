@@ -1,13 +1,9 @@
-
-import Search from '../../components/search';
-import NotifSubForm from '../../components/notif-sub-form';
+import NotifSubForm from '../../components/notifications/notif-sub-form';
 import { Metadata } from 'next';
 import { getSubscriptions } from '../../lib/actions';
-import { NotificationSub, OutageData } from '../../lib/definitions';
-import NotificationCard from '../../components/notif-sub-card';
-import clsx from 'clsx';
-import { coordIsInOutageZone, getActiveOutages } from '../../lib/utils';
+import { getActiveOutages } from '../../lib/utils';
 import content from './../content.json';
+import NotifSubs from '@/components/notifications/notif-subs';
 
 export const metadata: Metadata = {
     title: 'Notifications | Counties Power Outages App',
@@ -156,55 +152,7 @@ export default async function NotificationsPage(props: {
                 }
             </div>
 
-            <div className="flex flex-col gap-4 relative">
-                <div className="text-xl font-semibold">Active Subscriptions ({subscriptions.length})</div>
-                <Search placeholder="Enter your email address"/>
-            </div>
-
-            <div
-                className={
-                    clsx(
-                        'flex flex-col gap-4',
-                        {
-                            'hidden': !subscriptions.length
-                        }
-                    )
-                }
-            >
-                {
-                    subscriptions.map((subscription: NotificationSub) => {
-                        const subCoords = {
-                            lat: subscription.lat,
-                            lng: subscription.lng
-                        };
-
-                        let outageIds = '';
-                        outages.map((outage: OutageData) => {
-                            const outageCoords = {
-                                lat: outage.lat,
-                                lng: outage.lng
-                            };
-
-                            const { location } = subscription;
-                            const locationMatches = location && outage.address.includes(location);
-
-                            const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull, outageCoords);
-
-                            if (coordsMatch || locationMatches) {
-                                outageIds = `${outageIds.length ? `${outageIds},` : ''}${outage.id}`;
-                            }
-                        });
-
-                        return (
-                            <NotificationCard
-                                key={subscriptions.indexOf(subscription)}
-                                data={subscription}
-                                plannedOutages={outageIds}
-                            />
-                        );
-                    })
-                }
-            </div>
+            <NotifSubs subscriptions={subscriptions} outages={outages} />
 
             <div className="flex flex-col gap-4">
                 <div className="text-xl font-semibold">Subscribe to Outages</div>

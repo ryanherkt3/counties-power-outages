@@ -55,6 +55,4 @@ export async function deleteSubscription(subId: string) {
         method: 'DELETE',
         body: JSON.stringify({ id: subId })
     });
-    // TODO remove card from UI without needing another API request
-    revalidatePath('/notifications'); // clear cache
 }

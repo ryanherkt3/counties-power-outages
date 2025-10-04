@@ -1,7 +1,7 @@
 import { db, QueryResultRow, VercelPoolClient } from '@vercel/postgres';
 import { sendEmailNotification } from '@/lib/emails';
 import { NotificationSub, NotifOutageInfo, OutageData } from '@/lib/definitions';
-import { coordIsInOutageZone } from '@/lib/utils';
+import { coordIsInOutageZone, getManipulatedOutages } from '@/lib/utils';
 import { NextRequest } from 'next/server';
 import content from './../../content.json';
 
@@ -159,7 +159,7 @@ async function trySendEmails(
 
                     // If we've emailed them before, update the object values; otherwise create a new one and
                     // push it to subInfo
-                    if (!!(filteredSub && filteredSub.status)) {
+                    if (filteredSub && filteredSub.status) {
                         filteredSub.emailSent = emailedTime;
                         filteredSub.status = outage.statustext;
                     }
@@ -222,53 +222,17 @@ export async function GET(request: NextRequest) {
             });
     }
 
-    const outages = outagesList.outages.rows.filter((outage) => {
+    const outages = getManipulatedOutages(
+        outagesList.outages.rows.filter((outage) => {
         // Remove outages whose scheduled start date is more than seven days away
-        const currentDate = new Date();
-        const currentTime = currentDate.getTime() / 1000;
+            const currentDate = new Date();
+            const currentTime = currentDate.getTime() / 1000;
 
-        const outageStartDateTime = new Date(outage.shutdowndatetime).getTime() / 1000;
+            const outageStartDateTime = new Date(outage.shutdowndatetime).getTime() / 1000;
 
-        return outageStartDateTime - currentTime <= 86400 * 7;
-    });
-
-    // Manipulate outage fields (TODO have this and section in /getoutages route be one function)
-    for (const outage of outages) {
-        outage.hull = outage.hull ? JSON.parse(outage.hull) : [];
-
-        // Convert shutdowndate to a string
-        const year = outage.shutdowndate.getFullYear();
-        const month = outage.shutdowndate.getMonth() + 1;
-        const day = outage.shutdowndate.getDate();
-        outage.shutdowndate = `${day}/${month}/${year}`;
-
-        // Convert originalshutdowndate to a string
-        if (outage.originalshutdowndate) {
-            const year = outage.originalshutdowndate.getFullYear();
-            const month = outage.originalshutdowndate.getMonth() + 1;
-            const day = outage.originalshutdowndate.getDate();
-            outage.originalshutdowndate = `${day}/${month}/${year}`;
-        }
-
-        outage.shutdownperiods = [
-            {
-                start: outage.shutdownperiodstart,
-                end: outage.shutdownperiodend,
-            }
-        ];
-
-        outage.originalshutdownperiods = [
-            {
-                start: outage.originalshutdownperiodstart,
-                end: outage.originalshutdownperiodstart,
-            }
-        ];
-
-        delete outage.shutdownperiodstart;
-        delete outage.shutdownperiodend;
-        delete outage.originalshutdownperiodstart;
-        delete outage.originalshutdownperiodstart;
-    }
+            return outageStartDateTime - currentTime <= 86400 * 7;
+        })
+    );
 
     console.log('Fetched outages');
 

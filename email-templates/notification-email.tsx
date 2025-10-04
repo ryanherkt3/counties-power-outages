@@ -3,6 +3,7 @@ import { Html, Text, Section, Body, Container, Head, Link } from '@react-email/c
 import { OutageData } from '../lib/definitions';
 import { CSSProperties } from 'react';
 import content from '../app/content.json';
+import OutageStatus from '@/components/outage/outage-status';
 
 export default function NotificationEmail(
     {
@@ -39,9 +40,18 @@ export default function NotificationEmail(
                             <b>Outage ID:</b>{' '}
                             <Link href={`https://outages.ryanherkt.com/outages?outage=${outage.id}`}>{outage.id}</Link>
                         </Text>
-                        {/* TODO use OutageStatus components here */}
-                        <Text style={paragraph}><b>Status:</b>{' '}{outage.statustext}</Text>
-                        { oldStatus ? <Text style={paragraph}><b>Old Status:</b>{' '}{oldStatus}</Text> : null }
+                        <Section style={paragraphFlex}>
+                            <b>Status:</b>
+                            <OutageStatus className={''} statusText={'Scheduled'} overrideBg={false} />
+                        </Section>
+                        {
+                            oldStatus ?
+                                <Section style={paragraphFlex}>
+                                    <b>Old Status:</b>
+                                    <OutageStatus className={''} statusText={oldStatus} overrideBg={false} />
+                                </Section> :
+                                null
+                        }
                         <Text style={paragraph}><b>Location:</b>{' '}{outage.address}</Text>
                         <Text style={paragraph}><b>Date:</b>{' '}{outage.shutdowndate}</Text>
                         <Text style={paragraph}><b>Start Time:</b>{' '}{startTime}</Text>
@@ -63,6 +73,14 @@ const paddedSection: CSSProperties  = {
 };
 
 const paragraph: CSSProperties = {
+    fontSize: '14px',
+    lineHeight: '22px'
+};
+
+const paragraphFlex: CSSProperties = {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '8px',
     fontSize: '14px',
     lineHeight: '22px'
 };

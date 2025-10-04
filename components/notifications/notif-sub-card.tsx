@@ -4,14 +4,25 @@
 import {
     AtSymbolIcon, BoltIcon, CalendarIcon, MapPinIcon, MinusIcon, PlusIcon, TrashIcon
 } from '@heroicons/react/24/outline';
-import { NotificationSub } from '../lib/definitions';
+import { NotificationSub } from '../../lib/definitions';
 import { useState } from 'react';
 import clsx from 'clsx';
-import { getCardSections } from '../lib/outagesections';
-import { deleteSubscription } from '../lib/actions';
+import { getCardSections } from '../../lib/outagesections';
+import { deleteSubscription } from '../../lib/actions';
 import Link from 'next/link';
 
-export default function NotificationCard({ data, plannedOutages }: { data: NotificationSub; plannedOutages: string}) {
+export default function NotificationCard(
+    {
+        data,
+        plannedOutages,
+        removeSubCb
+    } :
+    {
+        data: NotificationSub;
+        plannedOutages: string;
+        removeSubCb: Function;
+    }
+) {
     const [showContents, setShowContents] = useState(true);
     const cardSections = getCardSections(data);
     const outagesArray = plannedOutages.length ? plannedOutages.split(',') : [];
@@ -95,6 +106,7 @@ export default function NotificationCard({ data, plannedOutages }: { data: Notif
                 }
                 onClick={
                     () => {
+                        removeSubCb();
                         deleteSubscription(data.id);
                     }
                 }

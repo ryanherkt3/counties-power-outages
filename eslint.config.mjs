@@ -41,13 +41,15 @@ const eslintConfig = [
             'no-loop-func': 2,
             'no-extra-semi': 1,
             'no-mixed-spaces-and-tabs': 2,
+            'no-negated-condition': 2,
             'no-trailing-spaces': 2,
             'no-unused-expressions': 2,
             'no-unused-vars': [2, {'vars': 'local', 'args': 'after-used'}],
             'prefer-const': [2, {'destructuring': 'all'}],
             'prefer-destructuring': [1, {'object': true, 'array': false}],
             'quotes': [2, 'single', { 'avoidEscape': true }],
-            'semi': [2, 'always']
+            'semi': [2, 'always'],
+            '@typescript-eslint/no-unsafe-function-type': 'off',
         },
     })
 ];

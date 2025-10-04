@@ -1,6 +1,7 @@
 import { Coordinate, OutageData, SearchParams } from './definitions';
 import { z } from 'zod';
 import moment from 'moment-timezone';
+import { QueryResultRow } from '@vercel/postgres';
 
 /**
  * Return if an outage is active or not by checking if the current time is greater than
@@ -178,6 +179,53 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: Sea
     });
 
     return filteredOutages;
+}
+
+/**
+ * Manipulate variables within the outages object to be suitable for client-side consumption
+ *
+ * @param {Array<QueryResultRow>} outages from the database
+ * @returns {Array<QueryResultRow>} the manipulated list of outages
+ */
+export function getManipulatedOutages(outages: Array<QueryResultRow>) {
+    outages.map((outage) => {
+        outage.hull = outage.hull ? JSON.parse(outage.hull) : [];
+
+        // Convert shutdowndate to a string
+        const year = outage.shutdowndate.getFullYear();
+        const month = outage.shutdowndate.getMonth() + 1;
+        const day = outage.shutdowndate.getDate();
+        outage.shutdowndate = `${day}/${month}/${year}`;
+
+        // Convert originalshutdowndate to a string
+        if (outage.originalshutdowndate) {
+            const year = outage.originalshutdowndate.getFullYear();
+            const month = outage.originalshutdowndate.getMonth() + 1;
+            const day = outage.originalshutdowndate.getDate();
+            outage.originalshutdowndate = `${day}/${month}/${year}`;
+        }
+
+        outage.shutdownperiods = [
+            {
+                start: outage.shutdownperiodstart,
+                end: outage.shutdownperiodend,
+            }
+        ];
+
+        outage.originalshutdownperiods = [
+            {
+                start: outage.originalshutdownperiodstart,
+                end: outage.originalshutdownperiodstart,
+            }
+        ];
+
+        delete outage.shutdownperiodstart;
+        delete outage.shutdownperiodend;
+        delete outage.originalshutdownperiodstart;
+        delete outage.originalshutdownperiodstart;
+    });
+
+    return outages;
 }
 
 /**
