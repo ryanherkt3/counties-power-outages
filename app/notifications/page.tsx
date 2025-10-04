@@ -13,9 +13,7 @@ type SearchParams = Promise<{
     email: string | undefined
 }>
 
-export default async function NotificationsPage(props: {
-    searchParams: SearchParams
-}) {
+export default async function NotificationsPage(props: { searchParams: SearchParams }) {
     const searchParams = await props.searchParams;
     const query = searchParams.email || '';
 

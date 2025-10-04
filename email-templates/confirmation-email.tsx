@@ -28,7 +28,7 @@ export default function ConfirmationEmail({ subData } : { subData: NotificationS
 
                     <Section style={paddedSection}>
                         <Text style={paragraph}>
-                            { content['sub-confirm-email-unsub'].replace('${unsubLink}', '') } { unsubLink }
+                            { content['sub-confirm-email-unsub'].replace('$unsubLink', '') } { unsubLink }
                         </Text>
                     </Section>
                 </Container>

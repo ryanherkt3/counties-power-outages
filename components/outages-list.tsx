@@ -75,7 +75,6 @@ export default function OutagesList(
                     enddate: searchParams.enddate || ''
                 };
 
-                // TODO bad dispatch call - put into useEffect
                 dispatch(
                     filterOverlayUpdate(
                         {

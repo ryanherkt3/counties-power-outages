@@ -4,7 +4,7 @@ import { NotificationSub, OutageData } from '@/lib/definitions';
 import { coordIsInOutageZone } from '@/lib/utils';
 import NotificationCard from './notif-sub-card';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Search from '../search';
 
 export default function NotifSubs(
@@ -28,6 +28,12 @@ export default function NotifSubs(
         setShow(!!subs.length);
         setTotalSubs(subs.length);
     };
+
+    useEffect(() => {
+        setSubs(subscriptions);
+        setShow(!!subscriptions.length);
+        setTotalSubs(subscriptions.length);
+    }, [subscriptions]);
 
     return (
         <>
