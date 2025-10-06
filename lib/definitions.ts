@@ -1,49 +1,60 @@
-export type OutageData = {
+import { Decimal } from '@/generated/prisma/runtime/library';
+
+export type OutageDBData = {
     id: string;
-    projecttype: string;
-    description: string;
-    shutdowndatetime: string;
-    shutdowndate: string;
-    shutdownperiods: Array<ShutdownPeriods>;
-    feeder: string;
-    affectedcustomers: number;
-    lat: number;
-    lng: number;
-    distance: number;
+    projecttype: string | null;
+    shutdowndatetime: string | null;
+    shutdowndate: Date | string | null;
+    feeder: string | null;
+    affectedcustomers: number | null;
+    lat: Decimal | null;
+    lng: Decimal | null;
+    distance: Decimal | null;
+    hull: string | null;
+    address: string | null;
+    statustext: string | null;
+    latestinformation: string | null;
+    originalshutdowndate: Date | string | null;
+    lastmodified: string | null;
+    shutdownperiodstart: string | null;
+    shutdownperiodend: string | null;
+    originalshutdownperiodstart: string | null;
+    originalshutdownperiodend: string | null;
+};
+
+export type OutageData = OutageDBData & {
     hull: Coordinate[];
-    address: string;
     statustext: 'Scheduled' | 'Postponed' | 'Cancelled' | 'Active';
-    latestinformation: string;
-    originalshutdowndate: string;
+    description: string | null;
+    shutdownperiods: Array<ShutdownPeriods>;
     originalshutdownperiods: Array<ShutdownPeriods>;
     expiredOutage: boolean;
-    lastmodified: string;
     dummyData: boolean;
-};
-
-export type ShutdownPeriods = {
-    start: string;
-    end: string;
-};
-
-export type Coordinate = {
-    lng: number | null;
-    lat: number | null;
-};
-
-export type OutageTimes = {
-    startTime: string;
-    endTime: string;
 };
 
 export type NotificationSub = {
     id: string;
     location: string | null;
-    lat: number | null;
-    lng: number | null;
+    lat: number | Decimal | null;
+    lng: number | Decimal | null;
     email: string;
     datesubscribed: string;
-    outageinfo: string;
+    outageinfo: string | null;
+};
+
+export type ShutdownPeriods = {
+    start: string | null;
+    end: string | null;
+};
+
+export type Coordinate = {
+    lng: number | Decimal | null;
+    lat: number | Decimal | null;
+};
+
+export type OutageTimes = {
+    startTime: string;
+    endTime: string;
 };
 
 export type NotifOutageInfo = {

@@ -12,7 +12,7 @@ export default async function SubscriptionPage({ params }: { params: Promise<{ i
 
     const subReq = await fetch(process.env.API_URL + `/subscription?id=${id}`);
     const subsJson = await subReq.json();
-    const subscription = subsJson.sub[0];
+    const subscription = subsJson.sub;
 
     // Early return if no subscription is found
     if (!subscription) {

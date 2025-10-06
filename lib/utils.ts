@@ -1,7 +1,6 @@
-import { Coordinate, OutageData, SearchParams } from './definitions';
+import { Coordinate, OutageData, OutageDBData, SearchParams } from './definitions';
 import { z } from 'zod';
 import moment from 'moment-timezone';
-import { QueryResultRow } from '@vercel/postgres';
 
 /**
  * Return if an outage is active or not by checking if the current time is greater than
@@ -93,31 +92,40 @@ export async function getActiveOutages() {
 
     const outagesJson = await outagesReq.json();
 
-    let outages = outagesJson.planned_outages;
+    let outages: Array<OutageData> = outagesJson.planned_outages;
 
     outages.map((outage: OutageData) => {
         const shutdownperiods = outage.shutdownperiods[0];
 
-        const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
-        outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
+        if (shutdownperiods.start && shutdownperiods.end) {
+            const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
+            outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
-        if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
-            outage.statustext = 'Active';
+            if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
+                outage.statustext = 'Active';
+            }
         }
     });
 
     outages = outages.filter((outage: OutageData) => {
         return outage.expiredOutage === false;
     }).sort((a: OutageData, b: OutageData) => {
-        const aTime = new Date(a.shutdowndatetime).getTime() / 1000;
-        const bTime = new Date(b.shutdowndatetime).getTime() / 1000;
-        const aStartTime = new Date(a.shutdownperiods[0].start).getTime() / 1000;
-        const bStartTime = new Date(b.shutdownperiods[0].start).getTime() / 1000;
+        if (a.shutdowndatetime && b.shutdowndatetime &&
+            a.shutdownperiods && a.shutdownperiods[0] && a.shutdownperiods[0].start &&
+            b.shutdownperiods && b.shutdownperiods[0] && b.shutdownperiods[0].start) {
+            const aTime = new Date(a.shutdowndatetime).getTime() / 1000;
+            const bTime = new Date(b.shutdowndatetime).getTime() / 1000;
 
-        if (aTime === bTime) {
-            return aStartTime - bStartTime;
+            const aStartTime = new Date(a.shutdownperiods[0].start).getTime() / 1000;
+            const bStartTime = new Date(b.shutdownperiods[0].start).getTime() / 1000;
+
+            if (aTime === bTime) {
+                return aStartTime - bStartTime;
+            }
+            return aTime - bTime;
         }
-        return aTime - bTime;
+
+        return 0;
     });
 
     return outages;
@@ -159,18 +167,24 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: Sea
     }
 
     const getDateMatch = (outage: OutageData, date: string, isStartDate: boolean) => {
-        const shutdownDateTime = new Date(outage.shutdowndatetime).getTime();
-        const filterDateTime = new Date(date.split('/').reverse().join('/')).getTime();
+        if (outage.shutdowndatetime) {
+            const shutdownDateTime = new Date(outage.shutdowndatetime).getTime();
+            const filterDateTime = new Date(date.split('/').reverse().join('/')).getTime();
 
-        if (isStartDate) {
-            return shutdownDateTime >= filterDateTime;
+            if (isStartDate) {
+                return shutdownDateTime >= filterDateTime;
+            }
+            return shutdownDateTime <= filterDateTime;
         }
-        return shutdownDateTime <= filterDateTime;
+
+        return false;
     };
 
     // Otherwise return filtered outages
     const filteredOutages = outages.filter((outage: OutageData) => {
-        const matchesAddress = address ? outage.address.toLowerCase().includes(address) : true;
+        const matchesAddress = outage.address ?
+            (address ? outage.address.toLowerCase().includes(address) : true) :
+            false;
         const matchesStatus = outageStatus ? outage.statustext.toLowerCase().includes(outageStatus) : true;
         const onOrAfterStartDate = startDate ? getDateMatch(outage, startDate, true) : true;
         const onOrBeforeEndDate = endDate ? getDateMatch(outage, endDate, false) : true;
@@ -184,48 +198,60 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: Sea
 /**
  * Manipulate variables within the outages object to be suitable for client-side consumption
  *
- * @param {Array<QueryResultRow>} outages from the database
- * @returns {Array<QueryResultRow>} the manipulated list of outages
+ * @param {Array<OutageDBData>} outages from the database
+ * @returns {Array<OutageData>} the manipulated list of outages
  */
-export function getManipulatedOutages(outages: Array<QueryResultRow>) {
+export function getManipulatedOutages(outages: Array<OutageDBData>) {
+    const manipulatedOutages: OutageData[] = [];
+
     outages.map((outage) => {
-        outage.hull = outage.hull ? JSON.parse(outage.hull) : [];
+        if (outage.shutdowndate) {
+            // Convert shutdowndate to a string
+            const shutdownDate = new Date(outage.shutdowndate);
+            const year = shutdownDate.getFullYear();
+            const month = shutdownDate.getMonth() + 1;
+            const day = shutdownDate.getDate();
+            outage.shutdowndate = `${day}/${month}/${year}`;
 
-        // Convert shutdowndate to a string
-        const year = outage.shutdowndate.getFullYear();
-        const month = outage.shutdowndate.getMonth() + 1;
-        const day = outage.shutdowndate.getDate();
-        outage.shutdowndate = `${day}/${month}/${year}`;
+            // Convert originalshutdowndate to a string
+            if (outage.originalshutdowndate) {
+                const ogShutdownDate = new Date(outage.originalshutdowndate);
+                const year = ogShutdownDate.getFullYear();
+                const month = ogShutdownDate.getMonth() + 1;
+                const day = ogShutdownDate.getDate();
+                outage.originalshutdowndate = `${day}/${month}/${year}`;
+            }
 
-        // Convert originalshutdowndate to a string
-        if (outage.originalshutdowndate) {
-            const year = outage.originalshutdowndate.getFullYear();
-            const month = outage.originalshutdowndate.getMonth() + 1;
-            const day = outage.originalshutdowndate.getDate();
-            outage.originalshutdowndate = `${day}/${month}/${year}`;
+            const shutdownperiods = [
+                {
+                    start: outage.shutdownperiodstart,
+                    end: outage.shutdownperiodend,
+                }
+            ];
+
+            const originalshutdownperiods = [
+                {
+                    start: outage.originalshutdownperiodstart,
+                    end: outage.originalshutdownperiodstart,
+                }
+            ];
+
+            const manipulatedOutage: OutageData = {
+                ...outage,
+                hull: (outage.hull ? JSON.parse(outage.hull) : []),
+                description: null,
+                shutdownperiods: shutdownperiods,
+                statustext: outage.statustext as 'Scheduled' | 'Postponed' | 'Cancelled' | 'Active',
+                originalshutdownperiods: originalshutdownperiods,
+                expiredOutage: false,
+                dummyData: false
+            };
+
+            manipulatedOutages.push(manipulatedOutage);
         }
-
-        outage.shutdownperiods = [
-            {
-                start: outage.shutdownperiodstart,
-                end: outage.shutdownperiodend,
-            }
-        ];
-
-        outage.originalshutdownperiods = [
-            {
-                start: outage.originalshutdownperiodstart,
-                end: outage.originalshutdownperiodstart,
-            }
-        ];
-
-        delete outage.shutdownperiodstart;
-        delete outage.shutdownperiodend;
-        delete outage.originalshutdownperiodstart;
-        delete outage.originalshutdownperiodstart;
     });
 
-    return outages;
+    return manipulatedOutages;
 }
 
 /**

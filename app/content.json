@@ -27,5 +27,5 @@
     "notif-email-new": "There has been a status change for an upcoming planned power outage which may be in the location you subscribed to notifications for.",
     "notif-email-changed": "There is an upcoming planned power outage which may be in the location you subscribed to notifications for.",
 
-    "sub-confirm-email-unsub": "If this subscription was made in error, or you no longer wish to receive notifications, you can unsubscribe $unsubLink."
+    "sub-confirm-email-unsub": "If this subscription was made in error, or you no longer wish to receive notifications, you can unsubscribe $unsubLink"
 }
