@@ -5,7 +5,7 @@ import { NextRequest } from 'next/server';
 import content from './../../content.json';
 import { getAllNotifications, getAllOutages, updateNotifOutageInfo } from '@/lib/database';
 
-import { PrismaClient } from '@/generated/prisma';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
