@@ -326,20 +326,26 @@ export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], ou
     // Loop through each edge in the polygon
     for (let i = 1; i <= num_vertices; i++) {
         p2 = polygon[i % num_vertices];
+        const latitude = lat as number;
+        const longtitude = lng as number;
+        const p1Lat = p1.lat as number;
+        const p1Lng = p1.lng as number;
+        const p2Lat = p2.lat as number;
+        const p2Lng = p2.lng as number;
 
         // Only check if both points have a latitude and longtitude
         if (p1.lat && p1.lng && p2.lat && p2.lng) {
             // Check if the point is above the minimum y coordinate of the edge
-            if (lng > Math.min(p1.lng, p2.lng)) {
+            if (longtitude > Math.min(p1Lng, p2Lng)) {
                 // Check if the point is below the maximum y coordinate of the edge
-                if (lng <= Math.max(p1.lng, p2.lng)) {
+                if (longtitude <= Math.max(p1Lng, p2Lng)) {
                     // Check if the point is to the left of the maximum x coordinate of the edge
-                    if (lat <= Math.max(p1.lat, p2.lat)) {
+                    if (lat as number <= Math.max(p1.lat as number, p2.lat as number)) {
                         // Calculate the x-intersection of the line connecting the point to the edge
-                        const x_intersection = ((lng - p1.lng) * (p2.lat - p1.lat)) / (p2.lng - p1.lng) + p1.lat;
+                        const x_intersection = ((longtitude - p1Lng) * (p2Lat - p1Lat)) / (p2Lng - p1Lng) + p1Lat;
 
                         // Check if the point is on the same line as the edge or to the left of the x-intersection
-                        if (p1.lat === p2.lat || lat <= x_intersection) {
+                        if (p1.lat === p2.lat || latitude <= x_intersection) {
                             isInZone = !isInZone;
                         }
                     }

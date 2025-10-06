@@ -79,7 +79,9 @@ export default function OutageOverlay() {
                                 className='flex md:flex-col gap-4 flex-row justify-between text-lg font-normal'
                             >
                                 <span className="font-semibold text-left">{title}</span>
-                                <span>{value}</span>
+                                {
+                                    typeof value === 'string' ? <span>{value}</span> : null
+                                }
                             </div>
                         );
                     })

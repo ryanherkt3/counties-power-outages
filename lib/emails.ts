@@ -18,7 +18,16 @@ export async function sendEmailNotification(notifSub: NotificationSub, outage: O
         const notifSubId = notifSub.id;
 
         const shutdownPeriods = outage.shutdownperiods[0];
-        const outageTimes = getTimesAndActiveOutage(shutdownPeriods.start, shutdownPeriods.end);
+        const outageTimes = shutdownPeriods.start && shutdownPeriods.end ?
+            getTimesAndActiveOutage(shutdownPeriods.start, shutdownPeriods.end) :
+            {
+                activeOutage: false,
+                expiredOutage: false,
+                times: {
+                    startTime: '',
+                    endTime: '',
+                }
+            };
         const { startTime, endTime } = outageTimes.times;
 
         const notifEmailPayload = {

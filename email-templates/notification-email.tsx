@@ -52,7 +52,10 @@ export default function NotificationEmail(
                                 null
                         }
                         <Text style={paragraph}><b>Location:</b>{' '}{outage.address}</Text>
-                        <Text style={paragraph}><b>Date:</b>{' '}{outage.shutdowndate}</Text>
+                        {
+                            typeof outage.shutdowndate === 'string' ?
+                                <Text style={paragraph}><b>Date:</b>{' '}{outage.shutdowndate}</Text> : null
+                        }
                         <Text style={paragraph}><b>Start Time:</b>{' '}{startTime}</Text>
                         <Text style={paragraph}><b>End Time:</b>{' '}{endTime}</Text>
                     </Section>
