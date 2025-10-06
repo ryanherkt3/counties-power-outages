@@ -88,7 +88,11 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
  * @returns {Object} outages
  */
 export async function getActiveOutages() {
-    const outagesReq = await fetch(process.env.API_URL + '/getoutages');
+    const outagesReq = await fetch(process.env.API_URL + '/getoutages', {
+        headers: {
+            'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
+        }
+    });
 
     const outagesJson = await outagesReq.json();
 

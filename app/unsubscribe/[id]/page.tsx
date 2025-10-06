@@ -14,7 +14,10 @@ export default async function UnsubscribePage({ params }: { params: Promise<{ id
     // Get the data
     const unSubReq = await fetch(process.env.API_URL + '/subscription', {
         method: 'DELETE',
-        body: JSON.stringify({ id: id })
+        body: JSON.stringify({ id: id }),
+        headers: {
+            'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
+        }
     });
     const unSubJson = await unSubReq.json();
 

@@ -57,12 +57,6 @@ Where `{id}` is the ID of the container currently running.
 
 **Note:** if developing locally, the notification system requires a database to be set up (e.g. on Vercel via [Neon Postgres](https://neon.tech/)) and `.env` variables for this to work. You will also need a [Resend](https://resend.com/) account to be able to send the notification emails, as well as a purchased domain.
 
-### Future improvements
+### Future improvements, bug reports, feature requests
 
-* Automate updating the live outages database.
-* Contact form (for bug reports etc).
-* A filter on the outages page for outages per page (configurable to 5 / 10 / 15).
-
-### Bug reports, Feature requests
-
-For any bugs or feature requests, create an issue on the repo's [Issues page](https://github.com/ryanherkt3/counties-power-outages/issues) with the appropriate label.
+Check out the repo's [Issues page](https://github.com/ryanherkt3/counties-power-outages/issues); you are encouraged to create `Issues` here using the appropriate label.

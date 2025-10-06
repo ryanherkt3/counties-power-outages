@@ -10,6 +10,8 @@
 | `/subscription` | `DELETE` | Remove a notification subscription from the database. | A JSON request body containing a valid subscription ID.
 | `/subscription` | `PUT` | Edit an existing notification subscription. | A JSON request body containing an ID, a flag to include coordinates, and the fields the user has updated (unlike the `POST` endpoint in the examples list, not all of them will be required).
 
+**IMPORTANT:** All endpoints must include an **'Authorization': `Bearer ${your_auth_token}`** header, and `your_auth_token` must also match the production token; otherwise the API requests will not work.
+
 ### Endpoint examples
 
 #### `/getoutages`
@@ -73,9 +75,10 @@ await fetch(process.env.API_URL + '/subscription', {
 | -------- | ------ | -----------
 | `/cron` | `GET` | Runs the cron job to send emails to users with subscriptions. Should only be invoked via Vercel.
 
-To test this endpoint locally, there are two options:
 
-1. Comment out the following lines of code at `app/api/cron/route.ts`:
+### Bypassing the Authorization check
+
+To test any API endpoint locally, bypassing the `Authorization` check is doable by commenting out the following lines of code:
 ```
 const authHeader = request.headers.get('authorization');
 
@@ -85,16 +88,4 @@ if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     });
 }
 ```
-This disables the auth check and allows the `cron` endpoint to run locally. It is **discouraged** to comment this piece of code for production builds, due to security implications.
-
-2. Create another terminal after invoking `npm run dev` and run:
-
-Windows Powershell:
-```
-Invoke-WebRequest -Uri http://localhost:3000/api/cron -Headers @{'Authorization' = 'Bearer <CRON_SECRET>'}
-```
-
-Linux (or any terminal that can send `curl` requests):
-```
-curl -I -H "Authorization: Bearer <CRON_SECRET>" http://localhost:3000/api/cron
-```
+This approach is **discouraged** for production builds, due to security implications of allowing any website (any origin) to access the API endpoints.

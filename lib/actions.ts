@@ -26,7 +26,10 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
     try {
         await fetch(process.env.API_URL + '/subscription', {
             method: isExistingSub ? 'PUT' : 'POST',
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            headers: {
+                'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
+            }
         });
 
         if (!isExistingSub) {
@@ -51,7 +54,11 @@ export async function getSubscriptions(email: string) {
     }
 
     try {
-        const subsReq = await fetch(process.env.API_URL + `/subscription?email=${email}`);
+        const subsReq = await fetch(process.env.API_URL + `/subscription?email=${email}`, {
+            headers: {
+                'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
+            }
+        });
         const subsJson = await subsReq.json();
         return subsJson.rows;
     }
@@ -69,7 +76,10 @@ export async function deleteSubscription(subId: string) {
     try {
         await fetch(process.env.API_URL + '/subscription', {
             method: 'DELETE',
-            body: JSON.stringify({ id: subId })
+            body: JSON.stringify({ id: subId }),
+            headers: {
+                'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
+            }
         });
     }
     catch (error) {

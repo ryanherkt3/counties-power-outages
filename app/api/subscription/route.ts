@@ -11,6 +11,14 @@ import { isValidEmail, isValidPayloadArgument } from '@/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
+    const authHeader = request.headers.get('authorization');
+
+    if (authHeader !== `Bearer ${process.env.AUTH_TOKEN}`) {
+        return new Response('Unauthorized', {
+            status: 401,
+        });
+    }
+
     const { searchParams } = request.nextUrl;
     const email = searchParams.get('email'); // api/subscription?email=xx
     const id = searchParams.get('id'); // api/subscription?id=xx
@@ -83,6 +91,14 @@ export async function GET(request: NextRequest) {
 
 // POST: Create subscription
 export async function POST(request: Request) {
+    const authHeader = request.headers.get('authorization');
+
+    if (authHeader !== `Bearer ${process.env.AUTH_TOKEN}`) {
+        return new Response('Unauthorized', {
+            status: 401,
+        });
+    }
+
     const body: FormValues = await request.json();
 
     const invalidArguments = !body || typeof body.hasCoordinates !== 'boolean' || !isValidEmail(body.email)
@@ -140,6 +156,14 @@ export async function POST(request: Request) {
 
 // PUT: Update subscription
 export async function PUT(request: Request) {
+    const authHeader = request.headers.get('authorization');
+
+    if (authHeader !== `Bearer ${process.env.AUTH_TOKEN}`) {
+        return new Response('Unauthorized', {
+            status: 401,
+        });
+    }
+
     const body: FormValues = await request.json();
 
     const invalidArguments = !body || !isValidPayloadArgument(body.id, 'id') || typeof body.hasCoordinates !== 'boolean'
