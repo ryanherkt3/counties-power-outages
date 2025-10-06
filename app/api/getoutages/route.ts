@@ -1,11 +1,20 @@
+import { getAllOutages } from '@/lib/database';
 import { getManipulatedOutages } from '@/lib/utils';
-import { sql } from '@vercel/postgres';
+import { NextRequest } from 'next/server';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+    const authHeader = request.headers.get('authorization');
+
+    if (authHeader !== `Bearer ${process.env.AUTH_TOKEN}`) {
+        return new Response('Unauthorized', {
+            status: 401,
+        });
+    }
+
     // Get outages from DB
     let outages;
     try {
-        outages = await sql`SELECT * FROM outages`;
+        outages = await getAllOutages();
     }
     catch (error) {
         console.log(error);
@@ -15,8 +24,8 @@ export async function GET() {
         });
     }
 
-    if (outages && outages.rows) {
-        return new Response(JSON.stringify({ 'planned_outages': getManipulatedOutages(outages.rows) }), {
+    if (outages.length) {
+        return new Response(JSON.stringify({ 'planned_outages': getManipulatedOutages(outages) }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
         });

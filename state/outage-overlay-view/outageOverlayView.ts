@@ -5,6 +5,8 @@ interface OutageOverlayViewState {
     value: OutageOverlayStates;
 }
 
+const fakeString = '';
+
 const defaultDataValue: OutageData = {
     id: '',
     projecttype: '',
@@ -17,13 +19,12 @@ const defaultDataValue: OutageData = {
     }],
     feeder: '',
     affectedcustomers: 1,
-    lat: 1,
-    lng: 1,
-    distance: 1,
-    hull: [{
-        lat: 1,
-        lng: 1,
-    }],
+    lat: null,
+    lng: null,
+    distance: null,
+    hull: (fakeString ? JSON.parse('') : []),
+    shutdownperiodstart: '',
+    shutdownperiodend: '',
     address: '',
     statustext: 'Scheduled',
     latestinformation: '',
@@ -32,6 +33,8 @@ const defaultDataValue: OutageData = {
         start: '',
         end: '',
     }],
+    originalshutdownperiodstart: '',
+    originalshutdownperiodend: '',
     expiredOutage: false,
     lastmodified: '',
     dummyData: true,

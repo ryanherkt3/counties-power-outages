@@ -27,14 +27,14 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
         name: ['email', 'location', 'latitude', 'longtitude'],
     });
 
-    const onSubmit = (data: FormFields) => {
+    const onSubmit = async(data: FormFields) => {
         if (onSubPage && !Object.keys(dirtyFields).length) {
             setError('root.unchanged', { type: 'custom', message: 'custom message' });
         }
         else {
             clearErrors();
 
-            updateSubscription(includeCoords, onSubPage, data);
+            await updateSubscription(includeCoords, onSubPage, data);
 
             const resetPayload = {
                 id: data.id,

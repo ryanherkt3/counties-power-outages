@@ -67,7 +67,7 @@ export default function NotifSubs(
                             };
 
                             const { location } = subscription;
-                            const locationMatches = location && outage.address.includes(location);
+                            const locationMatches = location && outage.address && outage.address.includes(location);
 
                             const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull, outageCoords);
 

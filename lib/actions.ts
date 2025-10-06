@@ -23,13 +23,21 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
         datesubscribed: isExistingSub ? '' : new Date().toLocaleString(),
     };
 
-    await fetch(process.env.API_URL + '/subscription', {
-        method: isExistingSub ? 'PUT' : 'POST',
-        body: JSON.stringify(payload)
-    });
+    try {
+        await fetch(process.env.API_URL + '/subscription', {
+            method: isExistingSub ? 'PUT' : 'POST',
+            body: JSON.stringify(payload),
+            headers: {
+                'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
+            }
+        });
 
-    if (!isExistingSub) {
-        revalidatePath('/notifications'); // clear cache
+        if (!isExistingSub) {
+            revalidatePath('/notifications'); // clear cache
+        }
+    }
+    catch (error) {
+        console.log('Error updating subscription', error);
     }
 }
 
@@ -40,9 +48,23 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
  * @returns list of subscriptions
  */
 export async function getSubscriptions(email: string) {
-    const subsReq = await fetch(process.env.API_URL + `/subscription?email=${email}`);
-    const subsJson = await subsReq.json();
-    return subsJson.rows;
+    // Return empty array if no email provided
+    if (!email) {
+        return [];
+    }
+
+    try {
+        const subsReq = await fetch(process.env.API_URL + `/subscription?email=${email}`, {
+            headers: {
+                'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
+            }
+        });
+        const subsJson = await subsReq.json();
+        return subsJson.rows;
+    }
+    catch (error) {
+        console.log('Error getting subscriptions', error);
+    }
 }
 
 /**
@@ -51,8 +73,16 @@ export async function getSubscriptions(email: string) {
  * @param {string} subId
  */
 export async function deleteSubscription(subId: string) {
-    await fetch(process.env.API_URL + '/subscription', {
-        method: 'DELETE',
-        body: JSON.stringify({ id: subId })
-    });
+    try {
+        await fetch(process.env.API_URL + '/subscription', {
+            method: 'DELETE',
+            body: JSON.stringify({ id: subId }),
+            headers: {
+                'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
+            }
+        });
+    }
+    catch (error) {
+        console.log('Error deleting subscription', error);
+    }
 }

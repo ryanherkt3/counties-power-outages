@@ -1,89 +1,24 @@
-import { db, QueryResultRow, VercelPoolClient } from '@vercel/postgres';
 import { sendEmailNotification } from '@/lib/emails';
 import { NotificationSub, NotifOutageInfo, OutageData } from '@/lib/definitions';
 import { coordIsInOutageZone, getManipulatedOutages } from '@/lib/utils';
 import { NextRequest } from 'next/server';
 import content from './../../content.json';
+import { getAllNotifications, getAllOutages, updateNotifOutageInfo } from '@/lib/database';
 
-/**
- * Get all outages from database.
- *
- * @param client
- * @returns {Object}
- */
-async function getOutages(client: VercelPoolClient) {
-    try {
-        const outages = await client.sql`SELECT * FROM outages`;
-        return {
-            outages
-        };
-    }
-    catch (error) {
-        console.error('Error getting outages:', error);
-        throw error;
-    }
-}
+import { PrismaClient } from '@prisma/client';
 
-/**
- * Get all notification subscriptions from database.
- *
- * @param client
- * @returns {Object}
- */
-async function getNotifSubs(client: VercelPoolClient) {
-    try {
-        const subs = await client.sql`SELECT * FROM notifications`;
-        return {
-            subs
-        };
-    }
-    catch (error) {
-        console.error('Error getting subscriptions:', error);
-        throw error;
-    }
-}
-
-/**
- * Update the outageInfo for the notification which had an email sent,
- * or which had no emails sent for a specific ID within the last 14 days
- *
- * @param client
- * @param {string} outageInfo
- * @param {string} id
- * @returns {Object}
- */
-async function updateSubInfo(client: VercelPoolClient, outageInfo: string, id: string) {
-    try {
-        const updateSub = await client.sql`
-            UPDATE notifications
-            SET outageinfo = ${outageInfo}
-            WHERE id = ${id}
-        `;
-
-        console.log('Updated notification subscription');
-
-        return {
-            updateSub
-        };
-    }
-    catch (error) {
-        console.error('Error updating notification subscription:', error);
-        throw error;
-    }
-}
+const prisma = new PrismaClient();
 
 /**
  * Attempt to send notification emails to users if required.
  *
- * @param client
- * @param {Array<QueryResultRow>} outages
- * @param {Array<QueryResultRow>} subscriptions
+ * @param {Array<OutageData>} outages
+ * @param {Array<NotificationSub>} subscriptions
  * @returns {Object}
  */
 async function trySendEmails(
-    client: VercelPoolClient,
-    outages: Array<QueryResultRow>,
-    subscriptions: Array<QueryResultRow>
+    outages: Array<OutageData>,
+    subscriptions: Array<NotificationSub>
 ) {
     let totalEmailsSent = 0;
 
@@ -97,7 +32,8 @@ async function trySendEmails(
 
         // Check sub.outageinfo to see if an email has been sent within the last 7 days, and also if
         // the outage status has change compared to last time - if so send email anyway
-        let subInfo = ['null', null, ''].includes(sub.outageinfo) ? [] : JSON.parse(sub.outageinfo);
+        let subInfo =
+            sub.outageinfo === null || ['null', ''].includes(sub.outageinfo) ? [] : JSON.parse(sub.outageinfo);
 
         // Check if any objects in outageInfo have email timestamps that are at least 14 days old
         const oldEmailAlerts = Object.keys(subInfo).length > 0 && subInfo.filter((x: NotifOutageInfo) => {
@@ -125,17 +61,20 @@ async function trySendEmails(
             };
 
             const subLocation = sub.location ? sub.location.toLowerCase() : '';
-            const outageAddress = outage.address.toLowerCase();
+            const outageAddress = outage.address ? outage.address.toLowerCase() : '';
+            const outageStatus = outage.statustext ? outage.statustext.toLowerCase() : '';
 
             const locationMatches = subLocation && outageAddress.includes(subLocation);
-            const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull, outageCoords);
+            const coordsMatch = outage.hull ?
+                subCoords && coordIsInOutageZone(subCoords, outage.hull, outageCoords) :
+                false;
 
             const filteredSub = Object.keys(subInfo).length > 0 ? subInfo.filter((x: NotifOutageInfo) => {
                 return x.id === outage.id;
             })[0] : {};
 
             const outageStatusChanged = filteredSub && filteredSub.status &&
-                filteredSub.status.toLowerCase() !== outage.statustext.toLowerCase();
+                filteredSub.status.toLowerCase() !== outageStatus;
             let shouldSendEmail = coordsMatch || locationMatches;
 
             if (shouldSendEmail && !!(filteredSub && filteredSub.status)) {
@@ -180,7 +119,8 @@ async function trySendEmails(
 
         try {
             if (emailsSentForSub > 0 || oldEmailAlerts) {
-                await updateSubInfo(client, JSON.stringify(subInfo), sub.id);
+                const res = await updateNotifOutageInfo(JSON.stringify(subInfo), sub.id);
+                console.log(res ? 'Updated notification subscription' : 'Failed to update notification subscription');
             }
         }
         catch (error) {
@@ -202,13 +142,13 @@ export async function GET(request: NextRequest) {
 
     // TODO use proxy server to update outages (?)
 
-    const client = await db.connect();
+    const outages = getManipulatedOutages(await getAllOutages());
 
-    const outagesList = await getOutages(client);
+    console.log('Fetched outages');
 
     // Early return if no outages have been reported
-    if (outagesList.outages.rowCount === 0) {
-        client.release();
+    if (outages.length === 0) {
+        await prisma.$disconnect();
 
         return new Response(
             JSON.stringify(
@@ -219,29 +159,15 @@ export async function GET(request: NextRequest) {
             ), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' }
-            });
+            }
+        );
     }
 
-    const outages = getManipulatedOutages(
-        outagesList.outages.rows.filter((outage) => {
-        // Remove outages whose scheduled start date is more than seven days away
-            const currentDate = new Date();
-            const currentTime = currentDate.getTime() / 1000;
-
-            const outageStartDateTime = new Date(outage.shutdowndatetime).getTime() / 1000;
-
-            return outageStartDateTime - currentTime <= 86400 * 7;
-        })
-    );
-
-    console.log('Fetched outages');
-
-    const notifSubs = await getNotifSubs(client);
-    const subscriptions = notifSubs.subs.rows;
+    const subscriptions = await getAllNotifications();
 
     // Early return if there are no active subscriptions
-    if (notifSubs.subs.rowCount === 0) {
-        client.release();
+    if (subscriptions.length === 0) {
+        await prisma.$disconnect();
 
         return new Response(JSON.stringify({ 'success': true }), {
             status: 200,
@@ -251,11 +177,11 @@ export async function GET(request: NextRequest) {
 
     console.log('Fetched subscriptions');
 
-    const emailCount = await trySendEmails(client, outages, subscriptions);
+    const emailCount = await trySendEmails(outages, subscriptions);
 
     console.log(`Emails sent: ${emailCount}`);
 
-    client.release();
+    await prisma.$disconnect();
 
     return new Response(JSON.stringify({ 'success': true }), {
         status: 200,

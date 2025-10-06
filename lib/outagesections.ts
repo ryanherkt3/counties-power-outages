@@ -14,7 +14,16 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
         return [];
     }
 
-    const timesAndActiveOutage = getTimesAndActiveOutage(data.shutdownperiods[0].start, data.shutdownperiods[0].end);
+    const timesAndActiveOutage = data.shutdownperiods[0].start && data.shutdownperiods[0].end ?
+        getTimesAndActiveOutage(data.shutdownperiods[0].start, data.shutdownperiods[0].end) :
+        {
+            activeOutage: false,
+            expiredOutage: false,
+            times: {
+                startTime: '',
+                endTime: '',
+            }
+        };
 
     const shutdownTimes = timesAndActiveOutage.times;
     const outageIsPostponed = data.statustext === 'Postponed';
@@ -61,7 +70,7 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
             key: 'customers-affected',
             icon: 'UserIcon',
             title: uppercaseTitles ? customersAffectedString.toUpperCase() : customersAffectedString,
-            value: data.affectedcustomers.toString(),
+            value: data.affectedcustomers ? data.affectedcustomers.toString() : '',
         }
     );
 

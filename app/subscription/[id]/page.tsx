@@ -10,9 +10,13 @@ export const metadata: Metadata = {
 export default async function SubscriptionPage({ params }: { params: Promise<{ id: string } > }) {
     const { id } = await params;
 
-    const subReq = await fetch(process.env.API_URL + `/subscription?id=${id}`);
+    const subReq = await fetch(process.env.API_URL + `/subscription?id=${id}`, {
+        headers: {
+            'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
+        }
+    });
     const subsJson = await subReq.json();
-    const subscription = subsJson.sub[0];
+    const subscription = subsJson.sub;
 
     // Early return if no subscription is found
     if (!subscription) {

@@ -77,9 +77,15 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                                         <CustomIcon icon={icon} iconClass={'w-7'} />
                                         <span className="font-semibold">{title}</span>
                                     </div>
-                                    <span className={ clsx({ 'line-through': key === 'postponed-date' }) }>
-                                        {value}
-                                    </span>
+                                    {
+                                        typeof value === 'string' ?
+                                            (
+                                                <span className={ clsx({ 'line-through': key === 'postponed-date' }) }>
+                                                    {value}
+                                                </span>
+                                            ) :
+                                            null
+                                    }
                                 </div>
                             );
                         })

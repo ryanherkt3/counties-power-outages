@@ -1,121 +1,127 @@
-import { NotificationSub } from '@/lib/definitions';
+import {
+    createNewUserNotification,
+    deleteUserNotification,
+    getUserNotifByEmail,
+    getUserNotifByID,
+    updateExistingUserNotification
+} from '@/lib/database';
+import { FormValues, NotificationSub } from '@/lib/definitions';
 import { sendConfirmationEmail } from '@/lib/emails';
 import { isValidEmail, isValidPayloadArgument } from '@/lib/utils';
-import { sql } from '@vercel/postgres';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
+    const authHeader = request.headers.get('authorization');
+
+    if (authHeader !== `Bearer ${process.env.AUTH_TOKEN}`) {
+        return new Response('Unauthorized', {
+            status: 401,
+        });
+    }
+
     const { searchParams } = request.nextUrl;
     const email = searchParams.get('email'); // api/subscription?email=xx
     const id = searchParams.get('id'); // api/subscription?id=xx
 
     if (id) {
         if (!isValidPayloadArgument(id, 'id')) {
-            return new NextResponse(JSON.stringify({ 'error': 'Invalid arguments', 'sub': [] }), {
+            return new NextResponse(JSON.stringify(
+                { 'error': 'Invalid arguments for getting subscription - step 1', 'sub': [] }
+            ), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' }
             });
         }
 
         // Get the notification with the requested ID from DB
-        let subscription;
-        try {
-            subscription = await sql<NotificationSub>`SELECT * FROM notifications WHERE id = ${id}`;
+        const subscription: NotificationSub | boolean | null = await getUserNotifByID(id);
+
+        if (subscription) {
+            return new NextResponse(JSON.stringify({ 'sub': subscription }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
         }
-        catch (error) {
-            console.log(error);
+        if (subscription === null) {
+            return new NextResponse(JSON.stringify({ 'sub': [] }), {
+                status: 204,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+        if (!subscription) {
             return new NextResponse(JSON.stringify({ 'error': 'Server error', 'sub': [] }), {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' }
             });
         }
 
-        if (subscription && subscription.rows) {
-            return new NextResponse(JSON.stringify({ 'sub': subscription.rows }), {
-                status: 200,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
-
-        return new NextResponse(JSON.stringify({ 'sub': [] }), {
-            status: 204,
-            headers: { 'Content-Type': 'application/json' }
-        });
     }
 
     if (!email || !isValidEmail(email)) {
-        return new NextResponse(JSON.stringify({ 'error': 'Invalid arguments', 'rows': [] }), {
+        return new NextResponse(JSON.stringify(
+            { 'error': 'Invalid arguments for getting subscription - step 2', 'rows': [] }
+        ), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });
     }
 
     // Get notifications from DB
-    let subscriptions;
-    try {
-        subscriptions = await sql<NotificationSub>`SELECT * FROM notifications WHERE email = ${email}`;
+    const subscriptions: Array<NotificationSub> | boolean | null = await getUserNotifByEmail(email);
+
+    if (subscriptions) {
+        return new NextResponse(JSON.stringify({ 'rows': subscriptions }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
-    catch (error) {
-        console.log(error);
+    if (subscriptions === null) {
+        return new NextResponse(JSON.stringify({ 'rows': [] }), {
+            status: 204,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+    if (!subscriptions) {
         return new NextResponse(JSON.stringify({ 'error': 'Server error', 'rows': [] }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
         });
     }
+}
 
-    if (subscriptions && subscriptions.rows) {
-        return new NextResponse(JSON.stringify({ 'rows': subscriptions.rows }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
+// POST: Create subscription
+export async function POST(request: Request) {
+    const authHeader = request.headers.get('authorization');
+
+    if (authHeader !== `Bearer ${process.env.AUTH_TOKEN}`) {
+        return new Response('Unauthorized', {
+            status: 401,
         });
     }
 
-    return new NextResponse(JSON.stringify({ 'rows': [] }), {
-        status: 204,
-        headers: { 'Content-Type': 'application/json' }
-    });
-}
-
-export async function POST(request: Request) {
-    const body = await request.json();
+    const body: FormValues = await request.json();
 
     const invalidArguments = !body || typeof body.hasCoordinates !== 'boolean' || !isValidEmail(body.email)
         || (body.location && !isValidPayloadArgument(body.location, 'location'))
-        || (body.hasCoordinates && !isValidPayloadArgument(body.latitude, 'coordinate'))
-        || (body.hasCoordinates && !isValidPayloadArgument(body.longtitude, 'coordinate'))
+        || (body.hasCoordinates && body.latitude && !isValidPayloadArgument(body.latitude, 'coordinate'))
+        || (body.hasCoordinates && body.longtitude && !isValidPayloadArgument(body.longtitude, 'coordinate'))
         || !isValidPayloadArgument(body.datesubscribed, 'date-subscribed');
 
     if (invalidArguments) {
-        return new Response(JSON.stringify({ 'error': 'Invalid arguments', 'success': false }), {
+        return new Response(JSON.stringify(
+            { 'error': 'Invalid arguments for creating subscription - step 1', 'success': false }
+        ), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });
     }
 
-    const { hasCoordinates, location, latitude, longtitude, email, datesubscribed } = body;
-
-    // Generate a random 16 character string for the subscription ID
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let idString = '';
-    for (let i = 0; i < 16; i++) {
-        idString += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+    const { location, latitude, longtitude, email, datesubscribed } = body;
 
     // Add outage subscription to DB
-    try {
-        if (hasCoordinates) {
-            await sql`
-            INSERT INTO notifications (id, location, lat, lng, email, datesubscribed)
-            VALUES (${idString}, ${location}, ${latitude}, ${longtitude}, ${email}, ${datesubscribed})
-            `;
-        }
-        else {
-            await sql`
-            INSERT INTO notifications (id, location, email, datesubscribed)
-            VALUES (${idString}, ${location}, ${email}, ${datesubscribed})
-            `;
-        }
+    const idString = await createNewUserNotification(body);
 
+    if (idString) {
         const subData: NotificationSub = {
             id: idString,
             location: location,
@@ -133,86 +139,88 @@ export async function POST(request: Request) {
             headers: { 'Content-Type': 'application/json' }
         });
     }
-    catch (error) {
-        console.log(error);
-        return new Response(JSON.stringify({ 'error': 'Server error', 'success': false }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
-}
-
-export async function PUT(request: Request) {
-    const body = await request.json();
-
-    const invalidArguments = !body || !isValidPayloadArgument(body.id, 'id') || typeof body.hasCoordinates !== 'boolean'
-        || (body.hasCoordinates && !isValidPayloadArgument(body.latitude, 'coordinate'))
-        || (body.hasCoordinates && !isValidPayloadArgument(body.longtitude, 'coordinate'));
-
-    if (invalidArguments) {
-        return new Response(JSON.stringify({ 'error': 'Invalid arguments', 'success': false }), {
+    if (idString === null) {
+        return new Response(JSON.stringify(
+            { 'error': 'Invalid arguments for creating subscription - step 2', 'success': false }
+        ), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });
     }
 
-    const { id, hasCoordinates, location, latitude, longtitude, email } = body;
+    return new Response(JSON.stringify({ 'error': 'Server error', 'success': false }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+    });
+}
+
+// PUT: Update subscription
+export async function PUT(request: Request) {
+    const authHeader = request.headers.get('authorization');
+
+    if (authHeader !== `Bearer ${process.env.AUTH_TOKEN}`) {
+        return new Response('Unauthorized', {
+            status: 401,
+        });
+    }
+
+    const body: FormValues = await request.json();
+
+    const invalidArguments = !body || !isValidPayloadArgument(body.id, 'id') || typeof body.hasCoordinates !== 'boolean'
+        || (body.hasCoordinates && body.latitude && !isValidPayloadArgument(body.latitude, 'coordinate'))
+        || (body.hasCoordinates && body.longtitude && !isValidPayloadArgument(body.longtitude, 'coordinate'));
+
+    if (invalidArguments) {
+        return new Response(JSON.stringify(
+            { 'error': 'Invalid arguments for updating subscription - step 1', 'success': false }
+        ), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 
     // Update existing outage subscription
-    try {
-        if (hasCoordinates) {
-            await sql`
-            UPDATE notifications
-            SET email = ${email}, location = ${location}, lat = ${latitude}, lng = ${longtitude}
-            WHERE id = ${id}
-            `;
-        }
-        else {
-            await sql`UPDATE notifications SET email = ${email}, location = ${location} WHERE id = ${id}`;
-        }
+    const notifUpdated = await updateExistingUserNotification(body);
 
+    if (notifUpdated) {
         return new Response(JSON.stringify({ 'success': true }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
         });
     }
-    catch (error) {
-        console.log(error);
-        return new Response(JSON.stringify({ 'error': 'Server error', 'success': false }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
+
+    return new Response(JSON.stringify({ 'error': 'Server error', 'success': false }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+    });
 }
 
 export async function DELETE(request: Request) {
     const body = await request.json();
 
-    if (!body || !isValidPayloadArgument(body.id, 'id')) {
-        return new Response(JSON.stringify({ 'error': 'Invalid arguments', 'success': false }), {
+    const { id } = body;
+
+    if (!body || !isValidPayloadArgument(id, 'id')) {
+        return new Response(JSON.stringify(
+            { 'error': 'Invalid arguments for deleting subscription', 'success': false }
+        ), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });
     }
 
-    const { id } = body;
-
-    let result;
-
     // Delete outage subscription from DB
-    try {
-        result = await sql`DELETE FROM notifications WHERE id = ${id}`;
-    }
-    catch (error) {
-        console.log(error);
-        return new Response(JSON.stringify({ 'error': 'Server error', 'success': false }), {
-            status: 500,
+    const notifDeleted = await deleteUserNotification(id);
+
+    if (notifDeleted) {
+        return new Response(JSON.stringify({ 'success': true }), {
+            status: 200,
             headers: { 'Content-Type': 'application/json' }
         });
     }
 
-    return new Response(JSON.stringify({ 'success': result && result.rowCount === 1 }), {
-        status: 200,
+    return new Response(JSON.stringify({ 'error': 'Server error', 'success': false }), {
+        status: 500,
         headers: { 'Content-Type': 'application/json' }
     });
 }
