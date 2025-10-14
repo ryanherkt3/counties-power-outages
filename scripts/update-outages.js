@@ -1,6 +1,8 @@
-import { db } from '@vercel/postgres';
+import { PrismaClient } from '@prisma/client';
 
-async function addOutages(client, outage) {
+const prisma = new PrismaClient();
+
+async function addUpdateOutage(outage) {
     const {
         id,
         projectType,
@@ -38,54 +40,78 @@ async function addOutages(client, outage) {
 
     // Add outage to DB
     try {
-        const addOutage = await client.sql`
-            INSERT INTO outages (
-                id, projecttype, shutdowndatetime, shutdowndate, shutdownperiodstart, shutdownperiodend, feeder,
-                affectedcustomers, lat, lng, distance, hull, address, statustext, latestinformation,
-                originalshutdowndate, originalshutdownperiodstart,
-                originalshutdownperiodend, lastmodified
-            )
-            VALUES (
-                ${id}, ${projectType}, ${shutdownDateTime}, ${dateString}, ${shutDownStart}, ${shutDownEnd},
-                ${feeder}, ${affectedCustomers}, ${lat}, ${lng}, ${distance}, ${hullString}, ${address},
-                ${statusText}, ${latestInformation || ''}, ${ogDateString}, ${ogShutDownStart},
-                ${ogShutDownEnd}, ${lastModified}
-            )
-            ON CONFLICT (id) DO UPDATE
-            SET 
-                shutdowndate = ${dateString},
-                statustext = ${statusText},
-                latestinformation = ${latestInformation || ''},
-                originalshutdowndate = ${ogDateString},
-                originalshutdownperiodstart = ${ogShutDownStart},
-                originalshutdownperiodend = ${ogShutDownEnd},
-                lastmodified = ${lastModified}
-        `;
+        const outageExists = await prisma.outages.findFirst({ where: { id: id } });
 
-        console.log('Added/updated outage');
+        if (outageExists) {
+            const updateOutage = await prisma.outages.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    shutdowndate: new Date(dateString),
+                    statustext: statusText,
+                    latestinformation: latestInformation || '',
+                    originalshutdowndate: new Date(ogDateString),
+                    originalshutdownperiodstart: ogShutDownStart,
+                    originalshutdownperiodend: ogShutDownEnd,
+                    lastmodified: lastModified,
+                }
+            });
 
-        return {
-            addOutage
-        };
+            console.log('Updated outage');
+
+            return updateOutage;
+        }
+
+        const addOutage = await prisma.outages.create({
+            data: {
+                id,
+                projecttype: projectType,
+                shutdowndatetime: shutdownDateTime,
+                shutdowndate: new Date(dateString),
+                shutdownperiodstart: shutDownStart,
+                shutdownperiodend: shutDownEnd,
+                feeder,
+                affectedcustomers: affectedCustomers,
+                lat,
+                lng,
+                distance,
+                hull: hullString,
+                address,
+                statustext: statusText,
+                latestinformation: latestInformation || '',
+                originalshutdowndate: new Date(ogDateString),
+                originalshutdownperiodstart: ogShutDownStart,
+                originalshutdownperiodend: ogShutDownEnd,
+                lastmodified: lastModified,
+            }
+        });
+
+        console.log('Added outage');
+
+        return addOutage;
     }
     catch (error) {
-        console.error('Error adding outage entry:', error);
+        console.error('Error adding/updating outage entry:', error);
         throw error;
     }
 }
 
-async function removeOutages(client) {
-    // Remove outages from DB
-    // now() - 1 DAY excludes any outages whose date is today's date (as these outages may not have started yet)
+async function removeOutages() {
+    // Remove outages from DB that have expired
     try {
-        const removeOutages = await client.sql`
-            DELETE FROM outages
-            WHERE shutdowndate::date < (now() - INTERVAL '1 DAY')
-        `;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-        return {
-            removeOutages
-        };
+        const removeOutages = await prisma.outages.deleteMany({
+            where: {
+                shutdowndate: {
+                    lt: today
+                }
+            }
+        });
+
+        return removeOutages;
     }
     catch (error) {
         console.error('Error removing expired outages:', error);
@@ -98,18 +124,19 @@ async function main() {
     const outagesJson = await outagesReq.json();
     const outages = outagesJson.planned_outages;
 
-    const client = await db.connect();
-
     for (const outage of outages) {
-        await addOutages(client, outage);
+        await addUpdateOutage(outage);
     }
-    console.log('Outages added');
+    console.log('Outages added/updated');
 
-    await removeOutages(client);
+    // TODO remove outages first (so we don't do redundant updates)
+    await removeOutages();
 
     console.log('Expired outages removed');
 
-    await client.release();
+    await prisma.$disconnect();
+
+    console.log('Client disconnected');
 }
 
 main().catch((err) => {
