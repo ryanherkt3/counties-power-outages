@@ -64,7 +64,22 @@ async function trySendEmails(
             const outageAddress = outage.address ? outage.address.toLowerCase() : '';
             const outageStatus = outage.statustext ? outage.statustext.toLowerCase() : '';
 
-            const locationMatches = subLocation && outageAddress.includes(subLocation);
+            // Remove location endings from the sub location string
+            const locationEndings = [
+                'st', 'pl', 'rd', 'dr', 'ct', 'ave', 'wy', 'cres', 'ln', 'cl', 'gr', 'bvd', 'cr', 'esp',
+                'street', 'place', 'road', 'drive', 'court', 'avenue', 'way', 'crescent',
+                'lane', 'close', 'grove', 'boulevard', 'esplanade'
+            ];
+
+            const locations = subLocation.split(' ').filter((x) => {
+                return !locationEndings.includes(x);
+            });
+
+            let locationMatches = false;
+            for (const location of locations) {
+                locationMatches = outageAddress.includes(location);
+            }
+
             const coordsMatch = outage.hull ?
                 subCoords && coordIsInOutageZone(subCoords, outage.hull, outageCoords) :
                 false;
