@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { FormValues, NotificationSub, OutageDBData } from './definitions';
+import { ChallengeVariables, FormValues, NotificationSub, OutageDBData } from './definitions';
 
 const prisma = new PrismaClient();
 
@@ -74,6 +74,57 @@ export async function getUserNotifByID(id: string | null) {
     try {
         if (id) {
             const userNotif: NotificationSub | null = await prisma.notifications.findFirst({ where: { id: id } });
+            return userNotif;
+        }
+
+        return null;
+    }
+    catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+/**
+ * Get a subscription based on its location.
+ *
+ * @param {string | null} location the subscription location
+ * @param {ChallengeVariables} challengeVariables to determine whether to filter further by email or ID
+ * @returns {NotificationSub | null | boolean}
+ */
+export async function getUserNotifByLocation(location: string | null, challengeVariables: ChallengeVariables) {
+    try {
+        if (location) {
+            const { subIdentifier, subParam } = challengeVariables;
+
+            let userNotif: NotificationSub | null = null;
+            if (subIdentifier === 'id') {
+                userNotif = await prisma.notifications.findFirst(
+                    {
+                        where: {
+                            location: {
+                                equals: location,
+                                mode: 'insensitive'
+                            },
+                            id: subParam
+                        }
+                    }
+                );
+            }
+            else if (subIdentifier === 'email') {
+                userNotif = await prisma.notifications.findFirst(
+                    {
+                        where: {
+                            location: {
+                                equals: location,
+                                mode: 'insensitive'
+                            },
+                            email: subParam
+                        }
+                    }
+                );
+            }
+
             return userNotif;
         }
 

@@ -1,7 +1,8 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { FormFields, FormValues } from './definitions';
+import { ChallengeVariables, FormFields, FormValues } from './definitions';
+import { getUserNotifByLocation } from './database';
 
 /**
  * Update information related to the subscription. Called after submitting the subscription form.
@@ -65,6 +66,46 @@ export async function getSubscriptions(email: string) {
     catch (error) {
         console.log('Error getting subscriptions', error);
     }
+}
+
+/**
+ * Return a subscription by ID
+ *
+ * @param {string} id
+ * @returns {Object} subscription
+ */
+export async function getSubById(id: string) {
+    // Return empty array if no ID provided
+    if (!id) {
+        return [];
+    }
+
+    const subReq = await fetch(process.env.API_URL + `/subscription?id=${id}`, {
+        headers: {
+            'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
+        }
+    });
+    const subJson = await subReq.json();
+
+    return subJson.sub;
+}
+
+/**
+ * Return a subscription by location
+ *
+ * @param {string} location
+ * @param {ChallengeVariables} challengeVariables
+ * @returns {boolean|Object} subscription (or false if no location provided)
+ */
+export async function getSubByLocation(location: string, challengeVariables: ChallengeVariables) {
+    // Return false if no location provided
+    if (!location) {
+        return false;
+    }
+
+    const userSub = await getUserNotifByLocation(location, challengeVariables);
+
+    return userSub;
 }
 
 /**
