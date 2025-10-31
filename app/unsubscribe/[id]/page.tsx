@@ -11,7 +11,7 @@ export default async function UnsubscribePage({ params }: { params: Promise<{ id
 
     const buttonClasses = 'bg-red-600 hover:bg-red-800 text-white text-lg p-4 rounded-xl w-fit p-3 cursor-pointer';
 
-    // Get the data
+    // Get the data - TODO move to server lib function
     const unSubReq = await fetch(process.env.API_URL + '/subscription', {
         method: 'DELETE',
         body: JSON.stringify({ id: id }),
