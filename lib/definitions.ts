@@ -88,7 +88,15 @@ export type SearchParams = SearchData & {
     outage: string | undefined
 }
 
-export type PromiseSearchParams = Promise<SearchParams>
+export type PromiseSearchParams = Promise<SearchParams>;
+
+export type ChallengeOutcome = 'pending' | 'success' | 'failed';
+
+type ChallengeIdentifier = 'email' | 'id';
+export type ChallengeVariables = {
+    subIdentifier: ChallengeIdentifier;
+    subParam: string;
+}
 
 export type OutageOverlayStates = {
     cardClickShow: boolean,

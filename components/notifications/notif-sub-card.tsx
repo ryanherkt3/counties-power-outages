@@ -1,7 +1,7 @@
 'use client';
 
 import {
-    AtSymbolIcon, BoltIcon, CalendarIcon, MapPinIcon, MinusIcon, PlusIcon, TrashIcon
+    AtSymbolIcon, BoltIcon, CalendarIcon, MapPinIcon, MinusIcon, PencilIcon, PlusIcon, TrashIcon
 } from '@heroicons/react/24/outline';
 import { NotificationSub } from '../../lib/definitions';
 import { useState } from 'react';
@@ -26,7 +26,7 @@ export default function NotificationCard(
     const cardSections = getCardSections(data);
     const outagesArray = plannedOutages.length ? plannedOutages.split(',') : [];
 
-    const unsubCSS = 'flex flex-row gap-2 bg-red-600 hover:bg-red-800 text-white rounded-xl w-fit p-3 cursor-pointer';
+    const buttonCSS = 'flex flex-row gap-2 bg-red-600 hover:bg-red-800 text-white rounded-xl w-fit p-3 cursor-pointer';
 
     return (
         <div className='flex flex-col gap-4 shrink-0 p-4 rounded-lg border border-gray-700' >
@@ -94,25 +94,41 @@ export default function NotificationCard(
                 }
             </div>
 
-            <button
-                className={
-                    clsx(
-                        unsubCSS,
-                        {
-                            'mt-4': showContents
-                        }
-                    )
-                }
-                onClick={
-                    () => {
-                        removeSubCb();
-                        deleteSubscription(data.id);
+            <div className='flex flex-row gap-4 justify-between'>
+                <Link
+                    className={
+                        clsx(
+                            buttonCSS,
+                            {
+                                'mt-4': showContents
+                            }
+                        )
                     }
-                }
-            >
-                <TrashIcon className="w-7"></TrashIcon>
-                <span>Unsubscribe</span>
-            </button>
+                    href={`/subscription/${data.id}?showchallenge=0`}
+                >
+                    <PencilIcon className="w-7"></PencilIcon>
+                    <span>Manage</span>
+                </Link>
+                <button
+                    className={
+                        clsx(
+                            buttonCSS,
+                            {
+                                'mt-4': showContents
+                            }
+                        )
+                    }
+                    onClick={
+                        () => {
+                            removeSubCb();
+                            deleteSubscription(data.id);
+                        }
+                    }
+                >
+                    <TrashIcon className="w-7"></TrashIcon>
+                    <span>Unsubscribe</span>
+                </button>
+            </div>
         </div>
     );
 }
