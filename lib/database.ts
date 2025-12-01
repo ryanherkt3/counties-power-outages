@@ -1,7 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 import { ChallengeVariables, FormValues, NotificationSub, OutageDBData } from './definitions';
 
-const prisma = new PrismaClient();
+let prisma: PrismaClient | null = null;
+
+function getPrisma() {
+    if (!prisma) {
+        prisma = new PrismaClient();
+    }
+    return prisma;
+}
 
 /**
  * Get all outages from the database
@@ -10,7 +17,7 @@ const prisma = new PrismaClient();
  */
 export async function getAllOutages() {
     try {
-        const allOutages: Array<OutageDBData> = await prisma.outages.findMany();
+        const allOutages: Array<OutageDBData> = await getPrisma().outages.findMany();
 
         return allOutages;
     }
@@ -27,7 +34,7 @@ export async function getAllOutages() {
  */
 export async function getAllNotifications() {
     try {
-        const allNotifications: Array<NotificationSub> = await prisma.notifications.findMany();
+        const allNotifications: Array<NotificationSub> = await getPrisma().notifications.findMany();
 
         return allNotifications;
     }
@@ -47,7 +54,7 @@ export async function getAllNotifications() {
  */
 export async function updateNotifOutageInfo(outageInfo: string, id: string) {
     try {
-        const updateOutageInfo: NotificationSub = await prisma.notifications.update({
+        const updateOutageInfo: NotificationSub = await getPrisma().notifications.update({
             where: {
                 id: id
             },
@@ -73,7 +80,7 @@ export async function updateNotifOutageInfo(outageInfo: string, id: string) {
 export async function getUserNotifByID(id: string | null) {
     try {
         if (id) {
-            const userNotif: NotificationSub | null = await prisma.notifications.findFirst({ where: { id: id } });
+            const userNotif: NotificationSub | null = await getPrisma().notifications.findFirst({ where: { id: id } });
             return userNotif;
         }
 
@@ -99,7 +106,7 @@ export async function getUserNotifByLocation(location: string | null, challengeV
 
             let userNotif: NotificationSub | null = null;
             if (subIdentifier === 'id') {
-                userNotif = await prisma.notifications.findFirst(
+                userNotif = await getPrisma().notifications.findFirst(
                     {
                         where: {
                             location: {
@@ -112,7 +119,7 @@ export async function getUserNotifByLocation(location: string | null, challengeV
                 );
             }
             else if (subIdentifier === 'email') {
-                userNotif = await prisma.notifications.findFirst(
+                userNotif = await getPrisma().notifications.findFirst(
                     {
                         where: {
                             location: {
@@ -145,7 +152,7 @@ export async function getUserNotifByLocation(location: string | null, challengeV
 export async function getUserNotifByEmail(email: string | null) {
     try {
         if (email) {
-            const userNotifs: Array<NotificationSub> = await prisma.notifications.findMany({ where: { email: email } });
+            const userNotifs: Array<NotificationSub> = await getPrisma().notifications.findMany({ where: { email: email } });
             return userNotifs;
         }
 
@@ -186,7 +193,7 @@ export async function createNewUserNotification(data: FormValues) {
             }
         } while (!idIsNew);
 
-        const createNewNotif = await prisma.notifications.create({
+        const createNewNotif = await getPrisma().notifications.create({
             data: hasCoordinates ?
                 {
                     id: notifID,
@@ -222,7 +229,7 @@ export async function updateExistingUserNotification(data: FormValues) {
     try {
         const { id, hasCoordinates, location, latitude, longtitude, email } = data;
 
-        const updateUserNotif: NotificationSub = await prisma.notifications.update({
+        const updateUserNotif: NotificationSub = await getPrisma().notifications.update({
             where: {
                 id: id
             },
@@ -255,7 +262,7 @@ export async function updateExistingUserNotification(data: FormValues) {
  */
 export async function deleteUserNotification(id: string) {
     try {
-        const deleteUserNotif: NotificationSub = await prisma.notifications.delete({ where: { id: id } });
+        const deleteUserNotif: NotificationSub = await getPrisma().notifications.delete({ where: { id: id } });
 
         return deleteUserNotif;
     }
