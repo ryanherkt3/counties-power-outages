@@ -1,12 +1,5 @@
 {
-    "intro-1": "Welcome to the Counties Power Outages App, a React application built around the power outages in the Counties Manukau region in New Zealand.",
-    "intro-2": "This app is not built by Counties Power, nor does it have any affiliation with the existing app they have built.",
-    "intro-3": "I built this app because I was not only unsatisfied with the existing app's UI for its planned outages section, but also because when there is a planned power outage in my neighbourhood, the letter that Counties Power sends often comes with a few days notice.",
-    "intro-4": "So, I decided to build an app that solve both these problems by creating an easy to navigate page showing the planned outages, and a page where it is possible to subscribe to email alerts for notifications in your area.",
-    "outages": "View a full list of planned outages from Counties Power on our Outages page. To make your user experience as smooth as possible, we show five outages per page and have built comprehensive searching tools to allow you to find outages of interest. The search functionality allows outages to be filtered by outage status (Scheduled, Postponed, Cancelled; and a special Active status not offered by Counties Power), outage start date (and outage end date if you want to search in a specific date range), and by whatever is entered in the search box - for example a street name.",
-    "individual-outage": "View an individual outage after hovering on its title on our Outages page, and get a comprehensive breakdown of the specific outage as well as an embedded map showing the approximate location of where the outage is happening.",
-    "notifications": "Subscribe to email alerts on our Notifications page and get notified when outages are happening in your area! No account is required! You can also check for existing subscriptions on this page, and unsubscribe to any if you wish. Subscribing to email alerts for specific outages via the outages page may also be possible in the future.",
-
+    "disclaimer": "This app is not built by Counties Power, nor does it have any affiliation with the existing app they have built.",
     "how-notifs-work-1": "Every day, at 12PM NZ time, the system checks if an outage is planned in the area you subscribed to within the next seven days.",
     "how-notifs-work-2": "If one is, you will receive an email with details about the outage - when it is, the start and end times, and how many customers are affected. You may also receive future emails if the status of the outage changes.",
     "subscribe-with-coords-1": "Search for your address on $mapsLink",

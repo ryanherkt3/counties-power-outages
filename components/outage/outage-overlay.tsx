@@ -26,7 +26,6 @@ export default function OutageOverlay() {
 
     const canSeeOverlay = outageOverlayView.cardClickShow || outageOverlayView.isVisible === 'Open';
 
-
     const [embedLink, setEmbedLink] = useState<string | null>(null);
     useEffect(() => {
         // Set the no-scroll class for the document body as appropriate
