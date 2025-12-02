@@ -4,10 +4,16 @@ import { coordIsInOutageZone, getManipulatedOutages } from '@/lib/utils';
 import { NextRequest } from 'next/server';
 import content from './../../content.json';
 import { getAllNotifications, getAllOutages, updateNotifOutageInfo } from '@/lib/database';
-
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+let prisma: PrismaClient | null = null;
+
+function getPrisma() {
+    if (!prisma) {
+        prisma = new PrismaClient();
+    }
+    return prisma;
+}
 
 /**
  * Attempt to send notification emails to users if required.
@@ -163,7 +169,7 @@ export async function GET(request: NextRequest) {
 
     // Early return if no outages have been reported
     if (outages.length === 0) {
-        await prisma.$disconnect();
+        await getPrisma().$disconnect();
 
         return new Response(
             JSON.stringify(
@@ -182,7 +188,7 @@ export async function GET(request: NextRequest) {
 
     // Early return if there are no active subscriptions
     if (subscriptions.length === 0) {
-        await prisma.$disconnect();
+        await getPrisma().$disconnect();
 
         return new Response(JSON.stringify({ 'success': true }), {
             status: 200,
@@ -196,7 +202,7 @@ export async function GET(request: NextRequest) {
 
     console.log(`Emails sent: ${emailCount}`);
 
-    await prisma.$disconnect();
+    await getPrisma().$disconnect();
 
     return new Response(JSON.stringify({ 'success': true }), {
         status: 200,
