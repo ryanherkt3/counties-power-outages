@@ -44,7 +44,7 @@ export default function FilterOverlay() {
         <div
             className={
                 clsx(
-                    'fixed flex top-0 left-0 bottom-0 w-[100%] h-[100%] z-20 bg-[rgba(0,0,0,0.5)]',
+                    'fixed flex top-0 left-0 bottom-0 w-full h-full z-20 bg-[rgba(0,0,0,0.5)]',
                     {
                         'hidden': !filterOverlayView.isVisible
                     }
@@ -54,7 +54,7 @@ export default function FilterOverlay() {
             <div className='sm:w-[50%] w-[80%] h-fit max-h-[60%] overflow-y-auto m-auto'>
                 <div className="flex flex-col gap-4 bg-white p-6">
                     <div className="flex flex-row gap-2 justify-between text-black">
-                        <span className="text-center text-2xl font-semibold">Choose the {type}</span>
+                        <span className="text-center text-2xl font-semibold grow">Choose the {type}</span>
                         <button onClick={
                             () => {
                                 dispatch(
@@ -79,7 +79,7 @@ export default function FilterOverlay() {
                             const propText = type.includes('Date') ? dateText : statusText;
 
                             return (
-                                <span
+                                <button
                                     key={propText || 'reset-filter'}
                                     onClick={
                                         () => {
@@ -107,7 +107,7 @@ export default function FilterOverlay() {
                                     }
                                 >
                                     {option}
-                                </span>
+                                </button>
                             );
                         })
                     }
@@ -138,28 +138,30 @@ function getFilterOptions(
     const { startdate, enddate } = filterValues;
 
     if (filterType === 'Status') {
-        const unselectedHoverClass = 'text-black bg-gray-300 hover:text-white';
+        const unselectedHoverClass = 'text-black hover:text-white border-2';
 
         const statuses = [
             {
                 text: 'Active',
                 selectedClass: `${commonOptionClass} hover:bg-green-600`,
-                unselectedClass: `${commonOptionClass} ${unselectedHoverClass} hover:bg-green-600`,
+                unselectedClass:
+                    `${commonOptionClass} ${unselectedHoverClass} text-green-600 border-green-600 hover:bg-green-600`,
             },
             {
                 text: 'Scheduled',
                 selectedClass: `${commonOptionClass} hover:bg-blue-700`,
-                unselectedClass: `${commonOptionClass} ${unselectedHoverClass} hover:bg-blue-700`,
+                unselectedClass:
+                    `${commonOptionClass} ${unselectedHoverClass} text-blue-600 border-blue-600 hover:bg-blue-700`,
             },
             {
                 text: 'Postponed',
                 selectedClass: `${commonOptionClass} hover:bg-red-600 hover:text-white`,
-                unselectedClass: `${commonOptionClass} ${unselectedHoverClass} hover:bg-red-600`,
+                unselectedClass: `${commonOptionClass} ${unselectedHoverClass} text-red-600 border-red-600 hover:bg-red-600`,
             },
             {
                 text: 'Cancelled',
                 selectedClass: `${commonOptionClass} hover:bg-orange-600 hover:text-white`,
-                unselectedClass: `${commonOptionClass} ${unselectedHoverClass} hover:bg-orange-600`,
+                unselectedClass: `${commonOptionClass} ${unselectedHoverClass} text-orange-600 border-orange-600 hover:bg-orange-600`,
             },
         ];
 
@@ -236,8 +238,8 @@ function getFilterOptions(
     }
 
     if (filterUsed) {
-        options.unshift(
-            <div className={`${commonOptionClass} bg-gray-600 hover:bg-gray-800 text-white`}>Reset Filter</div>
+        options.push(
+            <div className={`${commonOptionClass} border-2 border-gray-600 hover:bg-gray-600 hover:text-white`}>Reset</div>
         );
     }
 

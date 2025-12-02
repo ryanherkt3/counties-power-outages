@@ -25,11 +25,11 @@ export default function FilterType(
         param = param.charAt(0).toUpperCase() + param.slice(1);
     }
 
-    const btnCSS = 'flex flex-row items-center gap-2 p-3 bg-red-600 hover:bg-red-800 ' +
-        'text-white rounded-xl cursor-pointer';
+    const btnCSS = 'flex flex-row items-center gap-2 p-3 border-1 border-red-600 hover:bg-red-600 grow ' +
+        'text-red-600 hover:text-white rounded-xl cursor-pointer justify-center';
 
     return (
-        <div
+        <button
             className={btnCSS}
             onClick={
                 () => {
@@ -46,10 +46,10 @@ export default function FilterType(
                 }
             }
         >
-            <div className="font-semibold">{type}</div>
+            <div className="font-semibold">{type.toUpperCase()}</div>
             {
                 param.length ? <div>{param}</div> : null
             }
-        </div>
+        </button>
     );
 }

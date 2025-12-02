@@ -117,9 +117,6 @@ export default function OutagesList(
 
     return (
         <div className="flex flex-col gap-6 px-4 py-6 page-min-height">
-            <div className="text-xl text-center">
-                Click on an outage to display more information, or use the search functions to find a specific outage
-            </div>
             {searchSection}
             <CurrentOutages
                 currentPage={currentPage}
@@ -170,11 +167,13 @@ function getQueryString(searchParams: SearchParams) {
  */
 function getSearchSection(startDateSF: string, endDateSF: string, startDateEF: string, endDateEF: string) {
     return (
-        <div className="flex flex-wrap flex-row gap-6">
-            <FilterType type="Status" optionalDates={null} />
-            <FilterType type="Start Date" optionalDates={[startDateSF, endDateSF]} />
-            <FilterType type="End Date" optionalDates={[startDateEF, endDateEF]} />
-            <div className="flex-grow min-w-full md:min-w-[unset]">
+        <div className="flex flex-col gap-6">
+            <div className="flex flex-col sm:flex-row gap-6 justify-between">
+                <FilterType type="Status" optionalDates={null} />
+                <FilterType type="Start Date" optionalDates={[startDateSF, endDateSF]} />
+                <FilterType type="End Date" optionalDates={[startDateEF, endDateEF]} />
+            </div>
+            <div className="w-full">
                 <Search placeholder="Search outages..." />
             </div>
         </div>

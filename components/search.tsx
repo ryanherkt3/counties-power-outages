@@ -11,7 +11,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
     const pathname = usePathname();
     const { replace } = useRouter();
 
-    const paramName = pathname.includes('outages') ? 'query' : 'email';
+    const paramName = pathname.includes('notifications') ? 'email' : 'query';
     const [inputValue, setInputValue] = useState(searchParams.get(paramName) || '');
 
     const handleSearch = useDebouncedCallback((term) => {
@@ -35,7 +35,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
     const xIconClasses = 'absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 h-7 w-7';
 
     return (
-        <div className="relative flex-grow">
+        <div className="relative grow">
             <label htmlFor="search" className="sr-only">Search</label>
             <input
                 className={`${inputClasses} placeholder:text-gray-500 border border-red-600 outline-none`}

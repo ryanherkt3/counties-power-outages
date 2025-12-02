@@ -77,7 +77,7 @@ export default function Menu() {
         return (
             <div
                 className="flex sticky top-0 h-20 p-4 items-center justify-between gap-10 border-b border-gray-400 bg-white z-10
-                bg-gradient-to-r from-red-500 to-slate-800"
+                bg-linear-to-r from-red-500 to-slate-800"
             >
                 <div>
                     <Link
@@ -123,7 +123,7 @@ export default function Menu() {
 
     // Desktop menu
     return (
-        <div className="flex flex-col h-[100vh] p-10 gap-12 fixed w-[400px] bg-gradient-to-b from-red-500 to-slate-800">
+        <div className="flex flex-col h-screen p-10 gap-12 fixed w-[400px] bg-linear-to-b from-red-500 to-slate-800">
             <Link
                 href="/"
                 className={
@@ -137,7 +137,7 @@ export default function Menu() {
             >
                 Counties Power Outages App
             </Link>
-            <div className='flex flex-col gap-6 grow-1'>
+            <div className='flex flex-col gap-6 grow'>
                 <div className='flex flex-col gap-10'>
                     {
                         getMenuLinks(false, menuLinks, resetSmallNavOpen, pathname)
