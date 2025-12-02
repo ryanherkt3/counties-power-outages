@@ -107,7 +107,7 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className='w-[80%]'>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                         <label htmlFor="email" className="text-lg font-medium">Email</label>

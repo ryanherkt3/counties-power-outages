@@ -30,7 +30,7 @@ export default function ClientLayout({ items }: { items: ReactNode; }) {
             <div className='lg:min-h-full lg:min-w-[400px] lg:max-w-[400px]'>
                 <Menu />
             </div>
-            <div className='flex flex-col'>
+            <div className='flex flex-col w-full'>
                 {items}
                 <footer className={`${flexClasses} ${footerClasses}`}>
                     <FooterInfo />
