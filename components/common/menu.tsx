@@ -179,7 +179,7 @@ function getMenuLinks(isSmallMenu: boolean, links: MenuLink[], resetSmallNavOpen
             <Link
                 key={href}
                 href={href}
-                onClick={() => resetSmallNavOpen}
+                onClick={() => resetSmallNavOpen()}
                 className={
                     clsx(
                         'font-semibold',
