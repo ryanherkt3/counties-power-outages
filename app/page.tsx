@@ -1,4 +1,3 @@
-import { getActiveOutages } from '../lib/utils';
 import { Metadata } from 'next';
 import OutagesList from '../components/outages-list';
 import { PromiseSearchParams } from '@/lib/definitions';
@@ -15,9 +14,7 @@ export default async function OutagesPage(props: { searchParams: PromiseSearchPa
         return notFound();
     }
 
-    const outages = await getActiveOutages();
-
     return (
-        <OutagesList searchParams={searchParams} outages={outages} />
+        <OutagesList searchParams={searchParams} />
     );
 }

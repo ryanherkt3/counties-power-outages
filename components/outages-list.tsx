@@ -14,53 +14,26 @@ import { update as outageOverlayUpdate } from '@/state/outage-overlay-view/outag
 import { update as filterOverlayUpdate } from '@/state/filter-overlay-view/filterOverlayView';
 import { OutageData, SearchParams, SelectedFilterOverlayValues } from '../lib/definitions';
 import { RootState } from '../state/store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Loader from './common/loader';
+import { getActiveOutages } from '@/lib/actions';
 
-export default function OutagesList(
-    {
-        searchParams,
-        outages
-    } :
-    {
-        searchParams: SearchParams,
-        outages: OutageData[]
-    }
-) {
-    const currentPage = Number(searchParams.page) || 1;
-
-    const filteredNotSearchedOutages = getFilteredOutages(outages, null);
-    const filteredOutages = getFilteredOutages(outages, searchParams);
-
-    // Pagination values
-    const outagesPerPage = 5;
-    const totalPages = Math.ceil(filteredOutages.length / outagesPerPage);
-
-    // Start and end dates for the filters
-    const startDate = filteredNotSearchedOutages[0]?.shutdowndatetime || '';
-    const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.shutdowndatetime || '';
-    const startDateEF = searchParams.enddate ? getFilteredDate(searchParams.enddate) : endDate;
-    const endDateSF = searchParams.startdate ? getFilteredDate(searchParams.startdate) : startDate;
-
-    const searchSection = getSearchSection(startDate, startDateEF, endDateSF, endDate);
+export default function OutagesList({ searchParams } : { searchParams: SearchParams }) {
+    const [outages, setOutages] = useState<OutageData[]>();
 
     const outageOverlayView = useSelector((state: RootState) => state.outageOverlayView.value);
     const dispatch = useDispatch();
 
-    // Show the outage overlay after the page loads if we can do so
-    if (searchParams.outage && outageOverlayView.isVisible === 'Hidden') {
-        const outageOverlayViewData = outages.filter((outage) => {
-            return outage.id === searchParams.outage;
-        })[0];
-
-        // Dispatch the events to show the outage overlay, otherwise ignore it
-        if (outageOverlayViewData) {
-            dispatch(
-                outageOverlayUpdate(
-                    { cardClickShow: false, isVisible: 'Open', data: outageOverlayViewData }
-                )
-            );
+    useEffect(() => {
+        const getOutages = async () => {
+            const outages = await getActiveOutages();
+            setOutages(outages);
         }
-    }
+
+        if (!outages) {
+            getOutages();
+        }
+    });
 
     // Update the set filter values if visiting the outages page with filters set in the URL
     const filterOverlayView = useSelector((state: RootState) => state.filterOverlayView.value);
@@ -89,6 +62,42 @@ export default function OutagesList(
         }
     }, [searchParams, filterOverlayView]);
 
+    if (!outages) {
+        return <Loader text={'Connecting to grid'} />
+    }
+    
+    const currentPage = Number(searchParams.page) || 1;
+
+    const filteredNotSearchedOutages = getFilteredOutages(outages, null);
+    const filteredOutages = getFilteredOutages(outages, searchParams);
+
+    // Pagination values
+    const outagesPerPage = 5;
+    const totalPages = Math.ceil(filteredOutages.length / outagesPerPage);
+
+    // Start and end dates for the filters
+    const startDate = filteredNotSearchedOutages[0]?.shutdowndatetime || '';
+    const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.shutdowndatetime || '';
+    const startDateEF = searchParams.enddate ? getFilteredDate(searchParams.enddate) : endDate;
+    const endDateSF = searchParams.startdate ? getFilteredDate(searchParams.startdate) : startDate;
+
+    const searchSection = getSearchSection(startDate, startDateEF, endDateSF, endDate);
+
+    // Show the outage overlay after the page loads if we can do so
+    if (searchParams.outage && outageOverlayView.isVisible === 'Hidden') {
+        const outageOverlayViewData = outages.filter((outage) => {
+            return outage.id === searchParams.outage;
+        })[0];
+
+        // Dispatch the events to show the outage overlay, otherwise ignore it
+        if (outageOverlayViewData) {
+            dispatch(
+                outageOverlayUpdate(
+                    { cardClickShow: false, isVisible: 'Open', data: outageOverlayViewData }
+                )
+            );
+        }
+    }
 
     // Early return if there are no outages to report
     if (!filteredOutages.length) {

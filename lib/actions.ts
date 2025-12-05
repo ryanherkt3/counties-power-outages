@@ -1,8 +1,65 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { ChallengeVariables, FormFields, FormValues } from './definitions';
+import { ChallengeVariables, FormFields, FormValues, OutageData } from './definitions';
 import { getUserNotifByLocation } from './database';
+import { getTimesAndActiveOutage } from './utils';
+
+/**
+ * Return the active outages
+ *
+ * @returns {Object} outages
+ */
+export async function getActiveOutages() {
+    console.log(process.env.API_URL);
+    
+    const outagesReq = await fetch(process.env.API_URL + '/getoutages', {
+        headers: {
+            'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
+        }
+    });
+
+    const outagesJson = await outagesReq.json();
+
+    let outages: Array<OutageData> = outagesJson.planned_outages;
+
+    outages.map((outage: OutageData) => {
+        const shutdownperiods = outage.shutdownperiods[0];
+
+        if (shutdownperiods.start && shutdownperiods.end) {
+            const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
+            outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
+
+            if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
+                outage.statustext = 'Active';
+            }
+        }
+    });
+
+    outages = outages.filter((outage: OutageData) => {
+        return outage.expiredOutage === false;
+    }).sort((a: OutageData, b: OutageData) => {
+        if (a.shutdowndatetime && b.shutdowndatetime &&
+            a.shutdownperiods && a.shutdownperiods[0] && a.shutdownperiods[0].start &&
+            b.shutdownperiods && b.shutdownperiods[0] && b.shutdownperiods[0].start) {
+            const aTime = new Date(a.shutdowndatetime).getTime() / 1000;
+            const bTime = new Date(b.shutdowndatetime).getTime() / 1000;
+
+            const aStartTime = new Date(a.shutdownperiods[0].start).getTime() / 1000;
+            const bStartTime = new Date(b.shutdownperiods[0].start).getTime() / 1000;
+
+            if (aTime === bTime) {
+                return aStartTime - bStartTime;
+            }
+            return aTime - bTime;
+        }
+
+        return 0;
+    });
+
+    return outages;
+}
+
 
 /**
  * Update information related to the subscription. Called after submitting the subscription form.

@@ -83,59 +83,6 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
 }
 
 /**
- * Return the active outages
- *
- * @returns {Object} outages
- */
-export async function getActiveOutages() {
-    const outagesReq = await fetch(process.env.API_URL + '/getoutages', {
-        headers: {
-            'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
-        }
-    });
-
-    const outagesJson = await outagesReq.json();
-
-    let outages: Array<OutageData> = outagesJson.planned_outages;
-
-    outages.map((outage: OutageData) => {
-        const shutdownperiods = outage.shutdownperiods[0];
-
-        if (shutdownperiods.start && shutdownperiods.end) {
-            const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
-            outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
-
-            if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
-                outage.statustext = 'Active';
-            }
-        }
-    });
-
-    outages = outages.filter((outage: OutageData) => {
-        return outage.expiredOutage === false;
-    }).sort((a: OutageData, b: OutageData) => {
-        if (a.shutdowndatetime && b.shutdowndatetime &&
-            a.shutdownperiods && a.shutdownperiods[0] && a.shutdownperiods[0].start &&
-            b.shutdownperiods && b.shutdownperiods[0] && b.shutdownperiods[0].start) {
-            const aTime = new Date(a.shutdowndatetime).getTime() / 1000;
-            const bTime = new Date(b.shutdowndatetime).getTime() / 1000;
-
-            const aStartTime = new Date(a.shutdownperiods[0].start).getTime() / 1000;
-            const bStartTime = new Date(b.shutdownperiods[0].start).getTime() / 1000;
-
-            if (aTime === bTime) {
-                return aStartTime - bStartTime;
-            }
-            return aTime - bTime;
-        }
-
-        return 0;
-    });
-
-    return outages;
-}
-
-/**
  * Return a date in the MM/DD/YYYY format
  *
  * @param {string} date the date to filter (e.g. 15/1/2025)

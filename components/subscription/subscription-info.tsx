@@ -5,6 +5,7 @@ import Link from 'next/link';
 import NotifSubForm from '@/components/notifications/notif-sub-form';
 import { getSubById } from '@/lib/actions';
 import { useEffect, useState } from 'react';
+import Loader from '../common/loader';
 
 export default function SubscriptionInfo({ id }: { id: string }) {
     const [getSub, setGetSub] = useState(true);
@@ -23,22 +24,7 @@ export default function SubscriptionInfo({ id }: { id: string }) {
     });
 
     if (getSub) {
-        return (
-            <div className="flex flex-col px-4 py-6 page-min-height">
-                <div className="flex flex-col gap-12 py-12 my-auto items-center">
-                    <div className="flex flex-col gap-6 items-center">
-                        <div className="flex items-center justify-center text-red-600">
-                            <div className="dots" aria-hidden>
-                                <span className="dot dot-1" />
-                                <span className="dot dot-2" />
-                                <span className="dot dot-3" />
-                            </div>
-                        </div>
-                        <div className="text-xl text-center">Getting subscription information...</div>
-                    </div>
-                </div>
-            </div>
-        );
+        return <Loader text={'Getting subscription information'} />;
     }
 
     // Early return if no subscription is found, or no ID is provided

@@ -1,7 +1,8 @@
 'use client';
 
 import { NotificationSub, OutageData } from '@/lib/definitions';
-import { coordIsInOutageZone, getActiveOutages } from '@/lib/utils';
+import { coordIsInOutageZone } from '@/lib/utils';
+import { getActiveOutages } from '@/lib/actions';
 import NotificationCard from './notif-sub-card';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
