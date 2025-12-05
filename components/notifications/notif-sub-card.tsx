@@ -29,7 +29,12 @@ export default function NotificationCard(
     const buttonCSS = 'flex flex-row gap-2 bg-red-600 hover:bg-red-800 text-white rounded-xl w-fit p-3 cursor-pointer';
 
     return (
-        <div className='flex flex-col gap-4 shrink-0 p-4 rounded-lg border border-gray-700' >
+        <div
+            className={
+                `flex flex-col gap-4 shrink-0 p-4 rounded-lg shadow-lg cursor-pointer
+                hover:shadow-2xl bg-green-400/40 hover:bg-green-400/55`
+            }
+        >
             <div className='flex flex-row justify-between'>
                 <div className="text-2xl font-semibold">{data.location}</div>
                 <div className="cursor-pointer" onClick={
