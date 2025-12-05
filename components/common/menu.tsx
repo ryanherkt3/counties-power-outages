@@ -7,7 +7,8 @@ import clsx from 'clsx';
 import { ReactElement, useEffect, useState } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useDispatch } from 'react-redux';
-import { update } from '@/state/no-scroll/noScroll';
+import { update as scrollUpdate } from '@/state/no-scroll/noScroll';
+import { update as disclaimerUpdate } from '@/state/disclaimer-overlay-view/disclaimerOverlayView';
 import FooterInfo from './footer-info';
 import { MenuLink } from '@/lib/definitions';
 
@@ -22,7 +23,7 @@ export default function Menu() {
 
     const toggleSmallNavOpen = () => {
         setSmallNavOpen(!smallNavOpen);
-        dispatch(update(!smallNavOpen));
+        dispatch(scrollUpdate(!smallNavOpen));
     };
 
     // Reset the state of smallNavOpen when going to another page
@@ -40,7 +41,7 @@ export default function Menu() {
             setIsSmallScreen(window.innerWidth <= 1024);
             if (window.innerWidth > 1024 && smallNavOpen) {
                 setSmallNavOpen(false);
-                dispatch(update(false));
+                dispatch(scrollUpdate(false));
             }
         };
 
@@ -105,8 +106,17 @@ export default function Menu() {
                     {
                         getMenuLinks(true, menuLinks, resetSmallNavOpen, pathname)
                     }
-                    {/* TODO onClick display content.disclaimer text */}
-                    <div className='text-lg font-semibold lg:text-white lg:hover:text-white/80 hover:text-red-400 cursor-pointer mt-10 text-center'>
+                    <div
+                        className={
+                            `text-lg font-semibold lg:text-white lg:hover:text-white/80
+                            hover:text-red-400 cursor-pointer mt-10 text-center`
+                        }
+                        onClick={
+                            () => {
+                                dispatch(disclaimerUpdate(true));
+                            }
+                        }
+                    >
                         Disclaimer
                     </div>
                 </div>
@@ -142,8 +152,17 @@ export default function Menu() {
                     {
                         getMenuLinks(false, menuLinks, resetSmallNavOpen, pathname)
                     }
-                    {/* TODO onClick display content.disclaimer text */}
-                    <div className='text-2xl font-semibold lg:text-white lg:hover:text-white/80 hover:text-red-400 cursor-pointer mt-10 text-center'>
+                    <div
+                        className={
+                            `text-2xl font-semibold lg:text-white lg:hover:text-white/80 
+                            hover:text-red-400 cursor-pointer mt-10 text-center`
+                        }
+                        onClick={
+                            () => {
+                                dispatch(disclaimerUpdate(true));
+                            }
+                        }
+                    >
                         Disclaimer
                     </div>
                 </div>
