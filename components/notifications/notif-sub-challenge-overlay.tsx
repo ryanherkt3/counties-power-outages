@@ -19,9 +19,6 @@ export default function NotifSubChallengeOverlay(
         challengeVariables: ChallengeVariables;
     }
 ) {
-    const layoutCss = 'fixed flex flex-col gap-8';
-    const positionScrollCss = 'top-0 left-0 bottom-0 overflow-y-auto';
-
     const buttonCss = 'flex flex-row gap-2 bg-red-600 hover:bg-red-800 text-white self-center font-semibold rounded-xl p-3 cursor-pointer';
 
     const { register, handleSubmit, control } = useForm({
@@ -41,7 +38,13 @@ export default function NotifSubChallengeOverlay(
     };
 
     return (
-        <div className={`${layoutCss} px-4 py-6 text-center ${positionScrollCss} w-full h-full z-20 bg-white`}>
+        <div
+            className={
+                `fixed flex flex-col gap-8 px-4 py-6 text-center
+                top-0 left-0 bottom-0 overflow-y-auto
+                w-full h-full z-20 bg-linear-to-b from-red-200 to-slate-500`
+            }
+        >
             <div className="flex flex-row gap-10 justify-between">
                 <div className="text-2xl font-semibold text-black">Challenge: Please enter a location you are subscribed to</div>
                 <button onClick={ () => onSubPage ? redirect('/') : stateUpdate('failed') }>
@@ -56,8 +59,10 @@ export default function NotifSubChallengeOverlay(
                                 { ...register('location', { required: 'Enter a location' }) }
                                 placeholder='Smith Street'
                                 className={
-                                    `peer block w-full rounded-lg p-3 pr-9 text-lg placeholder:text-gray-500 border border-red-600
-                                    focus:outline-none focus:ring-0 focus:border-3 focus:border-red-800 focus-visible:border-red-800`
+                                    `bg-white peer block w-full rounded-lg p-3 pr-9 text-lg
+                                    placeholder:text-gray-500 border-2 border-red-600
+                                    focus:outline-none focus:ring-0 focus:border-4
+                                    focus:border-red-800 focus-visible:border-red-800`
                                 }
                             />
                         </div>
@@ -67,7 +72,7 @@ export default function NotifSubChallengeOverlay(
                         }
                     </div>
                 </div>
-                <div className='text-center'>Location checking is case insensitive</div>
+                <div className='text-center text-lg'>Location checking is case insensitive</div>
                 <button className={buttonCss} type='submit' disabled={isSubmitting}>Submit</button>
             </form>
         </div>

@@ -29,7 +29,7 @@ export default function ClientLayout({ items }: { items: ReactNode; }) {
             }
         >
             <DisclaimerOverlay />
-            <div className='lg:min-h-full lg:min-w-[400px] lg:max-w-[400px]'>
+            <div className='max-lg:sticky max-lg:top-0 z-10 lg:min-h-full lg:min-w-[400px] lg:max-w-[400px]'>
                 <Menu />
             </div>
             <div className='flex flex-col w-full'>

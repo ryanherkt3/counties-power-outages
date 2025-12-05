@@ -77,29 +77,25 @@ export default function Menu() {
     if (isSmallScreen) {
         return (
             <div
-                className="flex sticky top-0 h-20 p-4 items-center justify-between gap-10 border-b border-gray-400 bg-white z-10
-                bg-linear-to-r from-red-500 to-slate-800"
+                className={
+                    `flex h-20 p-4 items-center justify-between gap-10
+                    bg-linear-to-r from-red-500 to-slate-800`
+                }
             >
                 <div>
                     <Link
                         href="/"
-                        className={
-                            clsx(
-                                'text-xl font-semibold lg:text-white lg:hover:text-white/80',
-                                {
-                                    'lg:text-white lg:hover:text-white/80': pathname === '/',
-                                },
-                            )
-                        }
+                        className='text-xl font-semibold text-white hover:text-white/60'
                     >
-                        <span className='text-white'>Counties Power Outages App</span>
+                        Counties Power Outages App
                     </Link>
                 </div>
+
                 <div className={
                     clsx(
-                        'lg:flex lg:flex-row lg:gap-3 max-lg:hidden',
                         {
-                            'absolute-nav': smallNavOpen && isSmallScreen,
+                            'absolute-nav': smallNavOpen,
+                            'hidden': !smallNavOpen
                         }
                     )
                 }>
@@ -108,8 +104,8 @@ export default function Menu() {
                     }
                     <div
                         className={
-                            `text-lg font-semibold lg:text-white lg:hover:text-white/80
-                            hover:text-red-400 cursor-pointer mt-10 text-center`
+                            `text-xl font-semibold text-black hover:text-yellow-600/60
+                            cursor-pointer mt-10 text-center`
                         }
                         onClick={
                             () => {
@@ -120,11 +116,17 @@ export default function Menu() {
                         Disclaimer
                     </div>
                 </div>
-                <div className='lg:hidden'>
+                <div>
                     {
                         smallNavOpen ?
-                            <XMarkIcon className="cursor-pointer w-8 text-white" onClick={toggleSmallNavOpen.bind(null)} /> :
-                            <Bars3Icon className="cursor-pointer w-8 text-white" onClick={toggleSmallNavOpen.bind(null)} />
+                            <XMarkIcon
+                                className="cursor-pointer w-8 text-white hover:text-white/60"
+                                onClick={toggleSmallNavOpen.bind(null)}
+                            /> :
+                            <Bars3Icon
+                                className="cursor-pointer w-8 text-white hover:text-white/60"
+                                onClick={toggleSmallNavOpen.bind(null)}
+                            />
                     }
                 </div>
             </div>
@@ -136,14 +138,7 @@ export default function Menu() {
         <div className="flex flex-col h-screen p-10 gap-12 fixed w-[400px] bg-linear-to-b from-red-500 to-slate-800">
             <Link
                 href="/"
-                className={
-                    clsx(
-                        'text-3xl text-center font-semibold lg:text-white lg:hover:text-white/80',
-                        {
-                            'lg:text-white lg:hover:text-white/80': pathname === '/',
-                        },
-                    )
-                }
+                className='text-3xl text-center font-semibold text-white hover:text-white/60'
             >
                 Counties Power Outages App
             </Link>
@@ -154,8 +149,8 @@ export default function Menu() {
                     }
                     <div
                         className={
-                            `text-2xl font-semibold lg:text-white lg:hover:text-white/80 
-                            hover:text-red-400 cursor-pointer mt-10 text-center`
+                            `text-2xl font-semibold text-white hover:text-white/60 
+                            cursor-pointer mt-10 text-center`
                         }
                         onClick={
                             () => {
@@ -187,11 +182,14 @@ function getMenuLinks(isSmallMenu: boolean, links: MenuLink[], resetSmallNavOpen
                 onClick={() => resetSmallNavOpen}
                 className={
                     clsx(
-                        'font-semibold lg:text-white lg:hover:text-white/80 hover:text-red-400',
+                        'font-semibold',
                         {
-                            'text-red-600 hover:text-red-400 lg:text-white lg:hover:text-white/80': pathname === href,
-                            'text-lg': isSmallMenu,
+                            'text-xl': isSmallMenu,
                             'text-2xl': !isSmallMenu,
+                            'text-black hover:text-yellow-600/60': pathname !== href && isSmallMenu,
+                            'text-white hover:text-white/60': pathname !== href && !isSmallMenu,
+                            'text-yellow-600 hover:text-yellow-600/60': pathname === href && isSmallMenu,
+                            'text-yellow-400 hover:text-yellow-400/80': pathname === href && !isSmallMenu,
                         },
                     )
                 }
