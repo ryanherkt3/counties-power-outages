@@ -23,7 +23,6 @@ export default function NotifSubChallengeOverlay(
     const positionScrollCss = 'top-0 left-0 bottom-0 overflow-y-auto';
 
     const buttonCss = 'flex flex-row gap-2 bg-red-600 hover:bg-red-800 text-white self-center font-semibold rounded-xl p-3 cursor-pointer';
-    const inputCss = 'w-full rounded-lg border border-gray-200 p-3 text-md outline-2 placeholder:text-gray-500';
 
     const { register, handleSubmit, control } = useForm({
         defaultValues: {
@@ -42,7 +41,7 @@ export default function NotifSubChallengeOverlay(
     };
 
     return (
-        <div className={`${layoutCss} px-4 py-6 text-center ${positionScrollCss} w-[100%] h-[100%] z-20 bg-white`}>
+        <div className={`${layoutCss} px-4 py-6 text-center ${positionScrollCss} w-full h-full z-20 bg-white`}>
             <div className="flex flex-row gap-10 justify-between">
                 <div className="text-2xl font-semibold text-black">Challenge: Please enter a location you are subscribed to</div>
                 <button onClick={ () => onSubPage ? redirect('/') : stateUpdate('failed') }>
@@ -56,7 +55,10 @@ export default function NotifSubChallengeOverlay(
                             <input
                                 { ...register('location', { required: 'Enter a location' }) }
                                 placeholder='Smith Street'
-                                className={inputCss}
+                                className={
+                                    `peer block w-full rounded-lg p-3 pr-9 text-lg placeholder:text-gray-500 border border-red-600
+                                    focus:outline-none focus:ring-0 focus:border-3 focus:border-red-800 focus-visible:border-red-800`
+                                }
                             />
                         </div>
                         {

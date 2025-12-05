@@ -57,7 +57,9 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
         }
     }, [includeCoords]);
 
-    const inputClasses = 'w-full rounded-lg border border-gray-200 p-3 text-md outline-2 placeholder:text-gray-500';
+    const inputClasses = `w-full rounded-lg border border-red-600 p-3 text-md
+        placeholder:text-gray-500 focus:outline-none focus:ring-0
+        focus:border-3 focus:border-red-800 focus-visible:border-red-800 pl-10`;
 
     return (
         <>
@@ -131,7 +133,7 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
                                         }
                                     }}
                                     placeholder="Email"
-                                    className={`${inputClasses} pl-10`}
+                                    className={inputClasses}
                                 />
                             </div>
                             {
@@ -151,7 +153,7 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
                                         required: 'Enter a location'
                                     })}
                                     placeholder={content['notif-sub-form-location-placeholder']}
-                                    className={`${inputClasses} pl-10`}
+                                    className={inputClasses}
                                 />
                             </div>
                             {
@@ -194,7 +196,7 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
                                         }
                                     })}
                                     placeholder="Enter latitude (e.g. -37.12345)"
-                                    className={`${inputClasses} pl-10`}
+                                    className={inputClasses}
                                 />
                             </div>
                             {
@@ -237,7 +239,7 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
                                         }
                                     })}
                                     placeholder="Enter longtitude (e.g. 174.12345)"
-                                    className={`${inputClasses} pl-10`}
+                                    className={inputClasses}
                                 />
                             </div>
                             {

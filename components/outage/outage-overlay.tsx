@@ -44,15 +44,15 @@ export default function OutageOverlay() {
         <div
             className={
                 clsx(
-                    `${layoutClasses} px-4 py-6 text-center ${positionScrollClasses} w-[100%] h-[100%] z-20 bg-white`,
+                    `${layoutClasses} px-4 py-6 text-center ${positionScrollClasses} w-full h-full z-20 bg-white`,
                     {
                         'hidden': !canSeeOverlay
                     }
                 )
             }
         >
-            <div className="flex flex-row gap-2 justify-between">
-                <div className="text-2xl font-semibold text-black">{address}</div>
+            <div className="flex flex-row gap-8 justify-between">
+                <div className="text-2xl font-semibold text-black grow text-center">{address}</div>
                 <button onClick={
                     () => {
                         dispatch(resetAfterView());
