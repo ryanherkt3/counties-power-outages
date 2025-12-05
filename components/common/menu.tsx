@@ -138,7 +138,7 @@ export default function Menu() {
         <div className="flex flex-col h-screen p-10 gap-12 fixed w-[400px] bg-linear-to-b from-red-500 to-slate-800">
             <Link
                 href="/"
-                className='text-3xl text-center font-semibold text-white hover:text-white/60'
+                className='text-3xl text-center font-semibold text-white hover:text-yellow-400/80'
             >
                 Counties Power Outages App
             </Link>
@@ -149,7 +149,7 @@ export default function Menu() {
                     }
                     <div
                         className={
-                            `text-2xl font-semibold text-white hover:text-white/60 
+                            `text-2xl font-semibold text-white hover:text-yellow-400/80 
                             cursor-pointer mt-10 text-center`
                         }
                         onClick={
@@ -187,7 +187,7 @@ function getMenuLinks(isSmallMenu: boolean, links: MenuLink[], resetSmallNavOpen
                             'text-xl': isSmallMenu,
                             'text-2xl': !isSmallMenu,
                             'text-black hover:text-yellow-600/60': pathname !== href && isSmallMenu,
-                            'text-white hover:text-white/60': pathname !== href && !isSmallMenu,
+                            'text-white hover:text-yellow-400/80': pathname !== href && !isSmallMenu,
                             'text-yellow-600 hover:text-yellow-600/60': pathname === href && isSmallMenu,
                             'text-yellow-400 hover:text-yellow-400/80': pathname === href && !isSmallMenu,
                         },
