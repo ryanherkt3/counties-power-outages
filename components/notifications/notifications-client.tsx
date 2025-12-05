@@ -96,7 +96,7 @@ export default function NotificationsClient() {
             </div>
 
             <div className="flex flex-col gap-4 relative">
-                <div className="text-xl font-semibold">Active Subscriptions</div>
+                <div className="text-xl font-semibold text-center">Active Subscriptions</div>
                 <Search placeholder="Enter your email address"/>
             </div>
 
@@ -105,7 +105,7 @@ export default function NotificationsClient() {
             }
 
             <div className="flex flex-col gap-4">
-                <div className="text-xl font-semibold">Subscribe to Outages</div>
+                <div className="text-xl font-semibold text-center">Subscribe to Outages</div>
                 <NotifSubForm values={notifFormValues} onSubPage={false} />
             </div>
         </div>
