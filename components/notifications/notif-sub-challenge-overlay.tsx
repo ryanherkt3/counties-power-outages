@@ -1,4 +1,5 @@
-/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+
 'use client';
 
 import { getSubByLocation } from '@/lib/actions';
@@ -19,8 +20,6 @@ export default function NotifSubChallengeOverlay(
         challengeVariables: ChallengeVariables;
     }
 ) {
-    const buttonCss = 'flex flex-row gap-2 bg-red-600 hover:bg-red-800 text-white self-center font-semibold rounded-xl p-3 cursor-pointer';
-
     const { register, handleSubmit, control } = useForm({
         defaultValues: {
             location: '',
@@ -46,7 +45,9 @@ export default function NotifSubChallengeOverlay(
             }
         >
             <div className="flex flex-row gap-10 justify-between">
-                <div className="text-2xl font-semibold text-black">Challenge: Please enter a location you are subscribed to</div>
+                <div className="text-2xl font-semibold text-black">
+                    Challenge: Please enter a location you are subscribed to
+                </div>
                 <button
                     onClick={
                         () => {
@@ -63,8 +64,7 @@ export default function NotifSubChallengeOverlay(
                 </button>
             </div>
 
-            {/* todo test */}
-            <form onSubmit={() => handleSubmit(onSubmit)} className='flex flex-col gap-4'>
+            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-2">
                         <div className="flex flex-row gap-2 items-center relative">
@@ -85,8 +85,19 @@ export default function NotifSubChallengeOverlay(
                         }
                     </div>
                 </div>
+
                 <div className='text-center text-lg'>Location checking is case insensitive</div>
-                <button className={buttonCss} type='submit' disabled={isSubmitting}>Submit</button>
+
+                <button
+                    className={
+                        `flex flex-row gap-2 bg-red-600 hover:bg-red-800 text-white
+                        self-center font-semibold rounded-xl p-3 cursor-pointer`
+                    }
+                    type='submit'
+                    disabled={isSubmitting}
+                >
+                    Submit
+                </button>
             </form>
         </div>
     );

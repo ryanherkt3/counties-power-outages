@@ -98,7 +98,7 @@ const reactConfig = defineConfig([
             'no-mixed-spaces-and-tabs': 2,
             'no-negated-condition': 2,
             'no-trailing-spaces': 2,
-            'no-undef': 'off',
+            'no-undef': 'off', // TODO remove this rule
             'no-unused-expressions': 2,
             'no-unused-vars': [2, {'vars': 'local', 'args': 'after-used'}],
             'prefer-const': [2, {'destructuring': 'all'}],
