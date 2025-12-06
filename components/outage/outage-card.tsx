@@ -30,10 +30,10 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                     clsx(
                         'flex flex-col gap-4 shrink-0 p-4 rounded-lg shadow-lg hover:shadow-2xl cursor-pointer',
                         {
-                            'bg-green-400/40 hover:bg-green-400/55': statustext === 'Active',
-                            'bg-blue-500/40 hover:bg-blue-500/55': statustext === 'Scheduled',
-                            'bg-red-400/40 hover:bg-red-400/55': statustext === 'Postponed',
-                            'bg-orange-400/40 hover:bg-orange-400/55': statustext === 'Cancelled',
+                            'bg-green-400/40 hover:bg-green-400/55': statusText === 'Active',
+                            'bg-blue-500/40 hover:bg-blue-500/55': statusText === 'Scheduled',
+                            'bg-red-400/40 hover:bg-red-400/55': statusText === 'Postponed',
+                            'bg-orange-400/40 hover:bg-orange-400/55': statusText === 'Cancelled',
                         },
                     )
                 }

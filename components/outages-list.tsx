@@ -76,8 +76,8 @@ export default function OutagesList({ searchParams } : { searchParams: SearchPar
     const totalPages = Math.ceil(filteredOutages.length / outagesPerPage);
 
     // Start and end dates for the filters
-    const startDate = filteredNotSearchedOutages[0]?.shutdowndatetime || '';
-    const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.shutdowndatetime || '';
+    const startDate = filteredNotSearchedOutages[0]?.shutdownDateTime || '';
+    const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.shutdownDateTime || '';
     const startDateEF = searchParams.enddate ? getFilteredDate(searchParams.enddate) : endDate;
     const endDateSF = searchParams.startdate ? getFilteredDate(searchParams.startdate) : startDate;
 

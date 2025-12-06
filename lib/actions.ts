@@ -22,14 +22,12 @@ export async function getActiveOutages() {
     let outages: Array<OutageData> = outagesJson.planned_outages;
 
     outages.map((outage: OutageData) => {
-        const shutdownperiods = outage.shutdownperiods[0];
-
-        if (shutdownperiods.start && shutdownperiods.end) {
-            const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
+        if (outage.shutdownPeriodStart && outage.shutdownPeriodEnd) {
+            const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownPeriodStart, outage.shutdownPeriodEnd);
             outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
-            if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
-                outage.statustext = 'Active';
+            if (timesAndIsActiveOutage.activeOutage && outage.statusText !== 'Cancelled') {
+                outage.statusText = 'Active';
             }
         }
     });
@@ -37,14 +35,14 @@ export async function getActiveOutages() {
     outages = outages.filter((outage: OutageData) => {
         return outage.expiredOutage === false;
     }).sort((a: OutageData, b: OutageData) => {
-        if (a.shutdowndatetime && b.shutdowndatetime &&
-            a.shutdownperiods && a.shutdownperiods[0] && a.shutdownperiods[0].start &&
-            b.shutdownperiods && b.shutdownperiods[0] && b.shutdownperiods[0].start) {
-            const aTime = new Date(a.shutdowndatetime).getTime() / 1000;
-            const bTime = new Date(b.shutdowndatetime).getTime() / 1000;
+        if (a.shutdownDateTime && b.shutdownDateTime &&
+            a.shutdownPeriodStart &&
+            b.shutdownPeriodStart) {
+            const aTime = new Date(a.shutdownDateTime).getTime() / 1000;
+            const bTime = new Date(b.shutdownDateTime).getTime() / 1000;
 
-            const aStartTime = new Date(a.shutdownperiods[0].start).getTime() / 1000;
-            const bStartTime = new Date(b.shutdownperiods[0].start).getTime() / 1000;
+            const aStartTime = new Date(a.shutdownPeriodStart).getTime() / 1000;
+            const bStartTime = new Date(b.shutdownPeriodStart).getTime() / 1000;
 
             if (aTime === bTime) {
                 return aStartTime - bStartTime;
