@@ -1,6 +1,6 @@
 'use client';
 
-import { NotificationSub, OutageDBData } from '@/lib/definitions';
+import { Coordinate, NotificationSub, OutageDBData } from '@/lib/definitions';
 import { coordIsInOutageZone, getActiveOutages } from '@/lib/utils';
 import NotificationCard from './notif-sub-card';
 import clsx from 'clsx';
@@ -63,7 +63,7 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Array<Not
                         const { location } = subscription;
                         const locationMatches = location && outage.address && outage.address.includes(location);
 
-                        const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull, outageCoords);
+                        const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull as Coordinate[], outageCoords);
 
                         if (coordsMatch || locationMatches) {
                             outageIds = `${outageIds.length ? `${outageIds},` : ''}${outage.id}`;
