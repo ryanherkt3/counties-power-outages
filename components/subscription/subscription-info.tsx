@@ -19,7 +19,11 @@ export default function SubscriptionInfo({ id }: { id: string }) {
         };
 
         if (getSub) {
-            getSubCb();
+            getSubCb().catch(
+                (e: unknown) => {
+                    console.error('Error getting subscription', e);
+                }
+            );
         }
     });
 

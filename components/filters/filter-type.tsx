@@ -12,7 +12,7 @@ export default function FilterType(
     }:
     {
         type: 'Status' | 'Start Date' | 'End Date';
-        optionalDates: Array<string> | null;
+        optionalDates: string[] | null;
     }
 ) {
     const filterOverlayView = useSelector((state: RootState) => state.filterOverlayView.value);

@@ -1,6 +1,6 @@
 import { Decimal } from '@prisma/client/runtime/library';
 
-export type OutageDBData = {
+export interface OutageDBData {
     id: string;
     projectType: string | null;
     shutdownDateTime: string | null;
@@ -20,14 +20,14 @@ export type OutageDBData = {
     shutdownPeriodEnd: string | null;
     originalShutdownPeriodStart: string | null;
     originalShutdownPeriodEnd: string | null;
-};
+}
 
 export type OutageData = OutageDBData & {
     expiredOutage: boolean;
     dummyData: boolean;
 }
 
-export type NotificationSub = {
+export interface NotificationSub {
     id: string;
     location: string | null;
     lat: number | Decimal | null;
@@ -35,49 +35,49 @@ export type NotificationSub = {
     email: string;
     datesubscribed: string;
     outageinfo: string | null;
-};
+}
 
-export type ShutdownPeriods = {
+export interface ShutdownPeriods {
     start: string | null;
     end: string | null;
-};
+}
 
-export type Coordinate = {
+export interface Coordinate {
     lng: number | Decimal | null;
     lat: number | Decimal | null;
-};
+}
 
-export type OutageTimes = {
+export interface OutageTimes {
     startTime: string;
     endTime: string;
-};
+}
 
-export type NotifOutageInfo = {
+export interface NotifOutageInfo {
     id: string;
     emailSent: number;
     status: string;
-};
+}
 
-export type FormFields = {
+export interface FormFields {
     id: string;
     email: string;
     location: string;
     latitude: number | null;
     longtitude: number | null;
-};
+}
 
 export type FormValues = FormFields & {
     datesubscribed: string;
     hasCoordinates: boolean;
 };
 
-export type SearchData = {
+export interface SearchData {
     page: string | undefined;
     query: string | undefined;
     status: string | undefined;
     startdate: string | undefined;
     enddate: string | undefined;
-};
+}
 
 export type SearchParams = SearchData & {
     outage: string | undefined
@@ -88,12 +88,12 @@ export type PromiseSearchParams = Promise<SearchParams>;
 export type ChallengeOutcome = 'pending' | 'success' | 'failed';
 
 type ChallengeIdentifier = 'email' | 'id';
-export type ChallengeVariables = {
+export interface ChallengeVariables {
     subIdentifier: ChallengeIdentifier;
     subParam: string;
 }
 
-export type OutageOverlayStates = {
+export interface OutageOverlayStates {
     cardClickShow: boolean,
     isVisible: OverlayVisibility,
     data: OutageData
@@ -101,24 +101,24 @@ export type OutageOverlayStates = {
 
 export type OverlayVisibility = 'Hidden' | 'Open' | 'Closed';
 
-export type FilterOverlayStates = {
+export interface FilterOverlayStates {
     isVisible: boolean,
     data: FilterOverlayData,
     filterValues: SelectedFilterOverlayValues,
 }
 
-export type FilterOverlayData = {
+export interface FilterOverlayData {
     type: 'Status' | 'Start Date' | 'End Date' | 'none',
-    optionalDates: Array<string> | null;
+    optionalDates: string[] | null;
 }
 
-export type SelectedFilterOverlayValues = {
-    status: string | '',
-    startdate: string | '',
-    enddate: string | ''
+export interface SelectedFilterOverlayValues {
+    status: string,
+    startdate: string,
+    enddate: string
 }
 
-export type MenuLink = {
+export interface MenuLink {
     href: string,
     linkName: string,
 }

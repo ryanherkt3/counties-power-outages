@@ -36,7 +36,7 @@ export function isOutageExpired(dateStr: string) {
  * @param {Array<string>} splitTime [hour, minute]
  * @returns {string} the time string
  */
-export function getTimeStrings(splitTime: Array<string>) {
+export function getTimeStrings(splitTime: string[]) {
     let hourlySegment = splitTime[0];
     const minuteSegment = splitTime[1];
 
@@ -101,7 +101,7 @@ export function getFilteredDate(date: string) {
  * @param {any} searchParams address / status / start date / end date
  * @returns {Array<OutageData>} new filtered list of outages
  */
-export function getFilteredOutages(outages: Array<OutageData>, searchParams: SearchParams | null) {
+export function getFilteredOutages(outages: OutageData[], searchParams: SearchParams | null) {
     // Return original list if no search parameters
     if (searchParams === null) {
         return outages;
@@ -152,7 +152,7 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: Sea
  * @param {Array<OutageDBData>} outages from the database
  * @returns {Array<OutageDBData>} the manipulated list of outages
  */
-export function getManipulatedOutages(outages: Array<OutageDBData>) {
+export function getManipulatedOutages(outages: OutageDBData[]) {
     const manipulatedOutages: OutageDBData[] = [];
 
     for (const outage of outages) {
@@ -179,7 +179,7 @@ export function getManipulatedOutages(outages: Array<OutageDBData>) {
         }
 
         manipulatedOutages.push(outage);
-    };
+    }
 
     return manipulatedOutages;
 }
@@ -298,7 +298,7 @@ export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], ou
  */
 export function isValidEmail(email: string) {
     try {
-        const emailSchema = z.string().email();
+        const emailSchema = z.email();
         emailSchema.parse(email);
         return true;
     }
@@ -345,7 +345,7 @@ export function isValidPayloadArgument(data: string | number, dataField: string)
     if (dataField === 'date-subscribed' && typeof data === 'string') {
         // Valid date example: 28/06/2024, 11:57:05 am
         const dateRegExp = /[0-9]{1,2}\/[0-9]{1,2}\/20[0-9]{2}, [0-9]{1,2}:[0-9]{2}:[0-9]{2} (am|pm)/g;
-        const dateFormatIsValid = dateRegExp.test(data.toString());
+        const dateFormatIsValid = dateRegExp.test(data);
         return data.length <= 255 && dateFormatIsValid;
     }
 

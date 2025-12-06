@@ -47,11 +47,24 @@ export default function NotifSubChallengeOverlay(
         >
             <div className="flex flex-row gap-10 justify-between">
                 <div className="text-2xl font-semibold text-black">Challenge: Please enter a location you are subscribed to</div>
-                <button onClick={ () => onSubPage ? redirect('/') : stateUpdate('failed') }>
+                <button
+                    onClick={
+                        () => {
+                            if (onSubPage) {
+                                redirect('/');
+                            }
+                            else {
+                                stateUpdate('failed');
+                            }
+                        }
+                    }
+                >
                     <XMarkIcon className='w-7 cursor-pointer' />
                 </button>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
+
+            {/* todo test */}
+            <form onSubmit={() => handleSubmit(onSubmit)} className='flex flex-col gap-4'>
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-2">
                         <div className="flex flex-row gap-2 items-center relative">

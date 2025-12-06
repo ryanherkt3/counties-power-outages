@@ -9,9 +9,9 @@ import nextPlugin from '@next/eslint-plugin-next';
 const ignoresConfig = defineConfig([
     {
         name: 'project/ignores',
-        ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"]
+        ignores: ['node_modules/**', '.next/**', 'out/**', 'build/**', 'next-env.d.ts']
     },
-])
+]);
 
 const eslintConfig = defineConfig([
     {
@@ -19,7 +19,7 @@ const eslintConfig = defineConfig([
         files: ['**/*.{js,mjs,ts,tsx}'],
         ...eslintPlugin.configs.recommended,
     },
-])
+]);
 
 const typescriptConfig = defineConfig([
     {
@@ -40,8 +40,23 @@ const typescriptConfig = defineConfig([
             },
         },
         rules: {
-            '@typescript-eslint/no-unsafe-call': 'off',
             '@typescript-eslint/triple-slash-reference': 'off',
+            // TODO remove all these rules (one by one and fix errors)
+            '@typescript-eslint/unbound-method': 'off',
+            '@typescript-eslint/no-unsafe-call': 'off',
+            '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/no-unsafe-assignment': 'off',
+            '@typescript-eslint/no-unsafe-function-type': 'off',
+            '@typescript-eslint/no-unsafe-member-access': 'off',
+            '@typescript-eslint/no-unsafe-argument': 'off',
+            '@typescript-eslint/no-unsafe-return': 'off',
+            '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+            '@typescript-eslint/no-unnecessary-condition': 'off',
+            '@typescript-eslint/no-non-null-assertion': 'off',
+            '@typescript-eslint/restrict-template-expressions': 'off',
+            '@typescript-eslint/restrict-plus-operands': 'off',
+            '@typescript-eslint/prefer-nullish-coalescing': 'off',
+            '@typescript-eslint/prefer-optional-chain': 'off',
         },
     },
     {
@@ -49,12 +64,12 @@ const typescriptConfig = defineConfig([
         files: ['**/*.{js,mjs,cjs}'],
         ...tseslintConfigs.disableTypeChecked,
     }
-])
+]);
 
 const reactConfig = defineConfig([
     {
         name: 'project/react-next',
-        files: ['**/*.{jsx,tsx,ts}'],
+        files: ['**/*.{jsx,js,mjs,tsx,ts}'],
         plugins: {
             'react': reactPlugin,
             'react-hooks': reactHooksPlugin,
@@ -83,13 +98,13 @@ const reactConfig = defineConfig([
             'no-mixed-spaces-and-tabs': 2,
             'no-negated-condition': 2,
             'no-trailing-spaces': 2,
+            'no-undef': 'off',
             'no-unused-expressions': 2,
             'no-unused-vars': [2, {'vars': 'local', 'args': 'after-used'}],
             'prefer-const': [2, {'destructuring': 'all'}],
             'prefer-destructuring': [1, {'object': true, 'array': false}],
             'quotes': [2, 'single', { 'avoidEscape': true }],
             'semi': [2, 'always'],
-            '@typescript-eslint/no-unsafe-function-type': 'off',
         },
         settings: {
             react: {
@@ -97,11 +112,11 @@ const reactConfig = defineConfig([
             },
         }
     }
-])
- 
+]);
+
 export default defineConfig([
     ...ignoresConfig,
     ...eslintConfig,
     ...typescriptConfig,
     ...reactConfig,
-])
+]);

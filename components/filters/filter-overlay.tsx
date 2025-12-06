@@ -128,7 +128,7 @@ export default function FilterOverlay() {
 function getFilterOptions(
     filterType: string,
     filterValues: SelectedFilterOverlayValues,
-    optionalDates: Array<string> | null
+    optionalDates: string[] | null
 ) {
     const commonOptionClass = 'text-xl text-center p-3 font-semibold rounded-xl cursor-pointer';
 
@@ -156,12 +156,15 @@ function getFilterOptions(
             {
                 text: 'Postponed',
                 selectedClass: `${commonOptionClass} hover:bg-red-600 hover:text-white`,
-                unselectedClass: `${commonOptionClass} ${unselectedHoverClass} text-red-600 border-red-600 hover:bg-red-600`,
+                unselectedClass:
+                    `${commonOptionClass} ${unselectedHoverClass} text-red-600 border-red-600 hover:bg-red-600`,
             },
             {
                 text: 'Cancelled',
                 selectedClass: `${commonOptionClass} hover:bg-orange-600 hover:text-white`,
-                unselectedClass: `${commonOptionClass} ${unselectedHoverClass} text-orange-600 border-orange-600 hover:bg-orange-600`,
+                unselectedClass:
+                    `${commonOptionClass} ${unselectedHoverClass} text-orange-600
+                    border-orange-600 hover:bg-orange-600`,
             },
         ];
 
@@ -178,7 +181,7 @@ function getFilterOptions(
             options.push(
                 <OutageStatus
                     className={classToUse}
-                    statusText={text!}
+                    statusText={text}
                     overrideBg={!isSelected}
                 />,
             );
@@ -239,7 +242,11 @@ function getFilterOptions(
 
     if (filterUsed) {
         options.push(
-            <div className={`${commonOptionClass} border-2 border-gray-600 hover:bg-gray-600 hover:text-white`}>Reset</div>
+            <div
+                className={`${commonOptionClass} border-2 border-gray-600 hover:bg-gray-600 hover:text-white`}
+            >
+                Reset
+            </div>
         );
     }
 

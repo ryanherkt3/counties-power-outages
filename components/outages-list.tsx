@@ -28,10 +28,14 @@ export default function OutagesList({ searchParams } : { searchParams: SearchPar
         const getOutages = async () => {
             const outages = await getActiveOutages();
             setOutages(outages);
-        }
+        };
 
         if (!outages) {
-            getOutages();
+            getOutages().catch(
+                (e: unknown) => {
+                    console.error('Error getting outages', e);
+                }
+            );
         }
     });
 
@@ -63,9 +67,9 @@ export default function OutagesList({ searchParams } : { searchParams: SearchPar
     }, [searchParams, filterOverlayView]);
 
     if (!outages) {
-        return <Loader text={'Connecting to grid'} />
+        return <Loader text={'Connecting to grid'} />;
     }
-    
+
     const currentPage = Number(searchParams.page) || 1;
 
     const filteredNotSearchedOutages = getFilteredOutages(outages, null);
@@ -85,9 +89,9 @@ export default function OutagesList({ searchParams } : { searchParams: SearchPar
 
     // Show the outage overlay after the page loads if we can do so
     if (searchParams.outage && outageOverlayView.isVisible === 'Hidden') {
-        const outageOverlayViewData = outages.filter((outage) => {
+        const outageOverlayViewData = outages.find((outage) => {
             return outage.id === searchParams.outage;
-        })[0];
+        });
 
         // Dispatch the events to show the outage overlay, otherwise ignore it
         if (outageOverlayViewData) {

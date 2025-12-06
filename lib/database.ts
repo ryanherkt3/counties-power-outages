@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
  */
 export async function getAllOutages() {
     try {
-        const allOutages: Array<OutageDBData> = await prisma.outages.findMany();
+        const allOutages: OutageDBData[] = await prisma.outages.findMany();
 
         console.log('ao2', allOutages);
 
@@ -29,7 +29,7 @@ export async function getAllOutages() {
  */
 export async function getAllNotifications() {
     try {
-        const allNotifications: Array<NotificationSub> = await prisma.notifications.findMany();
+        const allNotifications: NotificationSub[] = await prisma.notifications.findMany();
 
         return allNotifications;
     }
@@ -147,7 +147,7 @@ export async function getUserNotifByLocation(location: string | null, challengeV
 export async function getUserNotifByEmail(email: string | null) {
     try {
         if (email) {
-            const userNotifs: Array<NotificationSub> = await prisma.notifications.findMany({ where: { email: email } });
+            const userNotifs: NotificationSub[] = await prisma.notifications.findMany({ where: { email: email } });
             return userNotifs;
         }
 

@@ -29,14 +29,14 @@ export default function Loader({ text } : { text: string }) {
                 >
                     <defs>
                         <mask id="fillMask">
-                        <rect
-                            x="0"
-                            y="0"
-                            width="100%"
-                            height="100%"
-                            fill="white"
-                            className="fill-rect"
-                        />
+                            <rect
+                                x="0"
+                                y="0"
+                                width="100%"
+                                height="100%"
+                                fill="white"
+                                className="fill-rect"
+                            />
                         </mask>
                     </defs>
 

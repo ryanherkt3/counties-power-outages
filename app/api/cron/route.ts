@@ -81,8 +81,8 @@ export async function GET(request: NextRequest) {
 /**
  * Add an outage to the DB, or update an existing one
  *
- * @param {Object} outage 
- * @returns {Object} 
+ * @param {Object} outage
+ * @returns {Object}
  */
 async function addUpdateOutage(outage: any) {
     const {
@@ -210,8 +210,8 @@ async function removeOutages() {
  * @returns {Object}
  */
 async function trySendEmails(
-    outages: Array<OutageDBData>,
-    subscriptions: Array<NotificationSub>
+    outages: OutageDBData[],
+    subscriptions: NotificationSub[]
 ) {
     let totalEmailsSent = 0;
 

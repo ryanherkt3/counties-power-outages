@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get notifications from DB
-    const subscriptions: Array<NotificationSub> | boolean | null = await getUserNotifByEmail(email);
+    const subscriptions: NotificationSub[] | boolean | null = await getUserNotifByEmail(email);
 
     if (subscriptions) {
         return new NextResponse(JSON.stringify({ 'rows': subscriptions }), {

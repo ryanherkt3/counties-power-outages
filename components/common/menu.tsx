@@ -1,4 +1,4 @@
-/* eslint-disable max-len */
+
 'use client';
 
 import Link from 'next/link';
@@ -179,7 +179,11 @@ function getMenuLinks(isSmallMenu: boolean, links: MenuLink[], resetSmallNavOpen
             <Link
                 key={href}
                 href={href}
-                onClick={() => resetSmallNavOpen()}
+                onClick={
+                    () => {
+                        resetSmallNavOpen();
+                    }
+                }
                 className={
                     clsx(
                         'font-semibold',

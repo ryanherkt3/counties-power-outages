@@ -19,11 +19,12 @@ export async function getActiveOutages() {
 
     const outagesJson = await outagesReq.json();
 
-    let outages: Array<OutageData> = outagesJson.planned_outages;
+    let outages: OutageData[] = outagesJson.planned_outages;
 
     outages.map((outage: OutageData) => {
         if (outage.shutdownPeriodStart && outage.shutdownPeriodEnd) {
-            const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownPeriodStart, outage.shutdownPeriodEnd);
+            const timesAndIsActiveOutage =
+                getTimesAndActiveOutage(outage.shutdownPeriodStart, outage.shutdownPeriodEnd);
             outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
             if (timesAndIsActiveOutage.activeOutage && outage.statusText !== 'Cancelled') {
@@ -33,7 +34,7 @@ export async function getActiveOutages() {
     });
 
     outages = outages.filter((outage: OutageData) => {
-        return outage.expiredOutage === false;
+        return !outage.expiredOutage;
     }).sort((a: OutageData, b: OutageData) => {
         if (a.shutdownDateTime && b.shutdownDateTime &&
             a.shutdownPeriodStart &&

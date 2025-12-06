@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import content from '../../app/content.json';
 import NotifSubChallengeOverlay from '@/components/notifications/notif-sub-challenge-overlay';
 import NotifSubForm from '@/components/notifications/notif-sub-form';
 import NotifSubs from '@/components/notifications/notif-subs';
@@ -9,7 +8,7 @@ import Search from '@/components/search';
 import { getSubscriptions } from '@/lib/actions';
 import { ChallengeOutcome, ChallengeVariables } from '@/lib/definitions';
 import { useState, useEffect } from 'react';
-import { AtSymbolIcon, EnvelopeIcon, KeyIcon, PencilIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+import { AtSymbolIcon, EnvelopeIcon, KeyIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 
 export default function NotificationsClient() {
     const email = useSearchParams().get('email') || '';
@@ -46,7 +45,11 @@ export default function NotificationsClient() {
             setChallengeOutcome('pending');
         };
 
-        checkForSubs();
+        checkForSubs().catch(
+            (e: unknown) => {
+                console.error('Error checking for subscriptions', e);
+            }
+        );
     }, [email]);
 
     if (subscriptions.length && challengeOutcome === 'pending') {
@@ -75,7 +78,7 @@ export default function NotificationsClient() {
                         <span className='text-center text-lg'>Get notified of upcoming outages</span>
                     </div>
                 </div>
-            </div> 
+            </div>
 
             <div className="flex flex-col gap-4 relative">
                 <div className="text-xl font-semibold text-center">Simple Update Steps</div>
