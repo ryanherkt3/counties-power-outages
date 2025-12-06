@@ -11,8 +11,6 @@ import { getTimesAndActiveOutage } from './utils';
  * @returns {Object} outages
  */
 export async function getActiveOutages() {
-    console.log(process.env.API_URL);
-    
     const outagesReq = await fetch(process.env.API_URL + '/getoutages', {
         headers: {
             'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
