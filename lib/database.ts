@@ -12,6 +12,8 @@ export async function getAllOutages() {
     try {
         const allOutages: Array<OutageDBData> = await prisma.outages.findMany();
 
+        console.log('ao2', allOutages);
+
         return allOutages;
     }
     catch (error) {
