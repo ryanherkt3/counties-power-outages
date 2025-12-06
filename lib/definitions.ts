@@ -117,3 +117,8 @@ export type SelectedFilterOverlayValues = {
     startdate: string | '',
     enddate: string | ''
 }
+
+export type MenuLink = {
+    href: string,
+    linkName: string,
+}

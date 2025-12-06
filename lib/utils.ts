@@ -83,51 +83,6 @@ export function getTimesAndActiveOutage(startTime: string, endTime: string) {
 }
 
 /**
- * Return the active outages
- *
- * @returns {Object} outages
- */
-export async function getActiveOutages() {
-    const outagesReq = await fetch(process.env.API_URL + '/getoutages');
-
-    const outagesJson = await outagesReq.json();
-
-    let outages: Array<OutageData> = outagesJson.planned_outages;
-
-    outages.map((outage: OutageData) => {
-        if (outage.shutdownPeriodStart && outage.shutdownPeriodEnd) {
-            const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownPeriodStart, outage.shutdownPeriodEnd);
-            outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
-
-            if (timesAndIsActiveOutage.activeOutage && outage.statusText !== 'Cancelled') {
-                outage.statusText = 'Active';
-            }
-        }
-    });
-
-    outages = outages.filter((outage: OutageData) => {
-        return outage.expiredOutage === false;
-    }).sort((a: OutageDBData, b: OutageDBData) => {
-        if (a.shutdownDateTime && b.shutdownDateTime && a.shutdownPeriodStart && b.shutdownPeriodStart) {
-            const aTime = new Date(a.shutdownDateTime).getTime() / 1000;
-            const bTime = new Date(b.shutdownDateTime).getTime() / 1000;
-
-            const aStartTime = new Date(a.shutdownPeriodStart).getTime() / 1000;
-            const bStartTime = new Date(b.shutdownPeriodStart).getTime() / 1000;
-
-            if (aTime === bTime) {
-                return aStartTime - bStartTime;
-            }
-            return aTime - bTime;
-        }
-
-        return 0;
-    });
-
-    return outages;
-}
-
-/**
  * Return a date in the MM/DD/YYYY format
  *
  * @param {string} date the date to filter (e.g. 15/1/2025)

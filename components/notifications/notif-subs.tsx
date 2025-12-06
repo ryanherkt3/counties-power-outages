@@ -1,7 +1,8 @@
 'use client';
 
-import { Coordinate, NotificationSub, OutageDBData } from '@/lib/definitions';
-import { coordIsInOutageZone, getActiveOutages } from '@/lib/utils';
+import { Coordinate, NotificationSub, OutageData } from '@/lib/definitions';
+import { coordIsInOutageZone } from '@/lib/utils';
+import { getActiveOutages } from '@/lib/actions';
 import NotificationCard from './notif-sub-card';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
@@ -22,7 +23,7 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Array<Not
         setShow(!!subscriptions);
     }, [subscriptions]);
 
-    const [outages, setOutages] = useState<Array<OutageDBData>>([]);
+    const [outages, setOutages] = useState<Array<OutageData>>([]);
 
     useEffect(() => {
         const getOutages = async () => {
@@ -54,7 +55,7 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Array<Not
                     };
 
                     let outageIds = '';
-                    outages.map((outage: OutageDBData) => {
+                    outages.map((outage: OutageData) => {
                         const outageCoords = {
                             lat: outage.lat,
                             lng: outage.lng

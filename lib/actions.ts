@@ -1,8 +1,61 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { ChallengeVariables, FormFields, FormValues } from './definitions';
+import { ChallengeVariables, FormFields, FormValues, OutageData } from './definitions';
 import { getUserNotifByLocation } from './database';
+import { getTimesAndActiveOutage } from './utils';
+
+/**
+ * Return the active outages
+ *
+ * @returns {Object} outages
+ */
+export async function getActiveOutages() {
+    const outagesReq = await fetch(process.env.API_URL + '/getoutages', {
+        headers: {
+            'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
+        }
+    });
+
+    const outagesJson = await outagesReq.json();
+
+    let outages: Array<OutageData> = outagesJson.planned_outages;
+
+    outages.map((outage: OutageData) => {
+        if (outage.shutdownPeriodStart && outage.shutdownPeriodEnd) {
+            const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownPeriodStart, outage.shutdownPeriodEnd);
+            outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
+
+            if (timesAndIsActiveOutage.activeOutage && outage.statusText !== 'Cancelled') {
+                outage.statusText = 'Active';
+            }
+        }
+    });
+
+    outages = outages.filter((outage: OutageData) => {
+        return outage.expiredOutage === false;
+    }).sort((a: OutageData, b: OutageData) => {
+        if (a.shutdownDateTime && b.shutdownDateTime &&
+            a.shutdownPeriodStart &&
+            b.shutdownPeriodStart) {
+            const aTime = new Date(a.shutdownDateTime).getTime() / 1000;
+            const bTime = new Date(b.shutdownDateTime).getTime() / 1000;
+
+            const aStartTime = new Date(a.shutdownPeriodStart).getTime() / 1000;
+            const bStartTime = new Date(b.shutdownPeriodStart).getTime() / 1000;
+
+            if (aTime === bTime) {
+                return aStartTime - bStartTime;
+            }
+            return aTime - bTime;
+        }
+
+        return 0;
+    });
+
+    return outages;
+}
+
 
 /**
  * Update information related to the subscription. Called after submitting the subscription form.

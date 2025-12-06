@@ -25,25 +25,37 @@ export default function OutageCard({ data }: { data: OutageData; }) {
 
     return (
         <>
-            <div className='flex flex-col gap-4 shrink-0 p-4 rounded-lg border border-gray-700' >
-                <div className='flex flex-row justify-between'>
-                    <div
-                        key={id}
-                        onClick={
-                            () => {
-                                dispatch(
-                                    update({ cardClickShow: true, isVisible: outageOverlayView.isVisible, data: data })
-                                );
-                            }
+            <div
+                className={
+                    clsx(
+                        'flex flex-col gap-4 shrink-0 p-4 rounded-lg shadow-lg hover:shadow-2xl cursor-pointer',
+                        {
+                            'bg-green-400/40 hover:bg-green-400/55': statusText === 'Active',
+                            'bg-blue-500/40 hover:bg-blue-500/55': statusText === 'Scheduled',
+                            'bg-red-400/40 hover:bg-red-400/55': statusText === 'Postponed',
+                            'bg-orange-400/40 hover:bg-orange-400/55': statusText === 'Cancelled',
+                        },
+                    )
+                }
+                onClick={
+                    (e) => {
+                        const clickedElement = e.target as HTMLElement;
+                        if (!clickedElement.classList.contains('card-toggle')) {
+                            dispatch(
+                                update({ cardClickShow: true, isVisible: outageOverlayView.isVisible, data: data })
+                            );
                         }
-                        className="text-2xl font-semibold hover:text-red-400 cursor-pointer"
-                    >
+                    }
+                }
+            >
+                <div className='flex flex-row justify-between'>
+                    <div key={id} className='text-2xl font-semibold'>
                         {address}
                     </div>
                     <div className="cursor-pointer" onClick={
                         () => setShowContents(!showContents)
                     }>
-                        <CustomIcon icon={showContents ? 'MinusIcon' : 'PlusIcon' } iconClass={'w-8'} />
+                        <CustomIcon icon={showContents ? 'MinusIcon' : 'PlusIcon' } iconClass={'card-toggle w-8'} />
                     </div>
                 </div>
 

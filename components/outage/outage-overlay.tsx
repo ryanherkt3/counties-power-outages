@@ -12,9 +12,6 @@ import { useEffect, useState } from 'react';
 import { update } from '@/state/no-scroll/noScroll';
 
 export default function OutageOverlay() {
-    const layoutClasses = 'fixed flex flex-col gap-8';
-    const positionScrollClasses = 'top-0 left-0 bottom-0 overflow-y-auto';
-
     const outageOverlayView = useSelector((state: RootState) => state.outageOverlayView.value);
     const dispatch = useDispatch();
 
@@ -25,7 +22,6 @@ export default function OutageOverlay() {
     const outageSections = getOutageSections(true, false, data);
 
     const canSeeOverlay = outageOverlayView.cardClickShow || outageOverlayView.isVisible === 'Open';
-
 
     const [embedLink, setEmbedLink] = useState<string | null>(null);
     useEffect(() => {
@@ -45,21 +41,23 @@ export default function OutageOverlay() {
         <div
             className={
                 clsx(
-                    `${layoutClasses} px-4 py-6 text-center ${positionScrollClasses} w-[100%] h-[100%] z-20 bg-white`,
+                    `fixed flex flex-col gap-8 px-4 py-6 text-center
+                    top-0 left-0 bottom-0 overflow-y-auto w-full h-full z-20
+                    bg-linear-to-b from-red-200 to-slate-500`,
                     {
                         'hidden': !canSeeOverlay
                     }
                 )
             }
         >
-            <div className="flex flex-row gap-2 justify-between">
-                <div className="text-2xl font-semibold text-black">{address}</div>
+            <div className="flex flex-row gap-8 justify-between items-center">
+                <div className="text-2xl font-semibold text-black grow text-center">{address}</div>
                 <button onClick={
                     () => {
                         dispatch(resetAfterView());
                     }
                 }>
-                    <CustomIcon icon={'XMarkIcon'} iconClass={'w-7 cursor-pointer'} />
+                    <CustomIcon icon={'XMarkIcon'} iconClass={'w-10 cursor-pointer hover:text-black/60'} />
                 </button>
             </div>
             <OutageStatus

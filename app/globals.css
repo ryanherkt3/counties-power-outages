@@ -22,11 +22,11 @@
     left: 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 24px;
     padding: 16px;
     width: 100%;
     height: calc(100vh - 80px);
-    background-color: white;
+    background-image: linear-gradient(to bottom, #fecaca, #64748b);
     z-index: 10;
 }
 
@@ -43,53 +43,3 @@ iframe.map-size {
 }
 
 /* animations */
-
-.dots { 
-    display: flex;
-    flex-direction: row;
-    gap: 24px;
-    align-items: center;
-    justify-content: center;
-}
-
-.dot {
-    width: 12px;
-    height: 12px;
-    background: currentColor;
-    border-radius: 100%;
-    transform-origin: center;
-}
-
-.dot-1 { 
-    animation: dotPulse 2s linear infinite;
-    animation-delay: 0s;
-}
-.dot-2 { 
-    animation: dotPulse 2s linear infinite;
-    animation-delay: 0.5s;
-}
-.dot-3 { 
-    animation: dotPulse 2s linear infinite;
-    animation-delay: 1s;
-}
-
-@keyframes dotPulse {
-    0% { transform: scale(1) }
-    25% { transform: scale(1.5) }
-    50% { transform: scale(2) }
-    75% { transform: scale(1.5) }
-    100% { transform: scale(1) }
-}
-
-.shimmer {
-    background: linear-gradient(-45deg, #eee 40%, #fafafa 50%, #eee 60%);
-    background-size: 300%;
-    background-position-x: 100%;
-    animation: shimmer 1s infinite linear;
-}
-
-@keyframes shimmer {
-    to {
-       background-position-x: 0%
-    }
-}
