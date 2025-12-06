@@ -258,6 +258,7 @@ async function trySendEmails(
             const outageStatus = outage.statusText ? outage.statusText.toLowerCase() : '';
 
             // Remove location endings from the sub location string
+            // TODO make algorithm more robust (e.g. if suburb included could return false positives)
             const locationEndings = [
                 'st', 'pl', 'rd', 'dr', 'ct', 'ave', 'wy', 'cres', 'ln', 'cl', 'gr', 'bvd', 'cr', 'esp',
                 'street', 'place', 'road', 'drive', 'court', 'avenue', 'way', 'crescent',
@@ -285,6 +286,7 @@ async function trySendEmails(
                 filteredSub.status.toLowerCase() !== outageStatus;
             let shouldSendEmail = coordsMatch || locationMatches;
 
+            // TODO check if outage is happening within 7 days
             if (shouldSendEmail && !!(filteredSub && filteredSub.status)) {
                 if (!outageStatusChanged && filteredSub.emailSent) {
                     const currentDate = new Date();
