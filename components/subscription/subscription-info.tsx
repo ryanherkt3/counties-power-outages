@@ -39,7 +39,7 @@ export default function SubscriptionInfo({ id }: { id: string }) {
                         <div className="text-xl text-center">Could not find the requested subscription</div>
                     </div>
                     <div className="flex flex-row gap-8 items-center">
-                        <Link href="/outages" className={buttonClasses}>Outages</Link>
+                        <Link href="/" className={buttonClasses}>Outages</Link>
                         <Link href="/notifications" className={buttonClasses}>Notifications</Link>
                     </div>
                 </div>

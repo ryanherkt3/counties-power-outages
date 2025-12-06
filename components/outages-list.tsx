@@ -121,7 +121,7 @@ export default function OutagesList({ searchParams } : { searchParams: SearchPar
         const params = new URLSearchParams(queryString);
         params.set('page', '1'); // reset to page 1
 
-        redirect(`/outages/?${params.toString()}`);
+        redirect(`/?${params.toString()}`);
     }
 
     return (

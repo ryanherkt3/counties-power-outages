@@ -36,7 +36,7 @@ export default function NotificationEmail(
                     <Section style={paddedSection}>
                         <Text style={paragraph}>
                             <b>Outage ID:</b>{' '}
-                            <Link href={`https://outages.ryanherkt.com/outages?outage=${outage.id}`}>{outage.id}</Link>
+                            <Link href={`https://outages.ryanherkt.com/?outage=${outage.id}`}>{outage.id}</Link>
                         </Text>
                         <Section style={paragraphFlex}>
                             <b>Status:</b>

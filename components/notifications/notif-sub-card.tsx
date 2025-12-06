@@ -81,7 +81,7 @@ export default function NotificationCard(
                                                         return (
                                                             <Link
                                                                 key={outage}
-                                                                href={`/outages?outage=${outage}`}
+                                                                href={`/?outage=${outage}`}
                                                                 className='hover:text-red-400 text-red-600'
                                                             >
                                                                 {outage}
