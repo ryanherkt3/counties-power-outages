@@ -1,4 +1,4 @@
-import { Coordinate, OutageDBData, SearchParams } from './definitions';
+import { Coordinate, OutageData, OutageDBData, SearchParams } from './definitions';
 import { z } from 'zod';
 import moment from 'moment-timezone';
 
@@ -96,9 +96,9 @@ export async function getActiveOutages() {
 
     const outagesJson = await outagesReq.json();
 
-    let outages: Array<OutageDBData> = outagesJson.planned_outages;
+    let outages: Array<OutageData> = outagesJson.planned_outages;
 
-    outages.map((outage: OutageDBData) => {
+    outages.map((outage: OutageData) => {
         if (outage.shutdownPeriodStart && outage.shutdownPeriodEnd) {
             const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownPeriodStart, outage.shutdownPeriodEnd);
             outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
@@ -109,7 +109,7 @@ export async function getActiveOutages() {
         }
     });
 
-    outages = outages.filter((outage: OutageDBData) => {
+    outages = outages.filter((outage: OutageData) => {
         return outage.expiredOutage === false;
     }).sort((a: OutageDBData, b: OutageDBData) => {
         if (a.shutdownDateTime && b.shutdownDateTime && a.shutdownPeriodStart && b.shutdownPeriodStart) {
@@ -146,11 +146,11 @@ export function getFilteredDate(date: string) {
 /**
  * Return a list of outages based on the user's search parameters
  *
- * @param {Array<OutageDBData>} outages original list of outages
+ * @param {Array<OutageData>} outages original list of outages
  * @param {any} searchParams address / status / start date / end date
- * @returns {Array<OutageDBData>} new filtered list of outages
+ * @returns {Array<OutageData>} new filtered list of outages
  */
-export function getFilteredOutages(outages: Array<OutageDBData>, searchParams: SearchParams | null) {
+export function getFilteredOutages(outages: Array<OutageData>, searchParams: SearchParams | null) {
     // Return original list if no search parameters
     if (searchParams === null) {
         return outages;
@@ -166,7 +166,7 @@ export function getFilteredOutages(outages: Array<OutageDBData>, searchParams: S
         return outages;
     }
 
-    const getDateMatch = (outage: OutageDBData, date: string, isStartDate: boolean) => {
+    const getDateMatch = (outage: OutageData, date: string, isStartDate: boolean) => {
         if (outage.shutdownDateTime) {
             const shutdownDateTime = new Date(outage.shutdownDateTime).getTime();
             const filterDateTime = new Date(date.split('/').reverse().join('/')).getTime();
@@ -181,7 +181,7 @@ export function getFilteredOutages(outages: Array<OutageDBData>, searchParams: S
     };
 
     // Otherwise return filtered outages
-    const filteredOutages = outages.filter((outage: OutageDBData) => {
+    const filteredOutages = outages.filter((outage: OutageData) => {
         const matchesAddress = outage.address ?
             (address ? outage.address.toLowerCase().includes(address) : true) :
             false;
@@ -226,9 +226,6 @@ export function getManipulatedOutages(outages: Array<OutageDBData>) {
         if (typeof outage.hull === 'string' && outage.hull?.length) {
             outage.hull = JSON.parse(outage.hull);
         }
-
-        outage.expiredOutage = false;
-        outage.dummyData = false;
 
         manipulatedOutages.push(outage);
     };

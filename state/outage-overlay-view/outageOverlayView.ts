@@ -1,4 +1,4 @@
-import { OutageDBData, OutageOverlayStates } from '@/lib/definitions';
+import { OutageData, OutageOverlayStates } from '@/lib/definitions';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface OutageOverlayViewState {
@@ -7,7 +7,7 @@ interface OutageOverlayViewState {
 
 const fakeString = '';
 
-const defaultDataValue: OutageDBData = {
+const defaultDataValue: OutageData = {
     id: '',
     projectType: '',
     shutdownDateTime: '',

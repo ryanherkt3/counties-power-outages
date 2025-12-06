@@ -1,6 +1,6 @@
 'use client';
 
-import { OutageDBData } from '../../lib/definitions';
+import { OutageData } from '../../lib/definitions';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import LatestInfo from '../latest-info';
@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { update } from '@/state/outage-overlay-view/outageOverlayView';
 import { RootState } from '@/state/store';
 
-export default function OutageCard({ data }: { data: OutageDBData; }) {
+export default function OutageCard({ data }: { data: OutageData; }) {
     const { id, address, statusText, latestInformation } = data;
 
     const [showContents, setShowContents] = useState(true);
@@ -60,7 +60,7 @@ export default function OutageCard({ data }: { data: OutageDBData; }) {
                         </div>
                         <OutageStatus
                             className="font-medium px-2 py-1 rounded text-center"
-                            statusText={statusText}
+                            statusText={statusText!}
                             overrideBg={false}
                         />
                     </div>

@@ -12,7 +12,7 @@ import OutageOverlay from './outage/outage-overlay';
 import FilterOverlay from './filters/filter-overlay';
 import { update as outageOverlayUpdate } from '@/state/outage-overlay-view/outageOverlayView';
 import { update as filterOverlayUpdate } from '@/state/filter-overlay-view/filterOverlayView';
-import { OutageDBData, SearchParams, SelectedFilterOverlayValues } from '../lib/definitions';
+import { OutageData, SearchParams, SelectedFilterOverlayValues } from '../lib/definitions';
 import { RootState } from '../state/store';
 import { useEffect } from 'react';
 
@@ -23,7 +23,7 @@ export default function OutagesList(
     } :
     {
         searchParams: SearchParams,
-        outages: OutageDBData[]
+        outages: OutageData[]
     }
 ) {
     const currentPage = Number(searchParams.page) || 1;

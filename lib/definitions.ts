@@ -20,9 +20,12 @@ export type OutageDBData = {
     shutdownPeriodEnd: string | null;
     originalShutdownPeriodStart: string | null;
     originalShutdownPeriodEnd: string | null;
+};
+
+export type OutageData = OutageDBData & {
     expiredOutage: boolean;
     dummyData: boolean;
-};
+}
 
 export type NotificationSub = {
     id: string;
@@ -93,7 +96,7 @@ export type ChallengeVariables = {
 export type OutageOverlayStates = {
     cardClickShow: boolean,
     isVisible: OverlayVisibility,
-    data: OutageDBData
+    data: OutageData
 }
 
 export type OverlayVisibility = 'Hidden' | 'Open' | 'Closed';

@@ -1,4 +1,4 @@
-import { NotificationSub, OutageDBData } from './definitions';
+import { NotificationSub, OutageData } from './definitions';
 import { getTimesAndActiveOutage } from './utils';
 
 /**
@@ -9,7 +9,7 @@ import { getTimesAndActiveOutage } from './utils';
  * @param {OutageDBData} data info about the outage
  * @returns {Object} outage section segments
  */
-export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolean, data: OutageDBData) {
+export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolean, data: OutageData) {
     if (data.dummyData) {
         return [];
     }

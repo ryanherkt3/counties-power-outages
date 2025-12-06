@@ -176,7 +176,7 @@ function getFilterOptions(
             options.push(
                 <OutageStatus
                     className={classToUse}
-                    statusText={text}
+                    statusText={text!}
                     overrideBg={!isSelected}
                 />,
             );
