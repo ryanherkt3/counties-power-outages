@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model notifications {
@@ -12,30 +13,30 @@ model notifications {
   lng            Float?
   email          String
   datesubscribed String  @db.VarChar(255)
-  id             String  @id @default(dbgenerated("nextval('notifications_id_seq'::regclass)")) @db.VarChar(16)
+  id             String  @id @db.VarChar(16)
   outageinfo     String? @db.VarChar(700)
 }
 
 model outages {
-  id                          String    @id @db.VarChar(20)
-  projecttype                 String?   @db.VarChar(50)
-  shutdowndatetime            String?   @db.VarChar(50)
-  shutdowndate                DateTime? @db.Date
-  shutdownperiodstart         String?   @db.VarChar(50)
-  shutdownperiodend           String?   @db.VarChar(50)
-  feeder                      String?   @db.VarChar(50)
-  affectedcustomers           Int?
-  lat                         Decimal?  @db.Decimal
-  lng                         Decimal?  @db.Decimal
-  distance                    Decimal?  @db.Decimal
-  hull                        String?   @db.VarChar(1200)
-  address                     String?   @db.VarChar(400)
-  statustext                  String?   @db.VarChar(400)
-  latestinformation           String?   @db.VarChar(400)
-  originalshutdowndate        DateTime? @db.Date
-  originalshutdownperiodstart String?   @db.VarChar(50)
-  originalshutdownperiodend   String?   @db.VarChar(50)
-  lastmodified                String?   @db.VarChar(400)
+  id                          String   @id @db.VarChar(20)
+  projectType                 String?  @db.VarChar(50)
+  shutdownDateTime            String?  @db.VarChar(50)
+  shutdownDate                DateTime @db.Date
+  shutdownPeriodStart         String?  @db.VarChar(50)
+  shutdownPeriodEnd           String?  @db.VarChar(50)
+  feeder                      String?  @db.VarChar(50)
+  affectedCustomers           Int?
+  lat                         Decimal  @db.Decimal
+  lng                         Decimal  @db.Decimal
+  distance                    Decimal  @db.Decimal
+  hull                        String?  @db.VarChar(1200)
+  address                     String?  @db.VarChar(400)
+  statusText                  String?  @db.VarChar(400)
+  latestInformation           String?  @db.VarChar(400)
+  originalShutdownDate        DateTime @db.Date
+  originalShutdownPeriodStart String?  @db.VarChar(50)
+  originalShutdownPeriodEnd   String?  @db.VarChar(50)
+  lastModified                String?  @db.VarChar(400)
 
-  @@unique([id, lastmodified], map: "constraint_1")
+  @@unique([id, lastModified], map: "constraint_1")
 }

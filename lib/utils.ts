@@ -99,29 +99,25 @@ export async function getActiveOutages() {
     let outages: Array<OutageData> = outagesJson.planned_outages;
 
     outages.map((outage: OutageData) => {
-        const shutdownperiods = outage.shutdownperiods[0];
-
-        if (shutdownperiods.start && shutdownperiods.end) {
-            const timesAndIsActiveOutage = getTimesAndActiveOutage(shutdownperiods.start, shutdownperiods.end);
+        if (outage.shutdownPeriodStart && outage.shutdownPeriodEnd) {
+            const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownPeriodStart, outage.shutdownPeriodEnd);
             outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
-            if (timesAndIsActiveOutage.activeOutage && outage.statustext !== 'Cancelled') {
-                outage.statustext = 'Active';
+            if (timesAndIsActiveOutage.activeOutage && outage.statusText !== 'Cancelled') {
+                outage.statusText = 'Active';
             }
         }
     });
 
     outages = outages.filter((outage: OutageData) => {
         return outage.expiredOutage === false;
-    }).sort((a: OutageData, b: OutageData) => {
-        if (a.shutdowndatetime && b.shutdowndatetime &&
-            a.shutdownperiods && a.shutdownperiods[0] && a.shutdownperiods[0].start &&
-            b.shutdownperiods && b.shutdownperiods[0] && b.shutdownperiods[0].start) {
-            const aTime = new Date(a.shutdowndatetime).getTime() / 1000;
-            const bTime = new Date(b.shutdowndatetime).getTime() / 1000;
+    }).sort((a: OutageDBData, b: OutageDBData) => {
+        if (a.shutdownDateTime && b.shutdownDateTime && a.shutdownPeriodStart && b.shutdownPeriodStart) {
+            const aTime = new Date(a.shutdownDateTime).getTime() / 1000;
+            const bTime = new Date(b.shutdownDateTime).getTime() / 1000;
 
-            const aStartTime = new Date(a.shutdownperiods[0].start).getTime() / 1000;
-            const bStartTime = new Date(b.shutdownperiods[0].start).getTime() / 1000;
+            const aStartTime = new Date(a.shutdownPeriodStart).getTime() / 1000;
+            const bStartTime = new Date(b.shutdownPeriodStart).getTime() / 1000;
 
             if (aTime === bTime) {
                 return aStartTime - bStartTime;
@@ -171,8 +167,8 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: Sea
     }
 
     const getDateMatch = (outage: OutageData, date: string, isStartDate: boolean) => {
-        if (outage.shutdowndatetime) {
-            const shutdownDateTime = new Date(outage.shutdowndatetime).getTime();
+        if (outage.shutdownDateTime) {
+            const shutdownDateTime = new Date(outage.shutdownDateTime).getTime();
             const filterDateTime = new Date(date.split('/').reverse().join('/')).getTime();
 
             if (isStartDate) {
@@ -189,7 +185,7 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: Sea
         const matchesAddress = outage.address ?
             (address ? outage.address.toLowerCase().includes(address) : true) :
             false;
-        const matchesStatus = outageStatus ? outage.statustext.toLowerCase().includes(outageStatus) : true;
+        const matchesStatus = outageStatus ? outage.statusText?.toLowerCase().includes(outageStatus) : true;
         const onOrAfterStartDate = startDate ? getDateMatch(outage, startDate, true) : true;
         const onOrBeforeEndDate = endDate ? getDateMatch(outage, endDate, false) : true;
 
@@ -203,57 +199,36 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: Sea
  * Manipulate variables within the outages object to be suitable for client-side consumption
  *
  * @param {Array<OutageDBData>} outages from the database
- * @returns {Array<OutageData>} the manipulated list of outages
+ * @returns {Array<OutageDBData>} the manipulated list of outages
  */
 export function getManipulatedOutages(outages: Array<OutageDBData>) {
-    const manipulatedOutages: OutageData[] = [];
+    const manipulatedOutages: OutageDBData[] = [];
 
-    outages.map((outage) => {
-        if (outage.shutdowndate) {
-            // Convert shutdowndate to a string
-            const shutdownDate = new Date(outage.shutdowndate);
+    for (const outage of outages) {
+        if (outage.shutdownDate) {
+            // Convert shutdownDate to a string
+            const shutdownDate = new Date(outage.shutdownDate);
             const year = shutdownDate.getFullYear();
             const month = shutdownDate.getMonth() + 1;
             const day = shutdownDate.getDate();
-            outage.shutdowndate = `${day}/${month}/${year}`;
-
-            // Convert originalshutdowndate to a string
-            if (outage.originalshutdowndate) {
-                const ogShutdownDate = new Date(outage.originalshutdowndate);
-                const year = ogShutdownDate.getFullYear();
-                const month = ogShutdownDate.getMonth() + 1;
-                const day = ogShutdownDate.getDate();
-                outage.originalshutdowndate = `${day}/${month}/${year}`;
-            }
-
-            const shutdownperiods = [
-                {
-                    start: outage.shutdownperiodstart,
-                    end: outage.shutdownperiodend,
-                }
-            ];
-
-            const originalshutdownperiods = [
-                {
-                    start: outage.originalshutdownperiodstart,
-                    end: outage.originalshutdownperiodstart,
-                }
-            ];
-
-            const manipulatedOutage: OutageData = {
-                ...outage,
-                hull: (outage.hull ? JSON.parse(outage.hull) : []),
-                description: null,
-                shutdownperiods: shutdownperiods,
-                statustext: outage.statustext as 'Scheduled' | 'Postponed' | 'Cancelled' | 'Active',
-                originalshutdownperiods: originalshutdownperiods,
-                expiredOutage: false,
-                dummyData: false
-            };
-
-            manipulatedOutages.push(manipulatedOutage);
+            outage.shutdownDate = `${day}/${month}/${year}`;
         }
-    });
+
+        // Convert originalShutdownDate to a string
+        if (outage.originalShutdownDate) {
+            const ogShutdownDate = new Date(outage.originalShutdownDate);
+            const year = ogShutdownDate.getFullYear();
+            const month = ogShutdownDate.getMonth() + 1;
+            const day = ogShutdownDate.getDate();
+            outage.originalShutdownDate = `${day}/${month}/${year}`;
+        }
+
+        if (typeof outage.hull === 'string' && outage.hull?.length) {
+            outage.hull = JSON.parse(outage.hull);
+        }
+
+        manipulatedOutages.push(outage);
+    };
 
     return manipulatedOutages;
 }
