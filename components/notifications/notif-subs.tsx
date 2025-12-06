@@ -23,7 +23,7 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Array<Not
         setShow(!!subscriptions);
     }, [subscriptions]);
 
-    const [outages, setOutages] = useState<Array<OutageData>>([]);
+    const [outages, setOutages] = useState<Array<OutageDBData>>([]);
 
     useEffect(() => {
         const getOutages = async () => {
@@ -55,7 +55,7 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Array<Not
                     };
 
                     let outageIds = '';
-                    outages.map((outage: OutageData) => {
+                    outages.map((outage: OutageDBData) => {
                         const outageCoords = {
                             lat: outage.lat,
                             lng: outage.lng
@@ -64,7 +64,7 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Array<Not
                         const { location } = subscription;
                         const locationMatches = location && outage.address && outage.address.includes(location);
 
-                        const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull, outageCoords);
+                        const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull as Coordinate[], outageCoords);
 
                         if (coordsMatch || locationMatches) {
                             outageIds = `${outageIds.length ? `${outageIds},` : ''}${outage.id}`;

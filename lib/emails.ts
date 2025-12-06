@@ -1,25 +1,24 @@
 import { Resend } from 'resend';
 import NotificationEmail from '../email-templates/notification-email';
 import ConfirmationEmail from '../email-templates/confirmation-email';
-import { NotificationSub, OutageData } from './definitions';
+import { NotificationSub, OutageDBData } from './definitions';
 import { getTimesAndActiveOutage } from './utils';
 
 /**
  * Send the email notification using Resend
  *
  * @param {NotificationSub} notifSub subscription details
- * @param {OutageData} outage outage details
+ * @param {OutageDBData} outage outage details
  * @param {string} oldStatus if the outage has had a status update
  * @returns {Response}
  */
-export async function sendEmailNotification(notifSub: NotificationSub, outage: OutageData, oldStatus: string) {
+export async function sendEmailNotification(notifSub: NotificationSub, outage: OutageDBData, oldStatus: string) {
     try {
         const resend = new Resend(process.env.RESEND_API_KEY);
         const notifSubId = notifSub.id;
 
-        const shutdownPeriods = outage.shutdownperiods[0];
-        const outageTimes = shutdownPeriods.start && shutdownPeriods.end ?
-            getTimesAndActiveOutage(shutdownPeriods.start, shutdownPeriods.end) :
+        const outageTimes = outage.shutdownPeriodStart && outage.shutdownPeriodEnd ?
+            getTimesAndActiveOutage(outage.shutdownPeriodStart, outage.shutdownPeriodEnd) :
             {
                 activeOutage: false,
                 expiredOutage: false,

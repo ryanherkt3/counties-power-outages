@@ -13,7 +13,7 @@ import { update } from '@/state/outage-overlay-view/outageOverlayView';
 import { RootState } from '@/state/store';
 
 export default function OutageCard({ data }: { data: OutageData; }) {
-    const { id, address, statustext, latestinformation } = data;
+    const { id, address, statusText, latestInformation } = data;
 
     const [showContents, setShowContents] = useState(true);
     const outageSections = getOutageSections(false, true, data);
@@ -72,7 +72,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         </div>
                         <OutageStatus
                             className="font-medium px-2 py-1 rounded text-center"
-                            statusText={statustext}
+                            statusText={statusText!}
                             overrideBg={false}
                         />
                     </div>
@@ -102,7 +102,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                             );
                         })
                     }
-                    <LatestInfo latestInformation={latestinformation} />
+                    <LatestInfo latestInformation={latestInformation} />
                 </div>
             </div>
         </>
