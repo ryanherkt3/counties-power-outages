@@ -1,4 +1,4 @@
-import { NotificationSub, OutageData } from './definitions';
+import { NotificationSub, OutageDBData } from './definitions';
 import { getTimesAndActiveOutage } from './utils';
 
 /**
@@ -6,16 +6,16 @@ import { getTimesAndActiveOutage } from './utils';
  *
  * @param {boolean} uppercaseTitles if the outage info titles are in all caps or not
  * @param {boolean} addNewPrefix whether to add 'New' before the info titles (when an outage is postponed)
- * @param {OutageData} data info about the outage
+ * @param {OutageDBData} data info about the outage
  * @returns {Object} outage section segments
  */
-export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolean, data: OutageData) {
+export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolean, data: OutageDBData) {
     if (data.dummyData) {
         return [];
     }
 
-    const timesAndActiveOutage = data.shutdownperiods[0].start && data.shutdownperiods[0].end ?
-        getTimesAndActiveOutage(data.shutdownperiods[0].start, data.shutdownperiods[0].end) :
+    const timesAndActiveOutage = data.shutdownPeriodStart && data.shutdownPeriodEnd ?
+        getTimesAndActiveOutage(data.shutdownPeriodStart, data.shutdownPeriodEnd) :
         {
             activeOutage: false,
             expiredOutage: false,
@@ -26,7 +26,7 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
         };
 
     const shutdownTimes = timesAndActiveOutage.times;
-    const outageIsPostponed = data.statustext === 'Postponed';
+    const outageIsPostponed = data.statusText === 'Postponed';
 
     const postponedDateString = 'Original Date';
     const dateString = `${outageIsPostponed ? 'New ' : ''}Date`;
@@ -42,7 +42,7 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
                 key: 'postponed-date',
                 icon: 'CalendarIcon',
                 title: uppercaseTitles ? postponedDateString.toUpperCase() : postponedDateString,
-                value: data.originalshutdowndate,
+                value: data.originalShutdownDate,
             }
         ]:
         [];
@@ -52,7 +52,7 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
             key: 'outage-date',
             icon: 'CalendarIcon',
             title: uppercaseTitles ? dateString.toUpperCase() : dateString,
-            value: data.shutdowndate,
+            value: data.shutdownDate,
         },
         {
             key: 'outage-start',
@@ -70,7 +70,7 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
             key: 'customers-affected',
             icon: 'UserIcon',
             title: uppercaseTitles ? customersAffectedString.toUpperCase() : customersAffectedString,
-            value: data.affectedcustomers ? data.affectedcustomers.toString() : '',
+            value: data.affectedCustomers ? data.affectedCustomers.toString() : '',
         }
     );
 
@@ -80,7 +80,7 @@ export function getOutageSections(uppercaseTitles: boolean, addNewPrefix: boolea
 /**
  * Get the sections for display either for the active notifications card or the notification email
  *
- * @param {OutageData} data info about the outage
+ * @param {OutageDBData} data info about the outage
  * @returns {Object} card sections
  */
 export function getCardSections(data: NotificationSub) {

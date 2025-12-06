@@ -1,8 +1,7 @@
 import { Html, Text, Section, Body, Container, Head, Link } from '@react-email/components';
-import { OutageData } from '../lib/definitions';
+import { OutageDBData } from '../lib/definitions';
 import { CSSProperties } from 'react';
 import content from '../app/content.json';
-import OutageStatus from '@/components/outage/outage-status';
 
 export default function NotificationEmail(
     {
@@ -14,7 +13,7 @@ export default function NotificationEmail(
     }:
     {
         notifSubId: string;
-        outage: OutageData;
+        outage: OutageDBData;
         startTime: string,
         endTime: string,
         oldStatus: string
@@ -41,20 +40,20 @@ export default function NotificationEmail(
                         </Text>
                         <Section style={paragraphFlex}>
                             <b>Status:</b>
-                            <OutageStatus className={''} statusText={'Scheduled'} overrideBg={false} />
+                            <Text style={paragraph}>Scheduled</Text>
                         </Section>
                         {
                             oldStatus ?
                                 <Section style={paragraphFlex}>
                                     <b>Old Status:</b>
-                                    <OutageStatus className={''} statusText={oldStatus} overrideBg={false} />
+                                    <Text style={paragraph}>{oldStatus}</Text>
                                 </Section> :
                                 null
                         }
                         <Text style={paragraph}><b>Location:</b>{' '}{outage.address}</Text>
                         {
-                            typeof outage.shutdowndate === 'string' ?
-                                <Text style={paragraph}><b>Date:</b>{' '}{outage.shutdowndate}</Text> : null
+                            typeof outage.shutdownDate === 'string' ?
+                                <Text style={paragraph}><b>Date:</b>{' '}{outage.shutdownDate}</Text> : null
                         }
                         <Text style={paragraph}><b>Start Time:</b>{' '}{startTime}</Text>
                         <Text style={paragraph}><b>End Time:</b>{' '}{endTime}</Text>

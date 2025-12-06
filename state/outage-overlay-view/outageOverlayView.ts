@@ -1,4 +1,4 @@
-import { OutageData, OutageOverlayStates } from '@/lib/definitions';
+import { OutageDBData, OutageOverlayStates } from '@/lib/definitions';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface OutageOverlayViewState {
@@ -7,36 +7,27 @@ interface OutageOverlayViewState {
 
 const fakeString = '';
 
-const defaultDataValue: OutageData = {
+const defaultDataValue: OutageDBData = {
     id: '',
-    projecttype: '',
-    description: '',
-    shutdowndatetime: '',
-    shutdowndate: '',
-    shutdownperiods: [{
-        start: '',
-        end: '',
-    }],
+    projectType: '',
+    shutdownDateTime: '',
+    shutdownDate: '',
     feeder: '',
-    affectedcustomers: 1,
+    affectedCustomers: 1,
     lat: null,
     lng: null,
     distance: null,
     hull: (fakeString ? JSON.parse('') : []),
-    shutdownperiodstart: '',
-    shutdownperiodend: '',
+    shutdownPeriodStart: '',
+    shutdownPeriodEnd: '',
     address: '',
-    statustext: 'Scheduled',
-    latestinformation: '',
-    originalshutdowndate: '',
-    originalshutdownperiods: [{
-        start: '',
-        end: '',
-    }],
-    originalshutdownperiodstart: '',
-    originalshutdownperiodend: '',
+    statusText: 'Scheduled',
+    latestInformation: '',
+    originalShutdownDate: '',
+    originalShutdownPeriodStart: '',
+    originalShutdownPeriodEnd: '',
     expiredOutage: false,
-    lastmodified: '',
+    lastModified: '',
     dummyData: true,
 };
 

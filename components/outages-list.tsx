@@ -12,7 +12,7 @@ import OutageOverlay from './outage/outage-overlay';
 import FilterOverlay from './filters/filter-overlay';
 import { update as outageOverlayUpdate } from '@/state/outage-overlay-view/outageOverlayView';
 import { update as filterOverlayUpdate } from '@/state/filter-overlay-view/filterOverlayView';
-import { OutageData, SearchParams, SelectedFilterOverlayValues } from '../lib/definitions';
+import { OutageDBData, SearchParams, SelectedFilterOverlayValues } from '../lib/definitions';
 import { RootState } from '../state/store';
 import { useEffect } from 'react';
 
@@ -23,7 +23,7 @@ export default function OutagesList(
     } :
     {
         searchParams: SearchParams,
-        outages: OutageData[]
+        outages: OutageDBData[]
     }
 ) {
     const currentPage = Number(searchParams.page) || 1;
@@ -36,8 +36,8 @@ export default function OutagesList(
     const totalPages = Math.ceil(filteredOutages.length / outagesPerPage);
 
     // Start and end dates for the filters
-    const startDate = filteredNotSearchedOutages[0]?.shutdowndatetime || '';
-    const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.shutdowndatetime || '';
+    const startDate = filteredNotSearchedOutages[0]?.shutdownDateTime || '';
+    const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.shutdownDateTime || '';
     const startDateEF = searchParams.enddate ? getFilteredDate(searchParams.enddate) : endDate;
     const endDateSF = searchParams.startdate ? getFilteredDate(searchParams.startdate) : startDate;
 

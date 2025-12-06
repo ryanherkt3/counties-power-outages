@@ -1,4 +1,4 @@
-import { OutageData } from '../../lib/definitions';
+import { OutageDBData } from '../../lib/definitions';
 import OutageCard from './outage-card';
 
 export default function CurrentOutages(
@@ -10,7 +10,7 @@ export default function CurrentOutages(
     }:
     {
         currentPage: number;
-        outages: Array<OutageData>;
+        outages: Array<OutageDBData>;
         outagesPerPage: number;
         currentPageIsLast: boolean;
     }
@@ -21,7 +21,7 @@ export default function CurrentOutages(
     const filteredOutages = outages.slice(firstOutageIndex, lastOutageIndex + 1);
 
     return (
-        filteredOutages.map((outage : OutageData) => {
+        filteredOutages.map((outage : OutageDBData) => {
             return (
                 <OutageCard key={outage.id} data={outage} />
             );

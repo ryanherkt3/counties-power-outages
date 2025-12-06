@@ -2,32 +2,24 @@ import { Decimal } from '@prisma/client/runtime/library';
 
 export type OutageDBData = {
     id: string;
-    projecttype: string | null;
-    shutdowndatetime: string | null;
-    shutdowndate: Date | string | null;
+    projectType: string | null;
+    shutdownDateTime: string | null;
+    shutdownDate: Date | string;
     feeder: string | null;
-    affectedcustomers: number | null;
+    affectedCustomers: number | null;
     lat: Decimal | null;
     lng: Decimal | null;
     distance: Decimal | null;
-    hull: string | null;
+    hull: string | Coordinate[] | null;
     address: string | null;
-    statustext: string | null;
-    latestinformation: string | null;
-    originalshutdowndate: Date | string | null;
-    lastmodified: string | null;
-    shutdownperiodstart: string | null;
-    shutdownperiodend: string | null;
-    originalshutdownperiodstart: string | null;
-    originalshutdownperiodend: string | null;
-};
-
-export type OutageData = OutageDBData & {
-    hull: Coordinate[];
-    statustext: 'Scheduled' | 'Postponed' | 'Cancelled' | 'Active';
-    description: string | null;
-    shutdownperiods: Array<ShutdownPeriods>;
-    originalshutdownperiods: Array<ShutdownPeriods>;
+    statusText: string | null;
+    latestInformation: string | null;
+    originalShutdownDate: Date | string;
+    lastModified: string | null;
+    shutdownPeriodStart: string | null;
+    shutdownPeriodEnd: string | null;
+    originalShutdownPeriodStart: string | null;
+    originalShutdownPeriodEnd: string | null;
     expiredOutage: boolean;
     dummyData: boolean;
 };
@@ -101,7 +93,7 @@ export type ChallengeVariables = {
 export type OutageOverlayStates = {
     cardClickShow: boolean,
     isVisible: OverlayVisibility,
-    data: OutageData
+    data: OutageDBData
 }
 
 export type OverlayVisibility = 'Hidden' | 'Open' | 'Closed';
