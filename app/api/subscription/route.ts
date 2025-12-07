@@ -48,12 +48,11 @@ export async function GET(request: NextRequest) {
                 headers: { 'Content-Type': 'application/json' }
             });
         }
-        if (!subscription) {
-            return new NextResponse(JSON.stringify({ 'error': 'Server error', 'sub': [] }), {
-                status: 500,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
+
+        return new NextResponse(JSON.stringify({ 'error': 'Server error', 'sub': [] }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
 
     }
 
@@ -69,7 +68,7 @@ export async function GET(request: NextRequest) {
     // Get notifications from DB
     const subscriptions: NotificationSub[] | boolean | null = await getUserNotifByEmail(email);
 
-    if (subscriptions) {
+    if (subscriptions && subscriptions.length) {
         return new NextResponse(JSON.stringify({ 'rows': subscriptions }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
@@ -99,13 +98,17 @@ export async function POST(request: Request) {
         });
     }
 
-    const body: FormValues = await request.json();
+    const body = await request.json() as FormValues;
 
-    const invalidArguments = !body || typeof body.hasCoordinates !== 'boolean' || !isValidEmail(body.email)
+    const invalidLatitude = body.hasCoordinates &&
+        typeof body.latitude === 'number' && !isValidPayloadArgument(body.latitude, 'coordinate-lat');
+    const invalidLongtitude = body.hasCoordinates &&
+        typeof body.longtitude === 'number' && !isValidPayloadArgument(body.longtitude, 'coordinate-lng');
+    const invalidCoordinates = invalidLatitude || invalidLongtitude;
+
+    const invalidArguments = typeof body.hasCoordinates !== 'boolean' || !isValidEmail(body.email)
         || (body.location && !isValidPayloadArgument(body.location, 'location'))
-        || (body.hasCoordinates && body.latitude && !isValidPayloadArgument(body.latitude, 'coordinate'))
-        || (body.hasCoordinates && body.longtitude && !isValidPayloadArgument(body.longtitude, 'coordinate'))
-        || !isValidPayloadArgument(body.datesubscribed, 'date-subscribed');
+        || !isValidPayloadArgument(body.datesubscribed, 'date-subscribed') || invalidCoordinates;
 
     if (invalidArguments) {
         return new Response(JSON.stringify(
@@ -139,13 +142,16 @@ export async function POST(request: Request) {
             headers: { 'Content-Type': 'application/json' }
         });
     }
-    if (idString === null) {
-        return new Response(JSON.stringify(
-            { 'error': 'Invalid arguments for creating subscription - step 2', 'success': false }
-        ), {
-            status: 400,
-            headers: { 'Content-Type': 'application/json' }
-        });
+
+    if (!idString) {
+        return new Response(
+            JSON.stringify(
+                { 'error': 'Invalid arguments for creating subscription - step 2', 'success': false }
+            ), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' }
+            }
+        );
     }
 
     return new Response(JSON.stringify({ 'error': 'Server error', 'success': false }), {
@@ -164,11 +170,16 @@ export async function PUT(request: Request) {
         });
     }
 
-    const body: FormValues = await request.json();
+    const body = await request.json() as FormValues;
 
-    const invalidArguments = !body || !isValidPayloadArgument(body.id, 'id') || typeof body.hasCoordinates !== 'boolean'
-        || (body.hasCoordinates && body.latitude && !isValidPayloadArgument(body.latitude, 'coordinate'))
-        || (body.hasCoordinates && body.longtitude && !isValidPayloadArgument(body.longtitude, 'coordinate'));
+    const invalidLatitude = body.hasCoordinates &&
+        typeof body.latitude === 'number' && !isValidPayloadArgument(body.latitude, 'coordinate-lat');
+    const invalidLongtitude = body.hasCoordinates &&
+        typeof body.longtitude === 'number' && !isValidPayloadArgument(body.longtitude, 'coordinate-lng');
+    const invalidCoordinates = invalidLatitude || invalidLongtitude;
+
+    const invalidArguments = !isValidPayloadArgument(body.id, 'id')
+        || typeof body.hasCoordinates !== 'boolean' || invalidCoordinates;
 
     if (invalidArguments) {
         return new Response(JSON.stringify(
@@ -196,11 +207,11 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-    const body = await request.json();
+    const body = await request.json() as { id: string };
 
     const { id } = body;
 
-    if (!body || !isValidPayloadArgument(id, 'id')) {
+    if (!body.id || !isValidPayloadArgument(id, 'id')) {
         return new Response(JSON.stringify(
             { 'error': 'Invalid arguments for deleting subscription', 'success': false }
         ), {

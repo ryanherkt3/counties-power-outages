@@ -21,11 +21,11 @@ export default function FilterOverlay() {
 
     const searchParams = useSearchParams();
     const pathname = usePathname();
-    const { replace } = useRouter();
+    const router = useRouter();
 
     const filterOptions = getFilterOptions(type, filterValues, optionalDates);
 
-    const handleFilterChoice = useDebouncedCallback((param, propText) => {
+    const handleFilterChoice = useDebouncedCallback((param: string, propText: string) => {
         const params = new URLSearchParams(searchParams);
         params.set('page', '1');
 
@@ -37,7 +37,7 @@ export default function FilterOverlay() {
             params.delete(thisParam);
         }
 
-        replace(`${pathname}?${params.toString()}`);
+        router.replace(`${pathname}?${params.toString()}`);
     }, 500);
 
     return (
@@ -74,21 +74,23 @@ export default function FilterOverlay() {
                     </div>
                     {
                         filterOptions.map((option) => {
-                            const { dateText, statusText } = option.props;
-
-                            const propText = type.includes('Date') ? dateText : statusText;
+                            const propText = (
+                                type.includes('Date') ? option.props.dateText : option.props.statusText
+                            ) as string;
 
                             return (
                                 <button
                                     key={propText || 'reset-filter'}
                                     onClick={
                                         () => {
+                                            const text = propText || '';
+
                                             const newFilterValues: SelectedFilterOverlayValues = {
-                                                status: type === 'Status' ? (propText || '') : filterValues.status,
+                                                status: type === 'Status' ? (text) : filterValues.status,
                                                 startdate: type === 'Start Date' ?
-                                                    (propText || '') :
+                                                    (text) :
                                                     filterValues.startdate,
-                                                enddate: type === 'End Date' ? (propText || '') : filterValues.enddate
+                                                enddate: type === 'End Date' ? (text) : filterValues.enddate
                                             };
 
                                             dispatch(

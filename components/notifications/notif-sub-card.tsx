@@ -19,7 +19,7 @@ export default function NotificationCard(
     {
         data: NotificationSub;
         plannedOutages: string;
-        removeSubCb: Function;
+        removeSubCb: () => void;
     }
 ) {
     const [showContents, setShowContents] = useState(true);

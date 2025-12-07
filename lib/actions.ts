@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { ChallengeVariables, FormFields, FormValues, OutageData } from './definitions';
+import { ChallengeVariables, FormFields, FormValues, NotificationSub, OutageData } from './definitions';
 import { getUserNotifByLocation } from './database';
 import { getTimesAndActiveOutage } from './utils';
 
@@ -11,13 +11,13 @@ import { getTimesAndActiveOutage } from './utils';
  * @returns {Object} outages
  */
 export async function getActiveOutages() {
-    const outagesReq = await fetch(process.env.API_URL + '/getoutages', {
+    const outagesReq = await fetch(`${process.env.API_URL}/getoutages`, {
         headers: {
             'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
         }
     });
 
-    const outagesJson = await outagesReq.json();
+    const outagesJson = await outagesReq.json() as { planned_outages: OutageData[] | [] };
 
     let outages: OutageData[] = outagesJson.planned_outages;
 
@@ -79,7 +79,7 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
     };
 
     try {
-        await fetch(process.env.API_URL + '/subscription', {
+        await fetch(`${process.env.API_URL}/subscription`, {
             method: isExistingSub ? 'PUT' : 'POST',
             body: JSON.stringify(payload),
             headers: {
@@ -100,7 +100,7 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
  * Get a list of all subscriptions tied to an email address.
  *
  * @param {string} email the email address
- * @returns list of subscriptions
+ * @returns {NotificationSub[]} list of subscriptions
  */
 export async function getSubscriptions(email: string) {
     // Return empty array if no email provided
@@ -109,13 +109,16 @@ export async function getSubscriptions(email: string) {
     }
 
     try {
-        const subsReq = await fetch(process.env.API_URL + `/subscription?email=${email}`, {
+        const subsReq = await fetch(`${process.env.API_URL}/subscription?email=${email}`, {
             headers: {
                 'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
             }
         });
-        const subsJson = await subsReq.json();
-        return subsJson.rows;
+
+        const subsJson = await subsReq.json() as { rows: NotificationSub[] | [] };
+        const rows = subsJson.rows as NotificationSub[];
+
+        return rows;
     }
     catch (error) {
         console.log('Error getting subscriptions', error);
@@ -134,14 +137,16 @@ export async function getSubById(id: string) {
         return [];
     }
 
-    const subReq = await fetch(process.env.API_URL + `/subscription?id=${id}`, {
+    const subReq = await fetch(`${process.env.API_URL}/subscription?id=${id}`, {
         headers: {
             'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
         }
     });
-    const subJson = await subReq.json();
 
-    return subJson.sub;
+    const subJson = await subReq.json() as { sub: NotificationSub | [] };
+    const rows = subJson.sub as NotificationSub;
+
+    return rows;
 }
 
 /**
@@ -169,7 +174,7 @@ export async function getSubByLocation(location: string, challengeVariables: Cha
  */
 export async function deleteSubscription(subId: string) {
     try {
-        await fetch(process.env.API_URL + '/subscription', {
+        await fetch(`${process.env.API_URL}/subscription`, {
             method: 'DELETE',
             body: JSON.stringify({ id: subId }),
             headers: {

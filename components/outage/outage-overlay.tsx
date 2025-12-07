@@ -62,7 +62,7 @@ export default function OutageOverlay() {
             </div>
             <OutageStatus
                 className="text-xl p-3 font-semibold rounded-xl"
-                statusText={statusText!}
+                statusText={statusText}
                 overrideBg={false}
             />
             <LatestInfo latestInformation={latestInformation} />

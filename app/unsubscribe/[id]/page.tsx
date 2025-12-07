@@ -12,14 +12,14 @@ export default async function UnsubscribePage({ params }: { params: Promise<{ id
     const buttonClasses = 'bg-red-600 hover:bg-red-800 text-white text-lg p-4 rounded-xl w-fit p-3 cursor-pointer';
 
     // Get the data - TODO move to server lib function
-    const unSubReq = await fetch(process.env.API_URL + '/subscription', {
+    const unSubReq = await fetch(`${process.env.API_URL}/subscription`, {
         method: 'DELETE',
         body: JSON.stringify({ id: id }),
         headers: {
             'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
         }
     });
-    const unSubJson = await unSubReq.json();
+    const unSubJson = await unSubReq.json() as { success: boolean };
 
     return (
         <div className="flex flex-col px-4 py-6 page-min-height">

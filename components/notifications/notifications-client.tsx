@@ -6,12 +6,12 @@ import NotifSubForm from '@/components/notifications/notif-sub-form';
 import NotifSubs from '@/components/notifications/notif-subs';
 import Search from '@/components/search';
 import { getSubscriptions } from '@/lib/actions';
-import { ChallengeOutcome, ChallengeVariables } from '@/lib/definitions';
+import { ChallengeOutcome, ChallengeVariables, NotificationSub } from '@/lib/definitions';
 import { useState, useEffect } from 'react';
 import { AtSymbolIcon, EnvelopeIcon, KeyIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 
 export default function NotificationsClient() {
-    const email = useSearchParams().get('email') || '';
+    const email = useSearchParams().get('email') ?? '';
     const router = useRouter();
 
     // Create empty object as only new subscriptions get created on this page
@@ -36,12 +36,12 @@ export default function NotificationsClient() {
         setChallengeOutcome(outcome);
     };
 
-    const [subscriptions, setSubscriptions] = useState([]);
+    const [subscriptions, setSubscriptions] = useState<NotificationSub[]>([]);
     useEffect(() => {
         const checkForSubs = async () => {
-            const subs = await getSubscriptions(email);
-            setSubscriptions(subs);
+            const subs = await getSubscriptions(email) as NotificationSub[] | [];
 
+            setSubscriptions(subs);
             setChallengeOutcome('pending');
         };
 

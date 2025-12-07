@@ -10,9 +10,8 @@ const prisma = new PrismaClient();
  */
 export async function getAllOutages() {
     try {
-        const allOutages: OutageDBData[] = await prisma.outages.findMany();
-
-        return allOutages;
+        const allOutages = await prisma.outages.findMany();
+        return allOutages as OutageDBData[];
     }
     catch (error) {
         console.log(error);
@@ -111,7 +110,7 @@ export async function getUserNotifByLocation(location: string | null, challengeV
                     }
                 );
             }
-            else if (subIdentifier === 'email') {
+            else {
                 userNotif = await prisma.notifications.findFirst(
                     {
                         where: {
@@ -186,7 +185,7 @@ export async function createNewUserNotification(data: FormValues) {
             }
         } while (!idIsNew);
 
-        const createNewNotif = await prisma.notifications.create({
+        await prisma.notifications.create({
             data: hasCoordinates ?
                 {
                     id: notifID,
@@ -204,7 +203,7 @@ export async function createNewUserNotification(data: FormValues) {
                 },
         });
 
-        return createNewNotif ? notifID : null;
+        return notifID;
     }
     catch (error) {
         console.log(error);

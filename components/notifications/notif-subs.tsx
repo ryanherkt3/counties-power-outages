@@ -52,7 +52,7 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Notificat
             }
         >
             {
-                subs && subs.map((subscription: NotificationSub) => {
+                subs.map((subscription: NotificationSub) => {
                     const subCoords = {
                         lat: subscription.lat,
                         lng: subscription.lng
@@ -66,10 +66,10 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Notificat
                         };
 
                         const { location } = subscription;
-                        const locationMatches = location && outage.address && outage.address.includes(location);
+                        const locationMatches = location && outage.address?.includes(location);
 
                         const coordsMatch =
-                            subCoords && coordIsInOutageZone(subCoords, outage.hull as Coordinate[], outageCoords);
+                            coordIsInOutageZone(subCoords, outage.hull as Coordinate[], outageCoords);
 
                         if (coordsMatch || locationMatches) {
                             outageIds = `${outageIds.length ? `${outageIds},` : ''}${outage.id}`;

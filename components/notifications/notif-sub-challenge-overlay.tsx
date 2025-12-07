@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 'use client';
@@ -28,7 +29,7 @@ export default function NotifSubChallengeOverlay(
 
     const { errors, isSubmitting } = useFormState({ control, name: ['location'] });
 
-    const onSubmit = async(data: { location: string}) => {
+    const onSubmit = async(data: { location: string }) => {
         stateUpdate('pending');
 
         const userSub = await getSubByLocation(data.location, challengeVariables);

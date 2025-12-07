@@ -20,7 +20,7 @@ export default function FilterType(
 
     const searchParams = useSearchParams();
 
-    let param = searchParams.get(type.toLocaleLowerCase().replace(' ', '')) || '';
+    let param = searchParams.get(type.toLocaleLowerCase().replace(' ', '')) ?? '';
     if (type === 'Status') {
         param = param.charAt(0).toUpperCase() + param.slice(1);
     }

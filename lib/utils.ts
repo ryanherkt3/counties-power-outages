@@ -136,7 +136,7 @@ export function getFilteredOutages(outages: OutageData[], searchParams: SearchPa
         const matchesAddress = outage.address ?
             (address ? outage.address.toLowerCase().includes(address) : true) :
             false;
-        const matchesStatus = outageStatus ? outage.statusText?.toLowerCase().includes(outageStatus) : true;
+        const matchesStatus = outageStatus ? outage.statusText.toLowerCase().includes(outageStatus) : true;
         const onOrAfterStartDate = startDate ? getDateMatch(outage, startDate, true) : true;
         const onOrBeforeEndDate = endDate ? getDateMatch(outage, endDate, false) : true;
 
@@ -174,8 +174,8 @@ export function getManipulatedOutages(outages: OutageDBData[]) {
             outage.originalShutdownDate = `${day}/${month}/${year}`;
         }
 
-        if (typeof outage.hull === 'string' && outage.hull?.length) {
-            outage.hull = JSON.parse(outage.hull);
+        if (typeof outage.hull === 'string' && outage.hull.length) {
+            outage.hull = JSON.parse(outage.hull) as Coordinate[];
         }
 
         manipulatedOutages.push(outage);
@@ -234,12 +234,12 @@ export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], ou
         return false;
     }
 
-    if (!polygon) {
-        const outageLat = parseInt(outageCoords.lat.toFixed(5));
-        const outageLng = parseInt(outageCoords.lng.toFixed(5));
+    // if (!polygon) {
+    //     const outageLat = parseInt(outageCoords.lat.toFixed(5));
+    //     const outageLng = parseInt(outageCoords.lng.toFixed(5));
 
-        return point.lat === outageLat && point.lng === outageLng;
-    }
+    //     return point.lat === outageLat && point.lng === outageLng;
+    // }
 
     const num_vertices = polygon.length;
     const { lat, lng } = point;
@@ -336,11 +336,13 @@ export function isValidPayloadArgument(data: string | number, dataField: string)
     if (dataField === 'location' && typeof data === 'string') {
         return data.length <= 255;
     }
-    if (dataField === 'coordinate' && typeof data === 'number') {
-        const validLatitude = data >= -37.99999 && data <= -37;
-        const validLongtitude = data >= 174 && data <= 175.99999;
-
-        return validLatitude || validLongtitude;
+    if (dataField.includes('coordinate') && typeof data === 'number') {
+        if (dataField.includes('-lat')) {
+            return data >= -37.99999 && data <= -37;
+        }
+        else if (dataField.includes('-lng')) {
+            return data >= 174 && data <= 175.99999;
+        }
     }
     if (dataField === 'date-subscribed' && typeof data === 'string') {
         // Valid date example: 28/06/2024, 11:57:05 am

@@ -74,7 +74,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         </div>
                         <OutageStatus
                             className="font-medium px-2 py-1 rounded text-center"
-                            statusText={statusText!}
+                            statusText={statusText}
                             overrideBg={false}
                         />
                     </div>

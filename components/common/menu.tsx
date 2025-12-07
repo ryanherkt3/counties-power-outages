@@ -169,7 +169,7 @@ export default function Menu() {
     );
 }
 
-function getMenuLinks(isSmallMenu: boolean, links: MenuLink[], resetSmallNavOpen: Function, pathname: string) {
+function getMenuLinks(isSmallMenu: boolean, links: MenuLink[], resetSmallNavOpen: () => void, pathname: string) {
     const menuLinks: ReactElement[] = [];
 
     links.map((menuLink: MenuLink) => {

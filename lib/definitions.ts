@@ -12,7 +12,7 @@ export interface OutageDBData {
     distance: Decimal | null;
     hull: string | Coordinate[] | null;
     address: string | null;
-    statusText: string | null;
+    statusText: string;
     latestInformation: string | null;
     originalShutdownDate: Date | string;
     lastModified: string | null;
