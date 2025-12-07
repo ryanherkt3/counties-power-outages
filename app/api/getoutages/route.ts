@@ -1,4 +1,5 @@
 import { getAllOutages } from '@/lib/database';
+import { OutageData } from '@/lib/definitions';
 import { getManipulatedOutages } from '@/lib/utils';
 import { NextRequest } from 'next/server';
 
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest) {
     // Get outages from DB
     let outages;
     try {
-        outages = await getAllOutages();
+        outages = await getAllOutages() as OutageData[];
     }
     catch (error) {
         console.log(error);

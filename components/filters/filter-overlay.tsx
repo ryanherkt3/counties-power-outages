@@ -74,9 +74,15 @@ export default function FilterOverlay() {
                     </div>
                     {
                         filterOptions.map((option) => {
-                            const propText = (
-                                type.includes('Date') ? option.props.dateText : option.props.statusText
-                            ) as string;
+                            // key={dateString}
+                            // dateText={dateString}
+                            // statusText={text}
+                            // overrideBg={isSelected}
+                            // className={classToUse}
+
+                            const props = option.props as { dateText: string, statusText: string };
+
+                            const propText = type.includes('Date') ? props.dateText : props.statusText;
 
                             return (
                                 <button

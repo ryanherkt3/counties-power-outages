@@ -3,13 +3,14 @@ import { Decimal } from '@prisma/client/runtime/library';
 export interface OutageDBData {
     id: string;
     projectType: string | null;
-    shutdownDateTime: string | null;
+    shutdownDateTime: string;
     shutdownDate: Date | string;
+    originalShutdownDateTime: string | null;
     feeder: string | null;
     affectedCustomers: number | null;
-    lat: Decimal | null;
-    lng: Decimal | null;
-    distance: Decimal | null;
+    lat: Decimal | number;
+    lng: Decimal | number;
+    distance: Decimal | number;
     hull: string | Coordinate[] | null;
     address: string | null;
     statusText: string;
@@ -23,6 +24,8 @@ export interface OutageDBData {
 }
 
 export type OutageData = OutageDBData & {
+    shutdownPeriods: ShutdownPeriods[];
+    originalShutdownPeriods: ShutdownPeriods[];
     expiredOutage: boolean;
     dummyData: boolean;
 }

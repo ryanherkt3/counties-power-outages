@@ -1,25 +1,25 @@
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 'use client';
 
 import { getSubByLocation } from '@/lib/actions';
-import { ChallengeVariables } from '@/lib/definitions';
+import { ChallengeOutcome, ChallengeVariables } from '@/lib/definitions';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { redirect } from 'next/navigation';
 import { useForm, useFormState } from 'react-hook-form';
+
+interface NotifSubChallengeOverlayProps {
+  onSubPage: boolean;
+  stateUpdate: (outcome: ChallengeOutcome) => void;
+  challengeVariables: ChallengeVariables;
+}
 
 export default function NotifSubChallengeOverlay(
     {
         onSubPage,
         stateUpdate,
         challengeVariables
-    } :
-    {
-        onSubPage: boolean;
-        stateUpdate: Function;
-        challengeVariables: ChallengeVariables;
-    }
+    } : NotifSubChallengeOverlayProps
 ) {
     const { register, handleSubmit, control } = useForm({
         defaultValues: {

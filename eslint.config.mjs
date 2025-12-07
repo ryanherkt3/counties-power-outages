@@ -40,12 +40,8 @@ const typescriptConfig = defineConfig([
             },
         },
         rules: {
-            '@typescript-eslint/triple-slash-reference': 'off',
+            '@typescript-eslint/no-unused-vars': ['error'],
             // TODO remove all these rules (one by one and fix errors)
-            '@typescript-eslint/no-unsafe-call': 'off',
-            '@typescript-eslint/no-explicit-any': 'off',
-            '@typescript-eslint/no-unsafe-member-access': 'off',
-            '@typescript-eslint/no-unsafe-assignment': 'off',
             '@typescript-eslint/restrict-template-expressions': 'off',
         },
     },
@@ -90,7 +86,7 @@ const reactConfig = defineConfig([
             'no-trailing-spaces': 2,
             'no-undef': 'off', // TODO remove this rule
             'no-unused-expressions': 2,
-            'no-unused-vars': [2, {'vars': 'local', 'args': 'after-used'}],
+            'no-unused-vars': 'off',
             'prefer-const': [2, {'destructuring': 'all'}],
             'prefer-destructuring': [1, {'object': true, 'array': false}],
             'quotes': [2, 'single', { 'avoidEscape': true }],

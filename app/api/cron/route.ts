@@ -1,5 +1,5 @@
 import { sendEmailNotification } from '@/lib/emails';
-import { Coordinate, NotificationSub, NotifOutageInfo, OutageDBData } from '@/lib/definitions';
+import { Coordinate, NotificationSub, NotifOutageInfo, OutageData, OutageDBData } from '@/lib/definitions';
 import { coordIsInOutageZone, getManipulatedOutages } from '@/lib/utils';
 import { NextRequest } from 'next/server';
 import content from './../../content.json';
@@ -23,8 +23,8 @@ export async function GET(request: NextRequest) {
 
     // Add or update outages
     const initOutages = await fetch(`${process.env.CRON_API_URL}`);
-    const initOutagesJson = await initOutages.json();
-    let outages: OutageDBData[] = initOutagesJson.body.planned_outages;
+    const initOutagesJson = await initOutages.json() as { body: { planned_outages: OutageData[] } };
+    let outages: OutageData[] = initOutagesJson.body.planned_outages;
 
     for (const outage of outages) {
         await addUpdateOutage(outage);
@@ -81,10 +81,10 @@ export async function GET(request: NextRequest) {
 /**
  * Add an outage to the DB, or update an existing one
  *
- * @param {Object} outage
+ * @param {OutageData} outage
  * @returns {Object}
  */
-async function addUpdateOutage(outage: any) {
+async function addUpdateOutage(outage: OutageData) {
     const {
         id,
         projectType,
@@ -104,10 +104,8 @@ async function addUpdateOutage(outage: any) {
         lastModified
     } = outage;
 
-    const shutDownStart = shutdownPeriodStart;
-    const shutDownEnd = shutdownPeriodEnd;
-    const ogShutDownStart = originalShutdownPeriods.length ? originalShutdownPeriods[0].start : '';
-    const ogShutDownEnd = originalShutdownPeriods.length ? originalShutdownPeriods[0].end :  '';
+    const ogshutdownPeriodStart = originalShutdownPeriods.length ? originalShutdownPeriods[0].start : '';
+    const ogshutdownPeriodEnd = originalShutdownPeriods.length ? originalShutdownPeriods[0].end :  '';
 
     const hullObj = [];
     let hullString = '';
@@ -118,12 +116,13 @@ async function addUpdateOutage(outage: any) {
         hullString = JSON.stringify(hullObj);
     }
 
-    const dateString: string = shutdownDateTime.split('T')[0];
-    const ogDateString: string = originalShutdownDateTime.length ? originalShutdownDateTime.split('T')[0] : dateString;
-
     // Add outage to DB
     try {
         const outageExists = await prisma.outages.findFirst({ where: { id: id } });
+
+        const dateString: string = shutdownDateTime.split('T')[0];
+        const ogDateString: string = originalShutdownDateTime?.length ?
+            originalShutdownDateTime.split('T')[0] : dateString;
 
         if (outageExists) {
             const updateOutage = await prisma.outages.update({
@@ -135,8 +134,8 @@ async function addUpdateOutage(outage: any) {
                     statusText: statusText,
                     latestInformation: latestInformation ?? '',
                     originalShutdownDate: new Date(ogDateString),
-                    originalShutdownPeriodStart: ogShutDownStart,
-                    originalShutdownPeriodEnd: ogShutDownEnd,
+                    originalShutdownPeriodStart: ogshutdownPeriodStart,
+                    originalShutdownPeriodEnd: ogshutdownPeriodEnd,
                     lastModified: lastModified,
                 }
             });
@@ -150,8 +149,8 @@ async function addUpdateOutage(outage: any) {
                 projectType: projectType,
                 shutdownDateTime: shutdownDateTime,
                 shutdownDate: new Date(dateString),
-                shutdownPeriodStart: shutDownStart,
-                shutdownPeriodEnd: shutDownEnd,
+                shutdownPeriodStart: shutdownPeriodStart,
+                shutdownPeriodEnd: shutdownPeriodEnd,
                 feeder,
                 affectedCustomers: affectedCustomers,
                 lat,
@@ -162,8 +161,8 @@ async function addUpdateOutage(outage: any) {
                 statusText: statusText,
                 latestInformation: latestInformation ?? '',
                 originalShutdownDate: new Date(ogDateString),
-                originalShutdownPeriodStart: ogShutDownStart,
-                originalShutdownPeriodEnd: ogShutDownEnd,
+                originalShutdownPeriodStart: ogshutdownPeriodStart,
+                originalShutdownPeriodEnd: ogshutdownPeriodEnd,
                 lastModified: lastModified,
             }
         });
@@ -225,9 +224,9 @@ async function trySendEmails(
 
         // Check sub.outageinfo to see if an email has been sent within the last 7 days, and also if
         // the outage status has change compared to last time - if so send email anyway
-        let subInfo: any[] = (
+        let subInfo = (
             sub.outageinfo === null || ['null', ''].includes(sub.outageinfo) ? [] : JSON.parse(sub.outageinfo)
-        );
+        ) as NotifOutageInfo[];
 
         // Check if any objects in outageInfo have email timestamps that are at least 14 days old
         const oldEmailAlerts = Object.keys(subInfo).length > 0 && subInfo.filter((x: NotifOutageInfo) => {
@@ -279,16 +278,20 @@ async function trySendEmails(
                 coordIsInOutageZone(subCoords, outage.hull as Coordinate[], outageCoords) :
                 false;
 
-            const filteredSub = Object.keys(subInfo).length > 0 ? subInfo.find((x: NotifOutageInfo) => {
-                return x.id === outage.id;
-            }) : {};
+            const filteredSub = (
+                Object.keys(subInfo).length > 0 ?
+                    subInfo.find((x: NotifOutageInfo) => {
+                        return x.id === outage.id;
+                    }) :
+                    {}
+            ) as NotifOutageInfo;
 
-            const outageStatusChanged = filteredSub?.status &&
+            const outageStatusChanged = filteredSub.status &&
                 filteredSub.status.toLowerCase() !== outageStatus;
             let shouldSendEmail = coordsMatch || locationMatches;
 
             // TODO check if outage is happening within 7 days
-            if (shouldSendEmail && !!(filteredSub?.status)) {
+            if (shouldSendEmail && !!(filteredSub.status)) {
                 if (!outageStatusChanged && filteredSub.emailSent) {
                     const currentDate = new Date();
                     const currentTime = currentDate.getTime() / 1000;
@@ -309,7 +312,7 @@ async function trySendEmails(
 
                     // If we've emailed them before, update the object values; otherwise create a new one and
                     // push it to subInfo
-                    if (filteredSub?.status) {
+                    if (filteredSub.status) {
                         filteredSub.emailSent = emailedTime;
                         filteredSub.status = outage.statusText;
                     }

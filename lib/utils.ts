@@ -1,4 +1,4 @@
-import { Coordinate, OutageData, OutageDBData, SearchParams } from './definitions';
+import { Coordinate, OutageData, SearchParams } from './definitions';
 import { z } from 'zod';
 import moment from 'moment-timezone';
 
@@ -149,11 +149,11 @@ export function getFilteredOutages(outages: OutageData[], searchParams: SearchPa
 /**
  * Manipulate variables within the outages object to be suitable for client-side consumption
  *
- * @param {Array<OutageDBData>} outages from the database
- * @returns {Array<OutageDBData>} the manipulated list of outages
+ * @param {Array<OutageData>} outages from the database
+ * @returns {Array<OutageData>} the manipulated list of outages
  */
-export function getManipulatedOutages(outages: OutageDBData[]) {
-    const manipulatedOutages: OutageDBData[] = [];
+export function getManipulatedOutages(outages: OutageData[]) {
+    const manipulatedOutages: OutageData[] = [];
 
     for (const outage of outages) {
         if (outage.shutdownDate) {
