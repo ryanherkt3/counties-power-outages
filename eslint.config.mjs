@@ -9,7 +9,15 @@ import nextPlugin from '@next/eslint-plugin-next';
 const ignoresConfig = defineConfig([
     {
         name: 'project/ignores',
-        ignores: ['node_modules/**', '.next/**', 'out/**', 'build/**', 'next-env.d.ts']
+        ignores: [
+            'node_modules/**',
+            '.next/**',
+            'out/**',
+            'build/**',
+            'next-env.d.ts',
+            'next.config.mjs',
+            'scripts/**',
+        ]
     },
 ]);
 
@@ -41,8 +49,6 @@ const typescriptConfig = defineConfig([
         },
         rules: {
             '@typescript-eslint/no-unused-vars': ['error'],
-            // TODO remove all these rules (one by one and fix errors)
-            '@typescript-eslint/restrict-template-expressions': 'off',
         },
     },
     {
@@ -84,7 +90,7 @@ const reactConfig = defineConfig([
             'no-mixed-spaces-and-tabs': 2,
             'no-negated-condition': 2,
             'no-trailing-spaces': 2,
-            'no-undef': 'off', // TODO remove this rule
+            // 'no-undef': 'off',
             'no-unused-expressions': 2,
             'no-unused-vars': 'off',
             'prefer-const': [2, {'destructuring': 'all'}],

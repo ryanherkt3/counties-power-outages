@@ -30,7 +30,9 @@ export default function OutageOverlay() {
 
         if (outageOverlayView.data.address) {
             const { lat: outageLat, lng: outageLng } = outageOverlayView.data;
-            setEmbedLink(`https://maps.google.com/maps?q=${outageLat},${outageLng}&hl=en&z=16&output=embed`);
+            setEmbedLink(
+                `https://maps.google.com/maps?q=${outageLat.toString()},${outageLng.toString()}&hl=en&z=16&output=embed`
+            );
         }
         else {
             setEmbedLink(null);

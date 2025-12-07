@@ -37,10 +37,15 @@ export async function sendEmailNotification(notifSub: NotificationSub, outage: O
             oldStatus: oldStatus
         };
 
+        let subject = 'Upcoming Power Outage';
+        if (notifSub.location) {
+            subject += ` - ${notifSub.location}`;
+        }
+
         const { data, error } = await resend.emails.send({
             from: 'Ryan Herkt <emails@emails.ryanherkt.com>',
             to: notifSub.email,
-            subject: `Upcoming Power Outage - ${notifSub.location}`,
+            subject,
             react: NotificationEmail(notifEmailPayload),
         });
 

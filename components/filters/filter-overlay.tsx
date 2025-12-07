@@ -197,9 +197,16 @@ function getFilterOptions(
     }
     else if (filterType.includes('Date') && optionalDates) {
         const firstDay = new Date(optionalDates[0]);
-        const firstDateString = `${firstDay.getDate()}/${firstDay.getMonth() + 1}/${firstDay.getFullYear()}`;
+        let day = firstDay.getDate().toString();
+        let month = (firstDay.getMonth() + 1).toString();
+        let year = firstDay.getFullYear().toString();
+        const firstDateString =`${day}/${month}/${year}`;
+
         const lastDay = new Date(optionalDates[1]);
-        const lastDateString = `${lastDay.getDate()}/${lastDay.getMonth() + 1}/${lastDay.getFullYear()}`;
+        day = lastDay.getDate().toString();
+        month = (lastDay.getMonth() + 1).toString();
+        year = lastDay.getFullYear().toString();
+        const lastDateString = `${day}/${month}/${year}`;
 
         let isSelected = filterType === 'Start Date' ? startdate === firstDateString : enddate === firstDateString;
         filterUsed = isSelected;
@@ -216,7 +223,10 @@ function getFilterOptions(
         let dateDays = 1;
         while (addDates) {
             const nextDay = new Date(firstDay.getTime() + (86400 * 1000 * dateDays));
-            const dateString = `${nextDay.getDate()}/${nextDay.getMonth() + 1}/${nextDay.getFullYear()}`;
+            day = nextDay.getDate().toString();
+            month = (nextDay.getMonth() + 1).toString();
+            year = nextDay.getFullYear().toString();
+            const dateString = `${day}/${month}/${year}`;
 
             isSelected = filterType === 'Start Date' ? startdate === dateString : enddate === dateString;
             filterUsed = filterUsed || isSelected;

@@ -151,7 +151,10 @@ export default function OutagesList({ searchParams } : { searchParams: SearchPar
  * @returns string
  */
 function getQueryString(searchParams: SearchParams) {
-    let queryString = `page=${searchParams.page}`;
+    let queryString = 'page=';
+    if (searchParams.page) {
+        queryString += `=${searchParams.page}`;
+    }
 
     if (searchParams.query) {
         queryString += `&query=${searchParams.query}`;

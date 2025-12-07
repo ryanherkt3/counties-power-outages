@@ -11,6 +11,14 @@ const prisma = new PrismaClient();
 export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
 
+    // If no cron secret or API URL provided, return 500 response
+    if (!process.env.CRON_SECRET || !process.env.CRON_API_URL) {
+        return new Response(JSON.stringify({ 'error': 'Server error' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
         return new Response('Unauthorized', {
             status: 401,
@@ -22,7 +30,7 @@ export async function GET(request: NextRequest) {
     console.log('Expired outages removed');
 
     // Add or update outages
-    const initOutages = await fetch(`${process.env.CRON_API_URL}`);
+    const initOutages = await fetch(process.env.CRON_API_URL);
     const initOutagesJson = await initOutages.json() as { body: { planned_outages: OutageData[] } };
     let outages: OutageData[] = initOutagesJson.body.planned_outages;
 
@@ -68,7 +76,7 @@ export async function GET(request: NextRequest) {
 
     const emailCount = await trySendEmails(outages, subscriptions);
 
-    console.log(`Emails sent: ${emailCount}`);
+    console.log(`Emails sent: ${emailCount.toString()}`);
 
     await prisma.$disconnect();
 

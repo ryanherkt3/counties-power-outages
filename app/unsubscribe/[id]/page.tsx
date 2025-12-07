@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = {
     title: 'Unsubscribe | Counties Power Outages App',
@@ -10,6 +11,11 @@ export default async function UnsubscribePage({ params }: { params: Promise<{ id
     const { id } = await params;
 
     const buttonClasses = 'bg-red-600 hover:bg-red-800 text-white text-lg p-4 rounded-xl w-fit p-3 cursor-pointer';
+
+    // If no env vars provided, redirect to not found
+    if (!process.env.API_URL || !process.env.AUTH_TOKEN) {
+        return notFound();
+    }
 
     // Get the data - TODO move to server lib function
     const unSubReq = await fetch(`${process.env.API_URL}/subscription`, {

@@ -101,7 +101,7 @@ export function getCardSections(data: NotificationSub) {
                 key: 'coordinates',
                 icon: 'MapPinIcon',
                 title: 'Coordinates',
-                value: `${lat}, ${lng}`
+                value: `${lat.toString()}, ${lng.toString()}`
             },
         );
     }

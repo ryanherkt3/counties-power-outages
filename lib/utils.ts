@@ -41,11 +41,11 @@ export function getTimeStrings(splitTime: string[]) {
     const minuteSegment = splitTime[1];
 
     if (parseInt(hourlySegment) >= 12) {
-        hourlySegment = parseInt(hourlySegment) === 12 ? '12' : `${parseInt(hourlySegment) - 12}`;
+        hourlySegment = parseInt(hourlySegment) === 12 ? '12' : (parseInt(hourlySegment) - 12).toString();
         return `${hourlySegment}:${minuteSegment} PM`;
     }
 
-    hourlySegment = parseInt(hourlySegment) === 0 ? '12' : `${parseInt(hourlySegment)}`;
+    hourlySegment = parseInt(hourlySegment) === 0 ? '12' : parseInt(hourlySegment).toString();
     return `${hourlySegment}:${minuteSegment} AM`;
 }
 
@@ -159,18 +159,18 @@ export function getManipulatedOutages(outages: OutageData[]) {
         if (outage.shutdownDate) {
             // Convert shutdownDate to a string
             const shutdownDate = new Date(outage.shutdownDate);
-            const year = shutdownDate.getFullYear();
-            const month = shutdownDate.getMonth() + 1;
-            const day = shutdownDate.getDate();
+            const year = shutdownDate.getFullYear().toString();
+            const month = (shutdownDate.getMonth() + 1).toString();
+            const day = shutdownDate.getDate().toString();
             outage.shutdownDate = `${day}/${month}/${year}`;
         }
 
         // Convert originalShutdownDate to a string
         if (outage.originalShutdownDate) {
             const ogShutdownDate = new Date(outage.originalShutdownDate);
-            const year = ogShutdownDate.getFullYear();
-            const month = ogShutdownDate.getMonth() + 1;
-            const day = ogShutdownDate.getDate();
+            const year = ogShutdownDate.getFullYear().toString();
+            const month = (ogShutdownDate.getMonth() + 1).toString();
+            const day = ogShutdownDate.getDate().toString();
             outage.originalShutdownDate = `${day}/${month}/${year}`;
         }
 

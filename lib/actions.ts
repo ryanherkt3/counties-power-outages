@@ -11,6 +11,11 @@ import { getTimesAndActiveOutage } from './utils';
  * @returns {Object} outages
  */
 export async function getActiveOutages() {
+    // If no env vars provided, return nothing
+    if (!process.env.API_URL || !process.env.AUTH_TOKEN) {
+        return [];
+    }
+
     const outagesReq = await fetch(`${process.env.API_URL}/getoutages`, {
         headers: {
             'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
@@ -79,6 +84,11 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
     };
 
     try {
+        // If no env vars provided, throw an error
+        if (!process.env.API_URL || !process.env.AUTH_TOKEN) {
+            throw new Error('Environment variable(s) not set');
+        }
+
         await fetch(`${process.env.API_URL}/subscription`, {
             method: isExistingSub ? 'PUT' : 'POST',
             body: JSON.stringify(payload),
@@ -103,8 +113,8 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
  * @returns {NotificationSub[]} list of subscriptions
  */
 export async function getSubscriptions(email: string) {
-    // Return empty array if no email provided
-    if (!email) {
+    // Return empty array if no email or env vars provided
+    if (!email || !process.env.API_URL || !process.env.AUTH_TOKEN) {
         return [];
     }
 
@@ -132,8 +142,8 @@ export async function getSubscriptions(email: string) {
  * @returns {Object} subscription
  */
 export async function getSubById(id: string) {
-    // Return empty array if no ID provided
-    if (!id) {
+    // Return empty array if no ID or env vars provided
+    if (!id || !process.env.API_URL || !process.env.AUTH_TOKEN) {
         return [];
     }
 
@@ -174,6 +184,11 @@ export async function getSubByLocation(location: string, challengeVariables: Cha
  */
 export async function deleteSubscription(subId: string) {
     try {
+        // If no env vars provided, throw an error
+        if (!process.env.API_URL || !process.env.AUTH_TOKEN) {
+            throw new Error('Environment variable(s) not set');
+        }
+
         await fetch(`${process.env.API_URL}/subscription`, {
             method: 'DELETE',
             body: JSON.stringify({ id: subId }),

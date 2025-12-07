@@ -13,6 +13,14 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
 
+    // If no auth token provided, return 500 response
+    if (!process.env.AUTH_TOKEN) {
+        return new NextResponse(JSON.stringify({ 'error': 'Server error', 'sub': [] }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
     if (authHeader !== `Bearer ${process.env.AUTH_TOKEN}`) {
         return new Response('Unauthorized', {
             status: 401,
@@ -92,6 +100,14 @@ export async function GET(request: NextRequest) {
 export async function POST(request: Request) {
     const authHeader = request.headers.get('authorization');
 
+    // If no auth token provided, return 500 response
+    if (!process.env.AUTH_TOKEN) {
+        return new NextResponse(JSON.stringify({ 'error': 'Server error', 'success': false }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
     if (authHeader !== `Bearer ${process.env.AUTH_TOKEN}`) {
         return new Response('Unauthorized', {
             status: 401,
@@ -163,6 +179,14 @@ export async function POST(request: Request) {
 // PUT: Update subscription
 export async function PUT(request: Request) {
     const authHeader = request.headers.get('authorization');
+
+    // If no auth token provided, return 500 response
+    if (!process.env.AUTH_TOKEN) {
+        return new NextResponse(JSON.stringify({ 'error': 'Server error', 'success': false }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 
     if (authHeader !== `Bearer ${process.env.AUTH_TOKEN}`) {
         return new Response('Unauthorized', {
