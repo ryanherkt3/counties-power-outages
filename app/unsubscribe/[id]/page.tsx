@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 export default async function UnsubscribePage({ params }: { params: Promise<{ id: string } > }) {
     const { id } = await params;
 
-    const buttonClasses = 'bg-red-600 hover:bg-red-800 text-white text-lg p-4 rounded-xl w-fit p-3 cursor-pointer';
+    const buttonClasses = 'flex flex-row items-center gap-2 p-3 border-1 border-red-600 hover:bg-red-600 grow ' +
+        'text-red-600 hover:text-white rounded-xl cursor-pointer justify-center font-semibold';
 
     // If no env vars provided, redirect to not found
     if (!process.env.API_URL || !process.env.AUTH_TOKEN) {
@@ -44,9 +45,9 @@ export default async function UnsubscribePage({ params }: { params: Promise<{ id
                         }
                     </div>
                 </div>
-                <div className="flex flex-row gap-8 items-center">
-                    <Link href="/" className={buttonClasses}>Outages</Link>
-                    <Link href="/notifications" className={buttonClasses}>Notifications</Link>
+                <div className="flex flex-row gap-8 items-center flex-wrap">
+                    <Link href="/" className={buttonClasses}>OUTAGES</Link>
+                    <Link href="/notifications" className={buttonClasses}>NOTIFICATIONS</Link>
                 </div>
             </div>
         </div>
