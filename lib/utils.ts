@@ -1,5 +1,4 @@
 import { Coordinate, OutageData, SearchParams } from './definitions';
-import { z } from 'zod';
 import moment from 'moment-timezone';
 
 /**
@@ -291,16 +290,17 @@ export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], ou
 }
 
 /**
- * Check an email address is valid using Zod
+ * Check an email address is valid
  *
  * @param {string} email
  * @returns {Boolean}
  */
 export function isValidEmail(email: string) {
     try {
-        const emailSchema = z.email();
-        emailSchema.parse(email);
-        return true;
+        const emailRegex =
+            /^(?!\.)(?!.*\.\.)([A-Z0-9_'+-.]*)[A-Z0-9_'+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
+
+        return emailRegex.test(email);
     }
     catch (error) {
         console.log(error);
@@ -326,7 +326,7 @@ export function isValidPayloadArgument(data: string | number, dataField: string)
     const isEmptyString = typeof data === 'string' && data.length === 0;
 
     // Data is invalid if it contains a blacklisted character or is empty
-    if (dataHasInvalidChars || isEmptyString) {
+    if ((!dataField.includes('coordinate') && dataHasInvalidChars) || isEmptyString) {
         return false;
     }
 

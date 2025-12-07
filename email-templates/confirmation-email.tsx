@@ -7,6 +7,8 @@ export default function ConfirmationEmail({ subData } : { subData: NotificationS
     const { id, location, datesubscribed } = subData;
 
     const unsubLink = <a href={`https://outages.ryanherkt.com/unsubscribe/${id}`}>here</a>;
+    const manageSubLink =
+        <a href={`https://outages.ryanherkt.com/subscription/${id}?showchallenge=0`}>Manage Subscription</a>;
 
     return (
         <Html lang="en">
@@ -23,6 +25,7 @@ export default function ConfirmationEmail({ subData } : { subData: NotificationS
                     <Section style={paddedSection}>
                         <Text style={paragraph}><b>Location:</b>{' '}{location}</Text>
                         <Text style={paragraph}><b>Date Subscribed:</b>{' '}{datesubscribed}</Text>
+                        <Text style={paragraph}><b>{manageSubLink}</b></Text>
                     </Section>
 
                     <Section style={paddedSection}>

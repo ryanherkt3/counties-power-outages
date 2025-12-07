@@ -77,8 +77,8 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
         location: location,
         email: email,
         hasCoordinates: includeCoords,
-        latitude: includeCoords ? latitude : null,
-        longtitude: includeCoords ? longtitude : null,
+        latitude: includeCoords ? parseInt(latitude as string) : null,
+        longtitude: includeCoords ? parseInt(longtitude as string) : null,
         id: isExistingSub ? id : '',
         datesubscribed: isExistingSub ? '' : new Date().toLocaleString(),
     };
@@ -119,7 +119,10 @@ export async function getSubscriptions(email: string) {
     }
 
     try {
-        const subsReq = await fetch(`${process.env.API_URL}/subscription?email=${email}`, {
+        // Replace any pluses with the HTML encoding so it doesn't get stripped out
+        const cleanedEmail = email.replaceAll('+', '%2B');
+
+        const subsReq = await fetch(`${process.env.API_URL}/subscription?email=${cleanedEmail}`, {
             headers: {
                 'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
             }

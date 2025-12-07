@@ -65,8 +65,8 @@ export interface FormFields {
     id: string;
     email: string;
     location: string;
-    latitude: number | null;
-    longtitude: number | null;
+    latitude: string | number | null;
+    longtitude: string | number | null;
 }
 
 export type FormValues = FormFields & {

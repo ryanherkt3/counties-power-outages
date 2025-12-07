@@ -36,7 +36,7 @@ export default function NotificationsClient() {
         setChallengeOutcome(outcome);
     };
 
-    const [subscriptions, setSubscriptions] = useState<NotificationSub[]>([]);
+    const [subscriptions, setSubscriptions] = useState<NotificationSub[]>();
     useEffect(() => {
         const checkForSubs = async () => {
             const subs = await getSubscriptions(email) as NotificationSub[] | [];
@@ -52,7 +52,7 @@ export default function NotificationsClient() {
         );
     }, [email]);
 
-    if (subscriptions.length && challengeOutcome === 'pending') {
+    if (subscriptions?.length && challengeOutcome === 'pending') {
         const challengeVariables: ChallengeVariables = { subIdentifier: 'email', subParam: email };
 
         return (
@@ -104,7 +104,7 @@ export default function NotificationsClient() {
             </div>
 
             {
-                challengeOutcome === 'success' ? <NotifSubs subscriptions={subscriptions} /> : null
+                challengeOutcome === 'success' && subscriptions ? <NotifSubs subscriptions={subscriptions} /> : null
             }
 
             <div className="flex flex-col gap-4">

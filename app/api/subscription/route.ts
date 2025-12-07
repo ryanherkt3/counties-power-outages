@@ -144,8 +144,8 @@ export async function POST(request: Request) {
         const subData: NotificationSub = {
             id: idString,
             location: location,
-            lat: latitude,
-            lng: longtitude,
+            lat: latitude as number,
+            lng: longtitude as number,
             email: email,
             datesubscribed: datesubscribed,
             outageinfo: ''

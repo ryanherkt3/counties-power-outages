@@ -190,8 +190,8 @@ export async function createNewUserNotification(data: FormValues) {
                 {
                     id: notifID,
                     location,
-                    lat: latitude,
-                    lng: longtitude,
+                    lat: latitude as number,
+                    lng: longtitude as number,
                     email,
                     datesubscribed
                 } :
@@ -228,8 +228,8 @@ export async function updateExistingUserNotification(data: FormValues) {
             data: hasCoordinates ?
                 {
                     location,
-                    lat: latitude,
-                    lng: longtitude,
+                    lat: latitude as number,
+                    lng: longtitude as number,
                     email,
                 } :
                 {
