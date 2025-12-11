@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { ChallengeVariables, FormFields, FormValues, OutageData } from './definitions';
+import { ChallengeVariables, FormFields, FormValues, NotificationSub, OutageData } from './definitions';
 import { getUserNotifByLocation } from './database';
 import { getTimesAndActiveOutage } from './utils';
 
@@ -11,19 +11,25 @@ import { getTimesAndActiveOutage } from './utils';
  * @returns {Object} outages
  */
 export async function getActiveOutages() {
-    const outagesReq = await fetch(process.env.API_URL + '/getoutages', {
+    // If no env vars provided, return nothing
+    if (!process.env.API_URL || !process.env.AUTH_TOKEN) {
+        return [];
+    }
+
+    const outagesReq = await fetch(`${process.env.API_URL}/getoutages`, {
         headers: {
             'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
         }
     });
 
-    const outagesJson = await outagesReq.json();
+    const outagesJson = await outagesReq.json() as { planned_outages: OutageData[] | [] };
 
-    let outages: Array<OutageData> = outagesJson.planned_outages;
+    let outages: OutageData[] = outagesJson.planned_outages;
 
     outages.map((outage: OutageData) => {
         if (outage.shutdownPeriodStart && outage.shutdownPeriodEnd) {
-            const timesAndIsActiveOutage = getTimesAndActiveOutage(outage.shutdownPeriodStart, outage.shutdownPeriodEnd);
+            const timesAndIsActiveOutage =
+                getTimesAndActiveOutage(outage.shutdownPeriodStart, outage.shutdownPeriodEnd);
             outage.expiredOutage = timesAndIsActiveOutage.expiredOutage;
 
             if (timesAndIsActiveOutage.activeOutage && outage.statusText !== 'Cancelled') {
@@ -33,7 +39,7 @@ export async function getActiveOutages() {
     });
 
     outages = outages.filter((outage: OutageData) => {
-        return outage.expiredOutage === false;
+        return !outage.expiredOutage;
     }).sort((a: OutageData, b: OutageData) => {
         if (a.shutdownDateTime && b.shutdownDateTime &&
             a.shutdownPeriodStart &&
@@ -71,14 +77,19 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
         location: location,
         email: email,
         hasCoordinates: includeCoords,
-        latitude: includeCoords ? latitude : null,
-        longtitude: includeCoords ? longtitude : null,
+        latitude: includeCoords ? parseInt(latitude as string) : null,
+        longtitude: includeCoords ? parseInt(longtitude as string) : null,
         id: isExistingSub ? id : '',
         datesubscribed: isExistingSub ? '' : new Date().toLocaleString(),
     };
 
     try {
-        await fetch(process.env.API_URL + '/subscription', {
+        // If no env vars provided, throw an error
+        if (!process.env.API_URL || !process.env.AUTH_TOKEN) {
+            throw new Error('Environment variable(s) not set');
+        }
+
+        await fetch(`${process.env.API_URL}/subscription`, {
             method: isExistingSub ? 'PUT' : 'POST',
             body: JSON.stringify(payload),
             headers: {
@@ -99,22 +110,28 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
  * Get a list of all subscriptions tied to an email address.
  *
  * @param {string} email the email address
- * @returns list of subscriptions
+ * @returns {NotificationSub[]} list of subscriptions
  */
 export async function getSubscriptions(email: string) {
-    // Return empty array if no email provided
-    if (!email) {
+    // Return empty array if no email or env vars provided
+    if (!email || !process.env.API_URL || !process.env.AUTH_TOKEN) {
         return [];
     }
 
     try {
-        const subsReq = await fetch(process.env.API_URL + `/subscription?email=${email}`, {
+        // Replace any pluses with the HTML encoding so it doesn't get stripped out
+        const cleanedEmail = email.replaceAll('+', '%2B');
+
+        const subsReq = await fetch(`${process.env.API_URL}/subscription?email=${cleanedEmail}`, {
             headers: {
                 'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
             }
         });
-        const subsJson = await subsReq.json();
-        return subsJson.rows;
+
+        const subsJson = await subsReq.json() as { rows: NotificationSub[] | [] };
+        const rows = subsJson.rows as NotificationSub[];
+
+        return rows;
     }
     catch (error) {
         console.log('Error getting subscriptions', error);
@@ -128,19 +145,21 @@ export async function getSubscriptions(email: string) {
  * @returns {Object} subscription
  */
 export async function getSubById(id: string) {
-    // Return empty array if no ID provided
-    if (!id) {
+    // Return empty array if no ID or env vars provided
+    if (!id || !process.env.API_URL || !process.env.AUTH_TOKEN) {
         return [];
     }
 
-    const subReq = await fetch(process.env.API_URL + `/subscription?id=${id}`, {
+    const subReq = await fetch(`${process.env.API_URL}/subscription?id=${id}`, {
         headers: {
             'Authorization': `Bearer ${process.env.AUTH_TOKEN}`
         }
     });
-    const subJson = await subReq.json();
 
-    return subJson.sub;
+    const subJson = await subReq.json() as { sub: NotificationSub | [] };
+    const rows = subJson.sub as NotificationSub;
+
+    return rows;
 }
 
 /**
@@ -168,7 +187,12 @@ export async function getSubByLocation(location: string, challengeVariables: Cha
  */
 export async function deleteSubscription(subId: string) {
     try {
-        await fetch(process.env.API_URL + '/subscription', {
+        // If no env vars provided, throw an error
+        if (!process.env.API_URL || !process.env.AUTH_TOKEN) {
+            throw new Error('Environment variable(s) not set');
+        }
+
+        await fetch(`${process.env.API_URL}/subscription`, {
             method: 'DELETE',
             body: JSON.stringify({ id: subId }),
             headers: {

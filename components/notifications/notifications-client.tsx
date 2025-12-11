@@ -1,18 +1,17 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import content from '../../app/content.json';
 import NotifSubChallengeOverlay from '@/components/notifications/notif-sub-challenge-overlay';
 import NotifSubForm from '@/components/notifications/notif-sub-form';
 import NotifSubs from '@/components/notifications/notif-subs';
 import Search from '@/components/search';
 import { getSubscriptions } from '@/lib/actions';
-import { ChallengeOutcome, ChallengeVariables } from '@/lib/definitions';
+import { ChallengeOutcome, ChallengeVariables, NotificationSub } from '@/lib/definitions';
 import { useState, useEffect } from 'react';
-import { AtSymbolIcon, EnvelopeIcon, KeyIcon, PencilIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+import { AtSymbolIcon, EnvelopeIcon, KeyIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 
 export default function NotificationsClient() {
-    const email = useSearchParams().get('email') || '';
+    const email = useSearchParams().get('email') ?? '';
     const router = useRouter();
 
     // Create empty object as only new subscriptions get created on this page
@@ -37,19 +36,23 @@ export default function NotificationsClient() {
         setChallengeOutcome(outcome);
     };
 
-    const [subscriptions, setSubscriptions] = useState([]);
+    const [subscriptions, setSubscriptions] = useState<NotificationSub[]>();
     useEffect(() => {
         const checkForSubs = async () => {
-            const subs = await getSubscriptions(email);
-            setSubscriptions(subs);
+            const subs = await getSubscriptions(email) as NotificationSub[] | [];
 
+            setSubscriptions(subs);
             setChallengeOutcome('pending');
         };
 
-        checkForSubs();
+        checkForSubs().catch(
+            (e: unknown) => {
+                console.error('Error checking for subscriptions', e);
+            }
+        );
     }, [email]);
 
-    if (subscriptions.length && challengeOutcome === 'pending') {
+    if (subscriptions?.length && challengeOutcome === 'pending') {
         const challengeVariables: ChallengeVariables = { subIdentifier: 'email', subParam: email };
 
         return (
@@ -75,7 +78,7 @@ export default function NotificationsClient() {
                         <span className='text-center text-lg'>Get notified of upcoming outages</span>
                     </div>
                 </div>
-            </div> 
+            </div>
 
             <div className="flex flex-col gap-4 relative">
                 <div className="text-xl font-semibold text-center">Simple Update Steps</div>
@@ -101,7 +104,7 @@ export default function NotificationsClient() {
             </div>
 
             {
-                challengeOutcome === 'success' ? <NotifSubs subscriptions={subscriptions} /> : null
+                challengeOutcome === 'success' && subscriptions ? <NotifSubs subscriptions={subscriptions} /> : null
             }
 
             <div className="flex flex-col gap-4">

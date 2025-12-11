@@ -7,7 +7,7 @@ import NotificationCard from './notif-sub-card';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 
-export default function NotifSubs({ subscriptions } : { subscriptions: Array<NotificationSub>; }) {
+export default function NotifSubs({ subscriptions } : { subscriptions: NotificationSub[]; }) {
     const [subs, setSubs] = useState(subscriptions);
     const [show, setShow] = useState<boolean>(!!subscriptions);
 
@@ -23,7 +23,7 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Array<Not
         setShow(!!subscriptions);
     }, [subscriptions]);
 
-    const [outages, setOutages] = useState<Array<OutageData>>([]);
+    const [outages, setOutages] = useState<OutageData[]>([]);
 
     useEffect(() => {
         const getOutages = async () => {
@@ -32,7 +32,11 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Array<Not
         };
 
         if (!outages.length) {
-            getOutages();
+            getOutages().catch(
+                (e: unknown) => {
+                    console.error('Error getting outages', e);
+                }
+            );
         }
     });
 
@@ -48,7 +52,7 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Array<Not
             }
         >
             {
-                subs && subs.map((subscription: NotificationSub) => {
+                subs.map((subscription: NotificationSub) => {
                     const subCoords = {
                         lat: subscription.lat,
                         lng: subscription.lng
@@ -62,9 +66,10 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Array<Not
                         };
 
                         const { location } = subscription;
-                        const locationMatches = location && outage.address && outage.address.includes(location);
+                        const locationMatches = location && outage.address?.includes(location);
 
-                        const coordsMatch = subCoords && coordIsInOutageZone(subCoords, outage.hull as Coordinate[], outageCoords);
+                        const coordsMatch =
+                            coordIsInOutageZone(subCoords, outage.hull as Coordinate[], outageCoords);
 
                         if (coordsMatch || locationMatches) {
                             outageIds = `${outageIds.length ? `${outageIds},` : ''}${outage.id}`;
@@ -76,7 +81,9 @@ export default function NotifSubs({ subscriptions } : { subscriptions: Array<Not
                             key={subscriptions.indexOf(subscription)}
                             data={subscription}
                             plannedOutages={outageIds}
-                            removeSubCb={() => removeSubCb(subscription)}
+                            removeSubCb={() => {
+                                removeSubCb(subscription);
+                            }}
                         />
                     );
                 })

@@ -6,20 +6,26 @@ import NotifSubForm from '@/components/notifications/notif-sub-form';
 import { getSubById } from '@/lib/actions';
 import { useEffect, useState } from 'react';
 import Loader from '../common/loader';
+import { FormValues, NotificationSub } from '@/lib/definitions';
 
 export default function SubscriptionInfo({ id }: { id: string }) {
     const [getSub, setGetSub] = useState(true);
-    const [sub, setSub] = useState();
+    const [sub, setSub] = useState<NotificationSub>();
 
     useEffect(() => {
         const getSubCb = async() => {
-            const subscription = await getSubById(id);
+            const subscription = await getSubById(id) as NotificationSub;
+
             setSub(subscription);
             setGetSub(false);
         };
 
         if (getSub) {
-            getSubCb();
+            getSubCb().catch(
+                (e: unknown) => {
+                    console.error('Error getting subscription', e);
+                }
+            );
         }
     });
 
@@ -57,7 +63,7 @@ export default function SubscriptionInfo({ id }: { id: string }) {
         email: email,
         hasCoordinates: !!(lat && lng),
         datesubscribed: datesubscribed,
-    };
+    } as FormValues;
 
     return (
         <div className="flex flex-col gap-4 px-4 py-6 page-min-height">

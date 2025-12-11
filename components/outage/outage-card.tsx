@@ -53,7 +53,9 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         {address}
                     </div>
                     <div className="cursor-pointer" onClick={
-                        () => setShowContents(!showContents)
+                        () => {
+                            setShowContents(!showContents);
+                        }
                     }>
                         <CustomIcon icon={showContents ? 'MinusIcon' : 'PlusIcon' } iconClass={'card-toggle w-8'} />
                     </div>
@@ -72,7 +74,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                         </div>
                         <OutageStatus
                             className="font-medium px-2 py-1 rounded text-center"
-                            statusText={statusText!}
+                            statusText={statusText}
                             overrideBg={false}
                         />
                     </div>
@@ -83,7 +85,7 @@ export default function OutageCard({ data }: { data: OutageData; }) {
                             return (
                                 <div
                                     key={key}
-                                    className={`${cardClasses}`}
+                                    className={cardClasses}
                                 >
                                     <div className="flex flex-row gap-2">
                                         <CustomIcon icon={icon} iconClass={'w-7'} />

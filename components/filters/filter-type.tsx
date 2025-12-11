@@ -12,7 +12,7 @@ export default function FilterType(
     }:
     {
         type: 'Status' | 'Start Date' | 'End Date';
-        optionalDates: Array<string> | null;
+        optionalDates: string[] | null;
     }
 ) {
     const filterOverlayView = useSelector((state: RootState) => state.filterOverlayView.value);
@@ -20,7 +20,7 @@ export default function FilterType(
 
     const searchParams = useSearchParams();
 
-    let param = searchParams.get(type.toLocaleLowerCase().replace(' ', '')) || '';
+    let param = searchParams.get(type.toLocaleLowerCase().replace(' ', '')) ?? '';
     if (type === 'Status') {
         param = param.charAt(0).toUpperCase() + param.slice(1);
     }

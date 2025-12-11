@@ -9,12 +9,12 @@ import { useDebouncedCallback } from 'use-debounce';
 export default function Search({ placeholder }: { placeholder: string }) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
-    const { replace } = useRouter();
+    const router = useRouter();
 
     const paramName = pathname.includes('notifications') ? 'email' : 'query';
-    const [inputValue, setInputValue] = useState(searchParams.get(paramName) || '');
+    const [inputValue, setInputValue] = useState(searchParams.get(paramName) ?? '');
 
-    const handleSearch = useDebouncedCallback((term) => {
+    const handleSearch = useDebouncedCallback((term: string | null) => {
         const params = new URLSearchParams(searchParams);
 
         // No pages on the notifications page
@@ -28,7 +28,8 @@ export default function Search({ placeholder }: { placeholder: string }) {
         else {
             params.delete(paramName);
         }
-        replace(`${pathname}?${params.toString()}`);
+
+        router.replace(`${pathname}?${params.toString()}`);
     }, 750);
 
     const xIconClasses = 'absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 h-7 w-7';

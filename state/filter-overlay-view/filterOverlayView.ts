@@ -25,7 +25,7 @@ const filterOverlayViewSlice = createSlice({
     initialState,
     reducers: {
         update: (state, action) => {
-            state.value = action.payload;
+            state.value = action.payload as FilterOverlayStates;
         }
     }
 });

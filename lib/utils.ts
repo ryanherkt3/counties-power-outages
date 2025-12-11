@@ -1,5 +1,4 @@
-import { Coordinate, OutageData, OutageDBData, SearchParams } from './definitions';
-import { z } from 'zod';
+import { Coordinate, OutageData, SearchParams } from './definitions';
 import moment from 'moment-timezone';
 
 /**
@@ -36,16 +35,16 @@ export function isOutageExpired(dateStr: string) {
  * @param {Array<string>} splitTime [hour, minute]
  * @returns {string} the time string
  */
-export function getTimeStrings(splitTime: Array<string>) {
+export function getTimeStrings(splitTime: string[]) {
     let hourlySegment = splitTime[0];
     const minuteSegment = splitTime[1];
 
     if (parseInt(hourlySegment) >= 12) {
-        hourlySegment = parseInt(hourlySegment) === 12 ? '12' : `${parseInt(hourlySegment) - 12}`;
+        hourlySegment = parseInt(hourlySegment) === 12 ? '12' : (parseInt(hourlySegment) - 12).toString();
         return `${hourlySegment}:${minuteSegment} PM`;
     }
 
-    hourlySegment = parseInt(hourlySegment) === 0 ? '12' : `${parseInt(hourlySegment)}`;
+    hourlySegment = parseInt(hourlySegment) === 0 ? '12' : parseInt(hourlySegment).toString();
     return `${hourlySegment}:${minuteSegment} AM`;
 }
 
@@ -101,7 +100,7 @@ export function getFilteredDate(date: string) {
  * @param {any} searchParams address / status / start date / end date
  * @returns {Array<OutageData>} new filtered list of outages
  */
-export function getFilteredOutages(outages: Array<OutageData>, searchParams: SearchParams | null) {
+export function getFilteredOutages(outages: OutageData[], searchParams: SearchParams | null) {
     // Return original list if no search parameters
     if (searchParams === null) {
         return outages;
@@ -136,7 +135,7 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: Sea
         const matchesAddress = outage.address ?
             (address ? outage.address.toLowerCase().includes(address) : true) :
             false;
-        const matchesStatus = outageStatus ? outage.statusText?.toLowerCase().includes(outageStatus) : true;
+        const matchesStatus = outageStatus ? outage.statusText.toLowerCase().includes(outageStatus) : true;
         const onOrAfterStartDate = startDate ? getDateMatch(outage, startDate, true) : true;
         const onOrBeforeEndDate = endDate ? getDateMatch(outage, endDate, false) : true;
 
@@ -149,37 +148,37 @@ export function getFilteredOutages(outages: Array<OutageData>, searchParams: Sea
 /**
  * Manipulate variables within the outages object to be suitable for client-side consumption
  *
- * @param {Array<OutageDBData>} outages from the database
- * @returns {Array<OutageDBData>} the manipulated list of outages
+ * @param {Array<OutageData>} outages from the database
+ * @returns {Array<OutageData>} the manipulated list of outages
  */
-export function getManipulatedOutages(outages: Array<OutageDBData>) {
-    const manipulatedOutages: OutageDBData[] = [];
+export function getManipulatedOutages(outages: OutageData[]) {
+    const manipulatedOutages: OutageData[] = [];
 
     for (const outage of outages) {
         if (outage.shutdownDate) {
             // Convert shutdownDate to a string
             const shutdownDate = new Date(outage.shutdownDate);
-            const year = shutdownDate.getFullYear();
-            const month = shutdownDate.getMonth() + 1;
-            const day = shutdownDate.getDate();
+            const year = shutdownDate.getFullYear().toString();
+            const month = (shutdownDate.getMonth() + 1).toString();
+            const day = shutdownDate.getDate().toString();
             outage.shutdownDate = `${day}/${month}/${year}`;
         }
 
         // Convert originalShutdownDate to a string
         if (outage.originalShutdownDate) {
             const ogShutdownDate = new Date(outage.originalShutdownDate);
-            const year = ogShutdownDate.getFullYear();
-            const month = ogShutdownDate.getMonth() + 1;
-            const day = ogShutdownDate.getDate();
+            const year = ogShutdownDate.getFullYear().toString();
+            const month = (ogShutdownDate.getMonth() + 1).toString();
+            const day = ogShutdownDate.getDate().toString();
             outage.originalShutdownDate = `${day}/${month}/${year}`;
         }
 
-        if (typeof outage.hull === 'string' && outage.hull?.length) {
-            outage.hull = JSON.parse(outage.hull);
+        if (typeof outage.hull === 'string' && outage.hull.length) {
+            outage.hull = JSON.parse(outage.hull) as Coordinate[];
         }
 
         manipulatedOutages.push(outage);
-    };
+    }
 
     return manipulatedOutages;
 }
@@ -234,13 +233,6 @@ export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], ou
         return false;
     }
 
-    if (!polygon) {
-        const outageLat = parseInt(outageCoords.lat.toFixed(5));
-        const outageLng = parseInt(outageCoords.lng.toFixed(5));
-
-        return point.lat === outageLat && point.lng === outageLng;
-    }
-
     const num_vertices = polygon.length;
     const { lat, lng } = point;
     let isInZone = false;
@@ -291,16 +283,17 @@ export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], ou
 }
 
 /**
- * Check an email address is valid using Zod
+ * Check an email address is valid
  *
  * @param {string} email
  * @returns {Boolean}
  */
 export function isValidEmail(email: string) {
     try {
-        const emailSchema = z.string().email();
-        emailSchema.parse(email);
-        return true;
+        const emailRegex =
+            /^(?!\.)(?!.*\.\.)([A-Z0-9_'+-.]*)[A-Z0-9_'+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
+
+        return emailRegex.test(email);
     }
     catch (error) {
         console.log(error);
@@ -326,7 +319,7 @@ export function isValidPayloadArgument(data: string | number, dataField: string)
     const isEmptyString = typeof data === 'string' && data.length === 0;
 
     // Data is invalid if it contains a blacklisted character or is empty
-    if (dataHasInvalidChars || isEmptyString) {
+    if ((!dataField.includes('coordinate') && dataHasInvalidChars) || isEmptyString) {
         return false;
     }
 
@@ -336,16 +329,18 @@ export function isValidPayloadArgument(data: string | number, dataField: string)
     if (dataField === 'location' && typeof data === 'string') {
         return data.length <= 255;
     }
-    if (dataField === 'coordinate' && typeof data === 'number') {
-        const validLatitude = data >= -37.99999 && data <= -37;
-        const validLongtitude = data >= 174 && data <= 175.99999;
-
-        return validLatitude || validLongtitude;
+    if (dataField.includes('coordinate') && typeof data === 'number') {
+        if (dataField.includes('-lat')) {
+            return data >= -37.99999 && data <= -37;
+        }
+        else if (dataField.includes('-lng')) {
+            return data >= 174 && data <= 175.99999;
+        }
     }
     if (dataField === 'date-subscribed' && typeof data === 'string') {
         // Valid date example: 28/06/2024, 11:57:05 am
         const dateRegExp = /[0-9]{1,2}\/[0-9]{1,2}\/20[0-9]{2}, [0-9]{1,2}:[0-9]{2}:[0-9]{2} (am|pm)/g;
-        const dateFormatIsValid = dateRegExp.test(data.toString());
+        const dateFormatIsValid = dateRegExp.test(data);
         return data.length <= 255 && dateFormatIsValid;
     }
 

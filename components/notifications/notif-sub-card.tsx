@@ -19,7 +19,7 @@ export default function NotificationCard(
     {
         data: NotificationSub;
         plannedOutages: string;
-        removeSubCb: Function;
+        removeSubCb: () => void;
     }
 ) {
     const [showContents, setShowContents] = useState(true);
@@ -38,7 +38,9 @@ export default function NotificationCard(
             <div className='flex flex-row justify-between'>
                 <div className="text-2xl font-semibold">{data.location}</div>
                 <div className="cursor-pointer" onClick={
-                    () => setShowContents(!showContents)
+                    () => {
+                        setShowContents(!showContents);
+                    }
                 }>
                     {
                         getPMIcon(showContents)
@@ -126,7 +128,10 @@ export default function NotificationCard(
                     onClick={
                         () => {
                             removeSubCb();
-                            deleteSubscription(data.id);
+                            deleteSubscription(data.id).catch(
+                                (e: unknown) => {
+                                    console.error('Error deleting subscription', e);
+                                });
                         }
                     }
                 >

@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 'use client';
 
 import Link from 'next/link';
@@ -169,7 +168,7 @@ export default function Menu() {
     );
 }
 
-function getMenuLinks(isSmallMenu: boolean, links: MenuLink[], resetSmallNavOpen: Function, pathname: string) {
+function getMenuLinks(isSmallMenu: boolean, links: MenuLink[], resetSmallNavOpen: () => void, pathname: string) {
     const menuLinks: ReactElement[] = [];
 
     links.map((menuLink: MenuLink) => {
@@ -179,7 +178,11 @@ function getMenuLinks(isSmallMenu: boolean, links: MenuLink[], resetSmallNavOpen
             <Link
                 key={href}
                 href={href}
-                onClick={() => resetSmallNavOpen()}
+                onClick={
+                    () => {
+                        resetSmallNavOpen();
+                    }
+                }
                 className={
                     clsx(
                         'font-semibold',

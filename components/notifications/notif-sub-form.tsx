@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+
 'use client';
 
 import { AtSymbolIcon, BookmarkIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline';

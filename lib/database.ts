@@ -10,11 +10,9 @@ const prisma = new PrismaClient();
  */
 export async function getAllOutages() {
     try {
-        const allOutages: Array<OutageDBData> = await prisma.outages.findMany();
-
-        console.log('ao2', allOutages);
-
-        return allOutages;
+        const allOutages = await prisma.outages.findMany();
+        // TODO fix after fixing interface defs
+        return allOutages as unknown as OutageDBData[];
     }
     catch (error) {
         console.log(error);
@@ -29,7 +27,7 @@ export async function getAllOutages() {
  */
 export async function getAllNotifications() {
     try {
-        const allNotifications: Array<NotificationSub> = await prisma.notifications.findMany();
+        const allNotifications: NotificationSub[] = await prisma.notifications.findMany();
 
         return allNotifications;
     }
@@ -113,7 +111,7 @@ export async function getUserNotifByLocation(location: string | null, challengeV
                     }
                 );
             }
-            else if (subIdentifier === 'email') {
+            else {
                 userNotif = await prisma.notifications.findFirst(
                     {
                         where: {
@@ -147,7 +145,7 @@ export async function getUserNotifByLocation(location: string | null, challengeV
 export async function getUserNotifByEmail(email: string | null) {
     try {
         if (email) {
-            const userNotifs: Array<NotificationSub> = await prisma.notifications.findMany({ where: { email: email } });
+            const userNotifs: NotificationSub[] = await prisma.notifications.findMany({ where: { email: email } });
             return userNotifs;
         }
 
@@ -188,13 +186,13 @@ export async function createNewUserNotification(data: FormValues) {
             }
         } while (!idIsNew);
 
-        const createNewNotif = await prisma.notifications.create({
+        await prisma.notifications.create({
             data: hasCoordinates ?
                 {
                     id: notifID,
                     location,
-                    lat: latitude,
-                    lng: longtitude,
+                    lat: latitude as number,
+                    lng: longtitude as number,
                     email,
                     datesubscribed
                 } :
@@ -206,7 +204,7 @@ export async function createNewUserNotification(data: FormValues) {
                 },
         });
 
-        return createNewNotif ? notifID : null;
+        return notifID;
     }
     catch (error) {
         console.log(error);
@@ -231,8 +229,8 @@ export async function updateExistingUserNotification(data: FormValues) {
             data: hasCoordinates ?
                 {
                     location,
-                    lat: latitude,
-                    lng: longtitude,
+                    lat: latitude as number,
+                    lng: longtitude as number,
                     email,
                 } :
                 {

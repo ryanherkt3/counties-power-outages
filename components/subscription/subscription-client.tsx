@@ -8,7 +8,7 @@ import { ChallengeOutcome, ChallengeVariables } from '@/lib/definitions';
 
 export default function SubscriptionPageClient({ id } : { id: string; }) {
     const searchParams = useSearchParams();
-    const showChallenge = searchParams.get('showchallenge') || '-1';
+    const showChallenge = searchParams.get('showchallenge') ?? '-1';
 
     // showChallenge = 0 is the same as the challenge succeeding
     const [challengeOutcome, setChallengeOutcome] = useState<ChallengeOutcome>(

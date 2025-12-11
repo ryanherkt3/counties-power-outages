@@ -28,10 +28,14 @@ export default function OutagesList({ searchParams } : { searchParams: SearchPar
         const getOutages = async () => {
             const outages = await getActiveOutages();
             setOutages(outages);
-        }
+        };
 
         if (!outages) {
-            getOutages();
+            getOutages().catch(
+                (e: unknown) => {
+                    console.error('Error getting outages', e);
+                }
+            );
         }
     });
 
@@ -43,9 +47,9 @@ export default function OutagesList({ searchParams } : { searchParams: SearchPar
                 (searchParams.enddate && filterOverlayView.filterValues.enddate === '') ||
                 (searchParams.status && filterOverlayView.filterValues.status === '')) {
                 const newFilterValues: SelectedFilterOverlayValues = {
-                    status: searchParams.status || '',
-                    startdate: searchParams.startdate || '',
-                    enddate: searchParams.enddate || ''
+                    status: searchParams.status ?? '',
+                    startdate: searchParams.startdate ?? '',
+                    enddate: searchParams.enddate ?? ''
                 };
 
                 dispatch(
@@ -63,9 +67,9 @@ export default function OutagesList({ searchParams } : { searchParams: SearchPar
     }, [searchParams, filterOverlayView]);
 
     if (!outages) {
-        return <Loader text={'Connecting to grid'} />
+        return <Loader text={'Connecting to grid'} />;
     }
-    
+
     const currentPage = Number(searchParams.page) || 1;
 
     const filteredNotSearchedOutages = getFilteredOutages(outages, null);
@@ -76,8 +80,8 @@ export default function OutagesList({ searchParams } : { searchParams: SearchPar
     const totalPages = Math.ceil(filteredOutages.length / outagesPerPage);
 
     // Start and end dates for the filters
-    const startDate = filteredNotSearchedOutages[0]?.shutdownDateTime || '';
-    const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.shutdownDateTime || '';
+    const startDate = filteredNotSearchedOutages[0]?.shutdownDateTime ?? '';
+    const endDate = filteredNotSearchedOutages[filteredNotSearchedOutages.length - 1]?.shutdownDateTime ?? '';
     const startDateEF = searchParams.enddate ? getFilteredDate(searchParams.enddate) : endDate;
     const endDateSF = searchParams.startdate ? getFilteredDate(searchParams.startdate) : startDate;
 
@@ -85,9 +89,9 @@ export default function OutagesList({ searchParams } : { searchParams: SearchPar
 
     // Show the outage overlay after the page loads if we can do so
     if (searchParams.outage && outageOverlayView.isVisible === 'Hidden') {
-        const outageOverlayViewData = outages.filter((outage) => {
+        const outageOverlayViewData = outages.find((outage) => {
             return outage.id === searchParams.outage;
-        })[0];
+        });
 
         // Dispatch the events to show the outage overlay, otherwise ignore it
         if (outageOverlayViewData) {
@@ -147,7 +151,10 @@ export default function OutagesList({ searchParams } : { searchParams: SearchPar
  * @returns string
  */
 function getQueryString(searchParams: SearchParams) {
-    let queryString = `page=${searchParams.page}`;
+    let queryString = 'page=';
+    if (searchParams.page) {
+        queryString += `=${searchParams.page}`;
+    }
 
     if (searchParams.query) {
         queryString += `&query=${searchParams.query}`;

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default async function OutagesPage(props: { searchParams: PromiseSearchParams }) {
     const searchParams = await props.searchParams;
 
-    if (!searchParams) {
+    if (typeof searchParams === 'undefined') {
         return notFound();
     }
 

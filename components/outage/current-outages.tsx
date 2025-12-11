@@ -10,7 +10,7 @@ export default function CurrentOutages(
     }:
     {
         currentPage: number;
-        outages: Array<OutageData>;
+        outages: OutageData[];
         outagesPerPage: number;
         currentPageIsLast: boolean;
     }

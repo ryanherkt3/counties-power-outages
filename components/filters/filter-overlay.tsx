@@ -21,11 +21,11 @@ export default function FilterOverlay() {
 
     const searchParams = useSearchParams();
     const pathname = usePathname();
-    const { replace } = useRouter();
+    const router = useRouter();
 
     const filterOptions = getFilterOptions(type, filterValues, optionalDates);
 
-    const handleFilterChoice = useDebouncedCallback((param, propText) => {
+    const handleFilterChoice = useDebouncedCallback((param: string, propText: string) => {
         const params = new URLSearchParams(searchParams);
         params.set('page', '1');
 
@@ -37,7 +37,7 @@ export default function FilterOverlay() {
             params.delete(thisParam);
         }
 
-        replace(`${pathname}?${params.toString()}`);
+        router.replace(`${pathname}?${params.toString()}`);
     }, 500);
 
     return (
@@ -74,21 +74,23 @@ export default function FilterOverlay() {
                     </div>
                     {
                         filterOptions.map((option) => {
-                            const { dateText, statusText } = option.props;
+                            const props = option.props as { dateText: string, statusText: string };
 
-                            const propText = type.includes('Date') ? dateText : statusText;
+                            const propText = type.includes('Date') ? props.dateText : props.statusText;
 
                             return (
                                 <button
                                     key={propText || 'reset-filter'}
                                     onClick={
                                         () => {
+                                            const text = propText || '';
+
                                             const newFilterValues: SelectedFilterOverlayValues = {
-                                                status: type === 'Status' ? (propText || '') : filterValues.status,
+                                                status: type === 'Status' ? (text) : filterValues.status,
                                                 startdate: type === 'Start Date' ?
-                                                    (propText || '') :
+                                                    (text) :
                                                     filterValues.startdate,
-                                                enddate: type === 'End Date' ? (propText || '') : filterValues.enddate
+                                                enddate: type === 'End Date' ? (text) : filterValues.enddate
                                             };
 
                                             dispatch(
@@ -128,7 +130,7 @@ export default function FilterOverlay() {
 function getFilterOptions(
     filterType: string,
     filterValues: SelectedFilterOverlayValues,
-    optionalDates: Array<string> | null
+    optionalDates: string[] | null
 ) {
     const commonOptionClass = 'text-xl text-center p-3 font-semibold rounded-xl cursor-pointer';
 
@@ -156,12 +158,15 @@ function getFilterOptions(
             {
                 text: 'Postponed',
                 selectedClass: `${commonOptionClass} hover:bg-red-600 hover:text-white`,
-                unselectedClass: `${commonOptionClass} ${unselectedHoverClass} text-red-600 border-red-600 hover:bg-red-600`,
+                unselectedClass:
+                    `${commonOptionClass} ${unselectedHoverClass} text-red-600 border-red-600 hover:bg-red-600`,
             },
             {
                 text: 'Cancelled',
                 selectedClass: `${commonOptionClass} hover:bg-orange-600 hover:text-white`,
-                unselectedClass: `${commonOptionClass} ${unselectedHoverClass} text-orange-600 border-orange-600 hover:bg-orange-600`,
+                unselectedClass:
+                    `${commonOptionClass} ${unselectedHoverClass} text-orange-600
+                    border-orange-600 hover:bg-orange-600`,
             },
         ];
 
@@ -178,7 +183,7 @@ function getFilterOptions(
             options.push(
                 <OutageStatus
                     className={classToUse}
-                    statusText={text!}
+                    statusText={text}
                     overrideBg={!isSelected}
                 />,
             );
@@ -186,9 +191,16 @@ function getFilterOptions(
     }
     else if (filterType.includes('Date') && optionalDates) {
         const firstDay = new Date(optionalDates[0]);
-        const firstDateString = `${firstDay.getDate()}/${firstDay.getMonth() + 1}/${firstDay.getFullYear()}`;
+        let day = firstDay.getDate().toString();
+        let month = (firstDay.getMonth() + 1).toString();
+        let year = firstDay.getFullYear().toString();
+        const firstDateString =`${day}/${month}/${year}`;
+
         const lastDay = new Date(optionalDates[1]);
-        const lastDateString = `${lastDay.getDate()}/${lastDay.getMonth() + 1}/${lastDay.getFullYear()}`;
+        day = lastDay.getDate().toString();
+        month = (lastDay.getMonth() + 1).toString();
+        year = lastDay.getFullYear().toString();
+        const lastDateString = `${day}/${month}/${year}`;
 
         let isSelected = filterType === 'Start Date' ? startdate === firstDateString : enddate === firstDateString;
         filterUsed = isSelected;
@@ -205,7 +217,10 @@ function getFilterOptions(
         let dateDays = 1;
         while (addDates) {
             const nextDay = new Date(firstDay.getTime() + (86400 * 1000 * dateDays));
-            const dateString = `${nextDay.getDate()}/${nextDay.getMonth() + 1}/${nextDay.getFullYear()}`;
+            day = nextDay.getDate().toString();
+            month = (nextDay.getMonth() + 1).toString();
+            year = nextDay.getFullYear().toString();
+            const dateString = `${day}/${month}/${year}`;
 
             isSelected = filterType === 'Start Date' ? startdate === dateString : enddate === dateString;
             filterUsed = filterUsed || isSelected;
@@ -239,7 +254,11 @@ function getFilterOptions(
 
     if (filterUsed) {
         options.push(
-            <div className={`${commonOptionClass} border-2 border-gray-600 hover:bg-gray-600 hover:text-white`}>Reset</div>
+            <div
+                className={`${commonOptionClass} border-2 border-gray-600 hover:bg-gray-600 hover:text-white`}
+            >
+                Reset
+            </div>
         );
     }
 

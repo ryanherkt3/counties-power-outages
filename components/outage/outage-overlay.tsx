@@ -30,7 +30,9 @@ export default function OutageOverlay() {
 
         if (outageOverlayView.data.address) {
             const { lat: outageLat, lng: outageLng } = outageOverlayView.data;
-            setEmbedLink(`https://maps.google.com/maps?q=${outageLat},${outageLng}&hl=en&z=16&output=embed`);
+            setEmbedLink(
+                `https://maps.google.com/maps?q=${outageLat.toString()},${outageLng.toString()}&hl=en&z=16&output=embed`
+            );
         }
         else {
             setEmbedLink(null);
@@ -62,7 +64,7 @@ export default function OutageOverlay() {
             </div>
             <OutageStatus
                 className="text-xl p-3 font-semibold rounded-xl"
-                statusText={statusText!}
+                statusText={statusText}
                 overrideBg={false}
             />
             <LatestInfo latestInformation={latestInformation} />

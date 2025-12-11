@@ -5,8 +5,6 @@ interface OutageOverlayViewState {
     value: OutageOverlayStates;
 }
 
-const fakeString = '';
-
 const defaultDataValue: OutageData = {
     id: '',
     projectType: '',
@@ -14,21 +12,34 @@ const defaultDataValue: OutageData = {
     shutdownDate: '',
     feeder: '',
     affectedCustomers: 1,
-    lat: null,
-    lng: null,
-    distance: null,
-    hull: (fakeString ? JSON.parse('') : []),
+    lat: 1,
+    lng: 1,
+    distance: 1,
+    hull: [],
     shutdownPeriodStart: '',
     shutdownPeriodEnd: '',
     address: '',
     statusText: 'Scheduled',
     latestInformation: '',
     originalShutdownDate: '',
+    originalShutdownDateTime: '',
     originalShutdownPeriodStart: '',
     originalShutdownPeriodEnd: '',
     expiredOutage: false,
     lastModified: '',
     dummyData: true,
+    shutdownPeriods: [
+        {
+            start: '1',
+            end: '1',
+        }
+    ],
+    originalShutdownPeriods: [
+        {
+            start: '1',
+            end: '1',
+        }
+    ]
 };
 
 const initialState: OutageOverlayViewState = {
@@ -40,7 +51,7 @@ const outageOverlayViewSlice = createSlice({
     initialState,
     reducers: {
         update: (state, action) => {
-            state.value = action.payload;
+            state.value = action.payload as OutageOverlayStates;
         },
         resetAfterView: (state) => {
             state.value = { cardClickShow: false, isVisible: 'Closed', data: defaultDataValue };
