@@ -233,13 +233,6 @@ export function coordIsInOutageZone(point: Coordinate, polygon: Coordinate[], ou
         return false;
     }
 
-    // if (!polygon) {
-    //     const outageLat = parseInt(outageCoords.lat.toFixed(5));
-    //     const outageLng = parseInt(outageCoords.lng.toFixed(5));
-
-    //     return point.lat === outageLat && point.lng === outageLng;
-    // }
-
     const num_vertices = polygon.length;
     const { lat, lng } = point;
     let isInZone = false;
