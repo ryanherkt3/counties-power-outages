@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 import NotificationEmail from '../email-templates/notification-email';
 import ConfirmationEmail from '../email-templates/confirmation-email';
-import { NotificationSub, OutageDBData } from './definitions';
+import { NotificationSub, OutageData } from './definitions';
 import { getTimesAndActiveOutage } from './utils';
 
 /**
@@ -12,7 +12,7 @@ import { getTimesAndActiveOutage } from './utils';
  * @param {string} oldStatus if the outage has had a status update
  * @returns {Response}
  */
-export async function sendEmailNotification(notifSub: NotificationSub, outage: OutageDBData, oldStatus: string) {
+export async function sendEmailNotification(notifSub: NotificationSub, outage: OutageData, oldStatus: string) {
     try {
         const resend = new Resend(process.env.RESEND_API_KEY);
         const notifSubId = notifSub.id;

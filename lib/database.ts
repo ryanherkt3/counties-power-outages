@@ -11,7 +11,8 @@ const prisma = new PrismaClient();
 export async function getAllOutages() {
     try {
         const allOutages = await prisma.outages.findMany();
-        return allOutages as OutageDBData[];
+        // TODO fix after fixing interface defs
+        return allOutages as unknown as OutageDBData[];
     }
     catch (error) {
         console.log(error);

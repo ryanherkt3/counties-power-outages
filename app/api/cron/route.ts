@@ -1,5 +1,5 @@
 import { sendEmailNotification } from '@/lib/emails';
-import { Coordinate, NotificationSub, NotifOutageInfo, OutageData, OutageDBData } from '@/lib/definitions';
+import { Coordinate, NotificationSub, NotifOutageInfo, OutageData } from '@/lib/definitions';
 import { coordIsInOutageZone, getManipulatedOutages } from '@/lib/utils';
 import { NextRequest } from 'next/server';
 import content from './../../content.json';
@@ -97,8 +97,7 @@ async function addUpdateOutage(outage: OutageData) {
         id,
         projectType,
         shutdownDateTime,
-        shutdownPeriodStart,
-        shutdownPeriodEnd,
+        shutdownPeriods,
         feeder,
         affectedCustomers,
         lat, lng,
@@ -111,6 +110,9 @@ async function addUpdateOutage(outage: OutageData) {
         originalShutdownPeriods,
         lastModified
     } = outage;
+
+    const shutdownPeriodStart = shutdownPeriods.length ? shutdownPeriods[0].start : '';
+    const shutdownPeriodEnd = shutdownPeriods.length ? shutdownPeriods[0].end :  '';
 
     const ogshutdownPeriodStart = originalShutdownPeriods.length ? originalShutdownPeriods[0].start : '';
     const ogshutdownPeriodEnd = originalShutdownPeriods.length ? originalShutdownPeriods[0].end :  '';
@@ -154,11 +156,11 @@ async function addUpdateOutage(outage: OutageData) {
         const addOutage = await prisma.outages.create({
             data: {
                 id,
-                projectType: projectType,
-                shutdownDateTime: shutdownDateTime,
+                projectType,
+                shutdownDateTime,
                 shutdownDate: new Date(dateString),
-                shutdownPeriodStart: shutdownPeriodStart,
-                shutdownPeriodEnd: shutdownPeriodEnd,
+                shutdownPeriodStart,
+                shutdownPeriodEnd,
                 feeder,
                 affectedCustomers: affectedCustomers,
                 lat,
@@ -166,12 +168,12 @@ async function addUpdateOutage(outage: OutageData) {
                 distance,
                 hull: hullString,
                 address,
-                statusText: statusText,
+                statusText,
                 latestInformation: latestInformation ?? '',
                 originalShutdownDate: new Date(ogDateString),
                 originalShutdownPeriodStart: ogshutdownPeriodStart,
                 originalShutdownPeriodEnd: ogshutdownPeriodEnd,
-                lastModified: lastModified,
+                lastModified,
             }
         });
 
@@ -217,7 +219,7 @@ async function removeOutages() {
  * @returns {Object}
  */
 async function trySendEmails(
-    outages: OutageDBData[],
+    outages: OutageData[],
     subscriptions: NotificationSub[]
 ) {
     let totalEmailsSent = 0;

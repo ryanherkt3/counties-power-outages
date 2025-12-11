@@ -1,11 +1,14 @@
 import { Decimal } from '@prisma/client/runtime/library';
 
+// TODO fix first two interface defs
+
+// Comes from CP API
 export interface OutageDBData {
     id: string;
     projectType: string | null;
     shutdownDateTime: string;
     shutdownDate: Date | string;
-    originalShutdownDateTime: string | null;
+    shutdownPeriods: ShutdownPeriods[];
     feeder: string | null;
     affectedCustomers: number | null;
     lat: Decimal | number;
@@ -16,18 +19,20 @@ export interface OutageDBData {
     statusText: string;
     latestInformation: string | null;
     originalShutdownDate: Date | string;
+    originalShutdownDateTime: string | null;
+    originalShutdownPeriods: ShutdownPeriods[];
     lastModified: string | null;
+}
+
+// Extra fields in my DB / custom fields for this app
+export type OutageData = OutageDBData & {
+    expiredOutage: boolean;
+    dummyData: boolean;
+    // TODO deprecate these four fields in favour of sdPeriods and ogSdPeriods
     shutdownPeriodStart: string | null;
     shutdownPeriodEnd: string | null;
     originalShutdownPeriodStart: string | null;
     originalShutdownPeriodEnd: string | null;
-}
-
-export type OutageData = OutageDBData & {
-    shutdownPeriods: ShutdownPeriods[];
-    originalShutdownPeriods: ShutdownPeriods[];
-    expiredOutage: boolean;
-    dummyData: boolean;
 }
 
 export interface NotificationSub {
