@@ -38,10 +38,7 @@ export default function NotificationEmail(
                             <b>Outage ID:</b>{' '}
                             <Link href={`https://outages.ryanherkt.com/?outage=${outage.id}`}>{outage.id}</Link>
                         </Text>
-                        <Section style={paragraphFlex}>
-                            <b>Status:</b>
-                            <Text style={paragraph}>Scheduled</Text>
-                        </Section>
+                        <Text style={paragraphFlex}><b>Status:</b>{' '}Scheduled</Text>
                         {
                             oldStatus ?
                                 <Section style={paragraphFlex}>

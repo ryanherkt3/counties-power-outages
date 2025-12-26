@@ -296,47 +296,49 @@ async function trySendEmails(
                     {}
             ) as NotifOutageInfo;
 
-            const outageStatusChanged = filteredSub.status &&
-                filteredSub.status.toLowerCase() !== outageStatus;
-            let shouldSendEmail = coordsMatch || locationMatches;
+            if (typeof filteredSub !== 'undefined') {
+                const outageStatusChanged = filteredSub.status &&
+                    filteredSub.status.toLowerCase() !== outageStatus;
+                let shouldSendEmail = coordsMatch || locationMatches;
 
-            // TODO check if outage is happening within 7 days
-            if (shouldSendEmail && !!(filteredSub.status)) {
-                if (!outageStatusChanged && filteredSub.emailSent) {
-                    const currentDate = new Date();
-                    const currentTime = currentDate.getTime() / 1000;
+                // TODO check if outage is happening within 7 days
+                if (shouldSendEmail && !!(filteredSub.status)) {
+                    if (!outageStatusChanged && filteredSub.emailSent) {
+                        const currentDate = new Date();
+                        const currentTime = currentDate.getTime() / 1000;
 
-                    shouldSendEmail = currentTime - filteredSub.emailSent >= 86400 * 7;
-                }
-            }
-
-            if (shouldSendEmail) {
-                try {
-                    const oldStatus: string = outageStatusChanged ? filteredSub.status : '';
-                    await sendEmailNotification(sub, outage, oldStatus);
-
-                    emailsSentForSub++;
-                    totalEmailsSent++;
-
-                    const emailedTime = Math.round(new Date().getTime() / 1000);
-
-                    // If we've emailed them before, update the object values; otherwise create a new one and
-                    // push it to subInfo
-                    if (filteredSub.status) {
-                        filteredSub.emailSent = emailedTime;
-                        filteredSub.status = outage.statusText;
-                    }
-                    else {
-                        subInfo.push({
-                            id: outage.id,
-                            emailSent: emailedTime,
-                            status: outage.statusText
-                        });
+                        shouldSendEmail = currentTime - filteredSub.emailSent >= 86400 * 7;
                     }
                 }
-                catch (error) {
-                    console.log(error);
-                    return totalEmailsSent;
+
+                if (shouldSendEmail) {
+                    try {
+                        const oldStatus: string = outageStatusChanged ? filteredSub.status : '';
+                        await sendEmailNotification(sub, outage, oldStatus);
+
+                        emailsSentForSub++;
+                        totalEmailsSent++;
+
+                        const emailedTime = Math.round(new Date().getTime() / 1000);
+
+                        // If we've emailed them before, update the object values; otherwise create a new one and
+                        // push it to subInfo
+                        if (filteredSub.status) {
+                            filteredSub.emailSent = emailedTime;
+                            filteredSub.status = outage.statusText;
+                        }
+                        else {
+                            subInfo.push({
+                                id: outage.id,
+                                emailSent: emailedTime,
+                                status: outage.statusText
+                            });
+                        }
+                    }
+                    catch (error) {
+                        console.log(error);
+                        return totalEmailsSent;
+                    }
                 }
             }
         }
