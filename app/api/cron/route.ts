@@ -144,7 +144,7 @@ async function addUpdateOutage(outage: OutageData) {
                     id: id
                 },
                 data: {
-                    shutdownDate: new Date(dateString),
+                    shutdownDate: new Date(dateString), // TODO store as dd/mm/yyyy
                     statusText: statusText,
                     latestInformation: latestInformation ?? '',
                     originalShutdownDate: new Date(ogDateString),
@@ -162,7 +162,7 @@ async function addUpdateOutage(outage: OutageData) {
                 id,
                 projectType,
                 shutdownDateTime,
-                shutdownDate: new Date(dateString),
+                shutdownDate: new Date(dateString), // TODO store as dd/mm/yyyy
                 shutdownPeriodStart,
                 shutdownPeriodEnd,
                 feeder,
@@ -174,7 +174,7 @@ async function addUpdateOutage(outage: OutageData) {
                 address,
                 statusText,
                 latestInformation: latestInformation ?? '',
-                originalShutdownDate: new Date(ogDateString),
+                originalShutdownDate: new Date(ogDateString), // TODO store as dd/mm/yyyy
                 originalShutdownPeriodStart: ogshutdownPeriodStart,
                 originalShutdownPeriodEnd: ogshutdownPeriodEnd,
                 lastModified,
