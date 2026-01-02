@@ -1,6 +1,6 @@
 import { sendEmailNotification } from '@/lib/emails';
 import { Coordinate, NotificationSub, NotifOutageInfo, OutageData } from '@/lib/definitions';
-import { coordIsInOutageZone, getManipulatedOutages } from '@/lib/utils';
+import { coordIsInOutageZone } from '@/lib/utils';
 import { NextRequest } from 'next/server';
 import content from './../../content.json';
 import { getAllNotifications, updateNotifOutageInfo } from '@/lib/database';
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     // Add or update outages
     const initOutages = await fetch(process.env.CRON_API_URL);
     const initOutagesJson = await initOutages.json() as { body: { planned_outages: OutageData[] } };
-    let outages: OutageData[] = initOutagesJson.body.planned_outages;
+    const outages: OutageData[] = initOutagesJson.body.planned_outages;
 
     for (const outage of outages) {
         await addUpdateOutage(outage);
@@ -70,9 +70,13 @@ export async function GET(request: NextRequest) {
 
     console.log('Fetched subscriptions');
 
-    outages = getManipulatedOutages(outages);
+    for (const outage of outages) {
+        if (typeof outage.hull === 'string' && outage.hull.length) {
+            outage.hull = JSON.parse(outage.hull) as Coordinate[];
+        }
+    }
 
-    console.log('Fetched manipulated outages');
+    console.log('Updated outage hulls');
 
     const emailCount = await trySendEmails(outages, subscriptions);
 

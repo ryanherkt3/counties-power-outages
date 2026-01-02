@@ -38,7 +38,7 @@ export default function NotificationEmail(
                             <b>Outage ID:</b>{' '}
                             <Link href={`https://outages.ryanherkt.com/?outage=${outage.id}`}>{outage.id}</Link>
                         </Text>
-                        <Text style={paragraphFlex}><b>Status:</b>{' '}Scheduled</Text>
+                        <Text style={paragraph}><b>Status:</b>{' '}Scheduled</Text>
                         {
                             oldStatus ?
                                 <Section style={paragraphFlex}>
@@ -58,7 +58,8 @@ export default function NotificationEmail(
 
                     <Section style={paddedSection}>
                         <Text style={paragraph}>
-                            To unsubscribe from these notifications, click <a href={unsubLink}>here</a>.</Text>
+                            To unsubscribe from these notifications, click <a href={unsubLink}>here</a>.
+                        </Text>
                     </Section>
                 </Container>
             </Body>

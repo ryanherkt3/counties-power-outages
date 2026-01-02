@@ -146,44 +146,6 @@ export function getFilteredOutages(outages: OutageData[], searchParams: SearchPa
 }
 
 /**
- * Manipulate variables within the outages object to be suitable for client-side consumption
- *
- * @param {Array<OutageData>} outages from the database
- * @returns {Array<OutageData>} the manipulated list of outages
- */
-export function getManipulatedOutages(outages: OutageData[]) {
-    const manipulatedOutages: OutageData[] = [];
-
-    for (const outage of outages) {
-        if (outage.shutdownDate) {
-            // Convert shutdownDate to a string
-            const shutdownDate = new Date(outage.shutdownDate);
-            const year = shutdownDate.getFullYear().toString();
-            const month = (shutdownDate.getMonth() + 1).toString();
-            const day = shutdownDate.getDate().toString();
-            outage.shutdownDate = `${day}/${month}/${year}`;
-        }
-
-        // Convert originalShutdownDate to a string
-        if (outage.originalShutdownDate) {
-            const ogShutdownDate = new Date(outage.originalShutdownDate);
-            const year = ogShutdownDate.getFullYear().toString();
-            const month = (ogShutdownDate.getMonth() + 1).toString();
-            const day = ogShutdownDate.getDate().toString();
-            outage.originalShutdownDate = `${day}/${month}/${year}`;
-        }
-
-        if (typeof outage.hull === 'string' && outage.hull.length) {
-            outage.hull = JSON.parse(outage.hull) as Coordinate[];
-        }
-
-        manipulatedOutages.push(outage);
-    }
-
-    return manipulatedOutages;
-}
-
-/**
  * Return a pagination object
  *
  * @param {number} currentPage
