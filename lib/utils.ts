@@ -340,7 +340,7 @@ export function isValidPayloadArgument(data: string | number, dataField: string)
     }
     if (dataField === 'date-subscribed' && typeof data === 'string') {
         // Valid date example: 28/06/2024, 11:57:05 am
-        const dateRegExp = /[0-9]{1,2}\/[0-9]{1,2}\/20[0-9]{2}, [0-9]{1,2}:[0-9]{2}:[0-9]{2} (am|pm)/g;
+        const dateRegExp = /[0-9]{1,2}\/[0-9]{1,2}\/20[0-9]{2}, [0-9]{1,2}:[0-9]{2}:[0-9]{2} (am|AM|PM|pm)/g;
         const dateFormatIsValid = dateRegExp.test(data);
         return data.length <= 255 && dateFormatIsValid;
     }
