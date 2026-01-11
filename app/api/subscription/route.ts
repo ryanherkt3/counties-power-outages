@@ -128,16 +128,7 @@ export async function POST(request: Request) {
 
     if (invalidArguments) {
         return new Response(JSON.stringify(
-            {
-                'error': 'Invalid arguments for creating subscription - step 1',
-                'c1': typeof body.hasCoordinates !== 'boolean',
-                'c2': !isValidEmail(body.email),
-                'c3': (body.location && !isValidPayloadArgument(body.location, 'location')),
-                'c4': !isValidPayloadArgument(body.datesubscribed, 'date-subscribed'),
-                'c5': invalidCoordinates,
-                'bod': body,
-                'success': false
-            }
+            { 'error': 'Invalid arguments for creating subscription - step 1', 'success': false }
         ), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
