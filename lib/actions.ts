@@ -5,7 +5,7 @@
 import { revalidatePath } from 'next/cache';
 import { ChallengeVariables, FormFields, FormValues, NotificationSub, OutageData } from './definitions';
 import { getUserNotifByLocation } from './database';
-import { getTimesAndActiveOutage } from './utils';
+import { getTimesAndActiveOutage, isValidEmail, isValidPayloadArgument } from './utils';
 
 /**
  * Return the active outages
@@ -91,6 +91,13 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
         if (!process.env.API_URL || !process.env.AUTH_TOKEN) {
             throw new Error('Environment variable(s) not set');
         }
+
+        // debug
+        console.log('payload', payload);
+        console.log('c1', typeof payload.hasCoordinates !== 'boolean');
+        console.log('c2', !isValidEmail(payload.email));
+        console.log('c3', (payload.location && !isValidPayloadArgument(payload.location, 'location')));
+        console.log('c4', !isValidPayloadArgument(payload.datesubscribed, 'date-subscribed'));
 
         const req = await fetch(`${process.env.API_URL}/subscription`, {
             method: isExistingSub ? 'PUT' : 'POST',
