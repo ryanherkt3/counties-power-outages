@@ -137,15 +137,21 @@ export async function POST(request: Request) {
 
     const { location, latitude, longtitude, email, datesubscribed } = body;
 
+    // debug
+    console.log('bod', body);
+
     // Add outage subscription to DB
     const idString = await createNewUserNotification(body);
+
+    // debug
+    console.log('bod', body);
 
     if (idString) {
         const subData: NotificationSub = {
             id: idString,
             location: location,
-            lat: latitude as number,
-            lng: longtitude as number,
+            lat: body.hasCoordinates ? latitude as number : null,
+            lng: body.hasCoordinates ? longtitude as number : null,
             email: email,
             datesubscribed: datesubscribed,
             outageinfo: ''

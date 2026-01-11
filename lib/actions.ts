@@ -102,13 +102,13 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
         });
 
         // debug
-        console.log(process.env.AUTH_TOKEN, req);
+        console.log(req);
 
-        if (!isExistingSub) {
+        if (req.ok && !isExistingSub) {
             revalidatePath('/notifications'); // clear cache
         }
 
-        return true;
+        return req.ok;
     }
     catch (error) {
         console.log('Error updating subscription', error);

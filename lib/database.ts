@@ -178,6 +178,9 @@ export async function createNewUserNotification(data: FormValues) {
                 idString += chars.charAt(Math.floor(Math.random() * chars.length));
             }
 
+            // debug
+            console.log('rand id', idString);
+
             const notifWithIdExists = await getUserNotifByID(idString);
 
             if (notifWithIdExists === null) {
@@ -185,6 +188,9 @@ export async function createNewUserNotification(data: FormValues) {
                 notifID = idString;
             }
         } while (!idIsNew);
+
+        // debug
+        console.log('nid', notifID);
 
         await prisma.notifications.create({
             data: hasCoordinates ?
