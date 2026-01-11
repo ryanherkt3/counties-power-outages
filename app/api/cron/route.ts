@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import { sendEmailNotification } from '@/lib/emails';
 import { Coordinate, NotificationSub, NotifOutageInfo, OutageData } from '@/lib/definitions';
 import { coordIsInOutageZone } from '@/lib/utils';
 import { NextRequest } from 'next/server';
 import content from './../../content.json';
 import { getAllNotifications, updateNotifOutageInfo } from '@/lib/database';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
