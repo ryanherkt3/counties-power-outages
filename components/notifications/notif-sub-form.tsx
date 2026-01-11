@@ -36,17 +36,27 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
         else {
             clearErrors();
 
-            await updateSubscription(includeCoords, onSubPage, data);
+            // TODO why is adding subs not working outside localhost?
+            try {
+                const subAdded = await updateSubscription(includeCoords, onSubPage, data);
 
-            const resetPayload = {
-                id: data.id,
-                email: data.email,
-                location: data.location,
-                latitude: onSubPage ? (includeCoords ? data.latitude : null) : null,
-                longtitude: onSubPage ? (includeCoords ? data.longtitude : null) : null,
-            };
-
-            reset(resetPayload);
+                if (subAdded) {
+                    reset({
+                        id: data.id,
+                        email: data.email,
+                        location: data.location,
+                        latitude: onSubPage ? (includeCoords ? data.latitude : null) : null,
+                        longtitude: onSubPage ? (includeCoords ? data.longtitude : null) : null,
+                    });
+                }
+                else {
+                    // debug
+                    console.log('sub not added');
+                }
+            }
+            catch (error) {
+                console.error('Error:', error);
+            }
         }
     };
 

@@ -69,6 +69,7 @@ export async function getActiveOutages() {
  * @param {boolean} includeCoords flag for whether co-ordinates are included or not
  * @param {boolean} isExistingSub flag for if the subscription already exists or not
  * @param {FormFields} formData user-submitted form values
+ * @return {boolean} if operation succeeded or not
  */
 export async function updateSubscription(includeCoords: boolean, isExistingSub: boolean, formData: FormFields) {
     const { location, email, id, latitude, longtitude } = formData;
@@ -83,13 +84,16 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
         datesubscribed: isExistingSub ? '' : new Date().toLocaleString(),
     };
 
+    // debug
+    console.log(payload);
+
     try {
         // If no env vars provided, throw an error
         if (!process.env.API_URL || !process.env.AUTH_TOKEN) {
             throw new Error('Environment variable(s) not set');
         }
 
-        await fetch(`${process.env.API_URL}/subscription`, {
+        const req = await fetch(`${process.env.API_URL}/subscription`, {
             method: isExistingSub ? 'PUT' : 'POST',
             body: JSON.stringify(payload),
             headers: {
@@ -97,12 +101,18 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
             }
         });
 
+        // debug
+        console.log(process.env.AUTH_TOKEN, req);
+
         if (!isExistingSub) {
             revalidatePath('/notifications'); // clear cache
         }
+
+        return true;
     }
     catch (error) {
         console.log('Error updating subscription', error);
+        return false;
     }
 }
 
