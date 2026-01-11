@@ -120,7 +120,7 @@ export async function POST(request: Request) {
         typeof body.latitude === 'number' && !isValidPayloadArgument(body.latitude, 'coordinate-lat');
     const invalidLongtitude = body.hasCoordinates &&
         typeof body.longtitude === 'number' && !isValidPayloadArgument(body.longtitude, 'coordinate-lng');
-    const invalidCoordinates = invalidLatitude || invalidLongtitude;
+    const invalidCoordinates = body.hasCoordinates && (invalidLatitude || invalidLongtitude);
 
     const invalidArguments = typeof body.hasCoordinates !== 'boolean' || !isValidEmail(body.email)
         || (body.location && !isValidPayloadArgument(body.location, 'location'))
@@ -144,8 +144,8 @@ export async function POST(request: Request) {
         const subData: NotificationSub = {
             id: idString,
             location: location,
-            lat: latitude as number,
-            lng: longtitude as number,
+            lat: body.hasCoordinates ? latitude as number : null,
+            lng: body.hasCoordinates ? longtitude as number : null,
             email: email,
             datesubscribed: datesubscribed,
             outageinfo: ''

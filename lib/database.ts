@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client';
-import { ChallengeVariables, FormValues, NotificationSub, OutageDBData } from './definitions';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-const prisma = new PrismaClient();
+import { ChallengeVariables, FormValues, NotificationSub, OutageDBData } from './definitions';
+import prisma from './prisma';
 
 /**
  * Get all outages from the database

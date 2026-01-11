@@ -29,6 +29,8 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
         name: ['email', 'location', 'latitude', 'longtitude'],
     });
 
+    const [subAdded, setSubAdded] = useState(false);
+
     const onSubmit = async(data: FormFields) => {
         if (onSubPage && !Object.keys(dirtyFields).length) {
             setError('root.unchanged', { type: 'custom', message: 'custom message' });
@@ -36,17 +38,28 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
         else {
             clearErrors();
 
-            await updateSubscription(includeCoords, onSubPage, data);
+            try {
+                setSubAdded(false);
+                const subAdded = await updateSubscription(includeCoords, onSubPage, data);
 
-            const resetPayload = {
-                id: data.id,
-                email: data.email,
-                location: data.location,
-                latitude: onSubPage ? (includeCoords ? data.latitude : null) : null,
-                longtitude: onSubPage ? (includeCoords ? data.longtitude : null) : null,
-            };
-
-            reset(resetPayload);
+                if (subAdded) {
+                    setSubAdded(true);
+                    reset({
+                        id: data.id,
+                        email: data.email,
+                        location: data.location,
+                        latitude: onSubPage ? (includeCoords ? data.latitude : null) : null,
+                        longtitude: onSubPage ? (includeCoords ? data.longtitude : null) : null,
+                    });
+                }
+                else {
+                    // debug
+                    console.log('sub not added');
+                }
+            }
+            catch (error) {
+                console.error('Error:', error);
+            }
         }
     };
 
@@ -268,7 +281,7 @@ export default function NotifSubForm({ values, onSubPage }: { values: FormValues
                     </button>
 
                     {
-                        isSubmitSuccessful ?
+                        isSubmitSuccessful && subAdded ?
                             (
                                 <p className='mt-2 text-md font-semibold text-green-600'>
                                     {

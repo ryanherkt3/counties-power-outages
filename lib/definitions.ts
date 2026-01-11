@@ -1,5 +1,3 @@
-import { Decimal } from '@prisma/client/runtime/library';
-
 // TODO fix first two interface defs
 
 // Comes from CP API
@@ -11,9 +9,9 @@ export interface OutageDBData {
     shutdownPeriods: ShutdownPeriods[];
     feeder: string | null;
     affectedCustomers: number | null;
-    lat: Decimal | number;
-    lng: Decimal | number;
-    distance: Decimal | number;
+    lat: number;
+    lng: number;
+    distance: number;
     hull: string | Coordinate[] | null;
     address: string | null;
     statusText: string;
@@ -38,8 +36,8 @@ export type OutageData = OutageDBData & {
 export interface NotificationSub {
     id: string;
     location: string | null;
-    lat: number | Decimal | null;
-    lng: number | Decimal | null;
+    lat: number | null;
+    lng: number | null;
     email: string;
     datesubscribed: string;
     outageinfo: string | null;
@@ -51,8 +49,8 @@ export interface ShutdownPeriods {
 }
 
 export interface Coordinate {
-    lng: number | Decimal | null;
-    lat: number | Decimal | null;
+    lng: number | null;
+    lat: number | null;
 }
 
 export interface OutageTimes {
