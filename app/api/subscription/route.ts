@@ -126,6 +126,10 @@ export async function POST(request: Request) {
         || (body.location && !isValidPayloadArgument(body.location, 'location'))
         || !isValidPayloadArgument(body.datesubscribed, 'date-subscribed') || invalidCoordinates;
 
+    // debug
+    console.log('bhc', body.hasCoordinates, 'ivc', invalidCoordinates);
+    console.log('iva', invalidArguments);
+
     if (invalidArguments) {
         return new Response(JSON.stringify(
             { 'error': 'Invalid arguments for creating subscription - step 1', 'success': false }
@@ -142,9 +146,6 @@ export async function POST(request: Request) {
 
     // Add outage subscription to DB
     const idString = await createNewUserNotification(body);
-
-    // debug
-    console.log('bod', body);
 
     if (idString) {
         const subData: NotificationSub = {

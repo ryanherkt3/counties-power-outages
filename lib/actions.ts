@@ -84,9 +84,6 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
         datesubscribed: isExistingSub ? '' : new Date().toLocaleString(),
     };
 
-    // debug
-    console.log(payload);
-
     try {
         // If no env vars provided, throw an error
         if (!process.env.API_URL || !process.env.AUTH_TOKEN) {
