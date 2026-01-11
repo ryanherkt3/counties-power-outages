@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -99,7 +101,8 @@ export async function updateSubscription(includeCoords: boolean, isExistingSub: 
         });
 
         // debug
-        console.log(req);
+        const reqJson = await req.json();
+        console.log(isExistingSub ? 'PUT' : 'POST', reqJson);
 
         if (req.ok && !isExistingSub) {
             revalidatePath('/notifications'); // clear cache
