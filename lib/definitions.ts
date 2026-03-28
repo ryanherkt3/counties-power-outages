@@ -44,8 +44,8 @@ export interface NotificationSub {
 }
 
 export interface ShutdownPeriods {
-    start: string | null;
-    end: string | null;
+    start: string;
+    end: string;
 }
 
 export interface Coordinate {

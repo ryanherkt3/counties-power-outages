@@ -17,24 +17,16 @@ export async function sendEmailNotification(notifSub: NotificationSub, outage: O
         const resend = new Resend(process.env.RESEND_API_KEY);
         const notifSubId = notifSub.id;
 
-        const outageTimes = outage.shutdownPeriodStart && outage.shutdownPeriodEnd ?
-            getTimesAndActiveOutage(outage.shutdownPeriodStart, outage.shutdownPeriodEnd) :
-            {
-                activeOutage: false,
-                expiredOutage: false,
-                times: {
-                    startTime: '',
-                    endTime: '',
-                }
-            };
+        const { start, end } = outage.shutdownPeriods[0];
+        const outageTimes = getTimesAndActiveOutage(start, end);
         const { startTime, endTime } = outageTimes.times;
 
         const notifEmailPayload = {
-            notifSubId: notifSubId,
-            outage: outage,
-            startTime: startTime,
-            endTime: endTime,
-            oldStatus: oldStatus
+            notifSubId,
+            outage,
+            startTime,
+            endTime,
+            oldStatus
         };
 
         let subject = 'Upcoming Power Outage';
